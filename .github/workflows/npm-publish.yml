@@ -1,5 +1,5 @@
 # This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
 
 name: Node.js Package
 
@@ -31,24 +31,6 @@ jobs:
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
-  notify-discord:
-    if: "!github.event.release.prerelease"
-    needs: publish-npm
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./ci/discord
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - run: npm install
-      - run: npm start
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          GIT_VERSION_TAG: ${{ github.event.release.tag_name }}
-
   publish-gpr:
     needs: build
     runs-on: ubuntu-latest
