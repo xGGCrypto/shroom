@@ -1,6 +1,7 @@
 # Shroom - Room Rendering Engine for Retros
 
 Shroom is a room rendering engine for retros.
+Made by [jankuss](https://github.com/jankuss/)
 
 ## Documentation
 
