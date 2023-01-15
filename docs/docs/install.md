@@ -9,13 +9,13 @@ slug: /
 To install shroom in your project, use the following command.
 
 ```
-npm install @jankuss/shroom pixi.js
+npm install @tetreum/shroom pixi.js
 ```
 
 If you are using `yarn`, you can use
 
 ```
-yarn add @jankuss/shroom pixi.js
+yarn add @tetreum/shroom pixi.js
 ```
 
 ### 2. Dump assets into your project
@@ -25,7 +25,7 @@ The `--url` option specifies the url to the external variables to use. The `--lo
 You can adjust both as needed.
 
 ```
-npm install -g @jankuss/shroom
+npm install -g @tetreum/shroom
 shroom dump --url https://www.habbo.com/gamedata/external_variables/326b0a1abf9e2571d541ac05e6eb3173b83bddea --location ./public/resources
 ```
 
@@ -37,7 +37,7 @@ Lastly, in your code, import and initialize the Shroom instance.
 
 ```ts
 import * as PIXI from "pixi.js";
-import { Shroom } from "@jankuss/shroom";
+import { Shroom } from "@tetreum/shroom";
 
 const view = document.querySelector("#root") as HTMLCanvasElement;
 const application = new PIXI.Application({ view });
@@ -49,5 +49,5 @@ const shroom = Shroom.create({ application, resourcePath: "./resources" });
 Now, you are fully ready to use shroom.
 Check out the [Guides](guides/create-room.md) section to learn how to use shroom.
 
-Also, take a look at the [example project](https://github.com/jankuss/shroom/tree/master/example) in the shroom repository for a basic project depending on shroom.
+Also, take a look at the [example project](https://github.com/tetreum/shroom/tree/master/example) in the shroom repository for a basic project depending on shroom.
 You can use it as a boilerplate for your own.

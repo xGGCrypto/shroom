@@ -7,7 +7,7 @@ import {
   FurnitureData,
   WallFurniture,
   Shroom,
-} from "@jankuss/shroom";
+} from "@tetreum/shroom";
 import EasyStar from "easystarjs";
 import { MultiStateBehavior } from "./behaviors/MultiStateBehavior";
 import { DiceBehavior } from "./behaviors/DiceBehavior";

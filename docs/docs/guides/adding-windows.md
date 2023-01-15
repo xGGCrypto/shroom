@@ -10,7 +10,7 @@ To create windows, we will use a `WallFurniture`. A wall furniture is just like 
 ```ts
 import * as PIXI from "pixi.js";
 
-import { Room, FloorFurniture, Avatar, Shroom } from "@jankuss/shroom";
+import { Room, FloorFurniture, Avatar, Shroom } from "@tetreum/shroom";
 
 const view = document.querySelector("#root") as HTMLCanvasElement;
 const application = new PIXI.Application({ view });

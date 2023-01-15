@@ -7,7 +7,7 @@ import {
   RoomCamera,
   Shroom,
   loadRoomTexture,
-} from "@jankuss/shroom";
+} from "@tetreum/shroom";
 
 const view = document.querySelector("#root") as HTMLCanvasElement | undefined;
 const container = document.querySelector("#container") as

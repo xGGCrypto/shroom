@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import { Shroom } from "@jankuss/shroom";
+import { Shroom } from "@tetreum/shroom";
 
 export type TestRendererCleanup = () => void;
 

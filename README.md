@@ -5,7 +5,7 @@ Made by [jankuss](https://github.com/jankuss/)
 
 ## Documentation
 
-The documentation can be found [here](https://jankuss.github.io/shroom/docs/).
+The documentation can be found [here](https://tetreum.github.io/shroom/docs/).
 
 ## Official Discord Server
 

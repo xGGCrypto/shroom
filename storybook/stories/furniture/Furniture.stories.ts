@@ -13,7 +13,7 @@ import {
   IFurniture,
   Room,
   WallFurniture,
-} from "@jankuss/shroom";
+} from "@tetreum/shroom";
 import { createShroom } from "../common/createShroom";
 import { action } from "@storybook/addon-actions";
 import fetch from "node-fetch";

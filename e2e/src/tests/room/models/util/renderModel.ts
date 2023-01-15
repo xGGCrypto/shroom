@@ -1,4 +1,4 @@
-import { Room } from "@jankuss/shroom";
+import { Room } from "@tetreum/shroom";
 import { TestRenderer } from "../../../../TestRenderer";
 
 export function renderModel(tilemap: string): TestRenderer {

@@ -1,8 +1,8 @@
 module.exports = {
-  url: 'https://jankuss.github.io', // Your website URL
+  url: 'https://tetreum.github.io', // Your website URL
   baseUrl: '/shroom/',
   projectName: 'shroom',
-  organizationName: 'jankuss',
+  organizationName: 'tetreum',
   title: 'Shroom',
   tagline: 'Room Rendering Engine for Retros',
   onBrokenLinks: 'throw',
@@ -22,7 +22,7 @@ module.exports = {
           position: 'left',
         },
         {
-          href: 'https://github.com/jankuss/shroom',
+          href: 'https://github.com/tetreum/shroom',
           label: 'GitHub',
           position: 'right',
         },
@@ -37,7 +37,7 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/jankuss/shroom/edit/master/docs/',
+            'https://github.com/tetreum/shroom/edit/master/docs/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

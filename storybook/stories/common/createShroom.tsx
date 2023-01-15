@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Shroom } from "@jankuss/shroom";
+import { Shroom } from "@tetreum/shroom";
 import { useRef } from "react";
 import React from "react";
 

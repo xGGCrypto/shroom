@@ -1,4 +1,4 @@
-import { AvatarAction, BaseAvatar } from "@jankuss/shroom";
+import { AvatarAction, BaseAvatar } from "@tetreum/shroom";
 import { TestRenderer } from "../../TestRenderer";
 
 export const renderBasicAvatars: TestRenderer = ({ shroom, application }) => {
