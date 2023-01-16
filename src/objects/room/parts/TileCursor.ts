@@ -25,7 +25,7 @@ export class TileCursor
   constructor(
     private _eventManager: IEventManager,
     private _position: RoomPosition,
-    private onClick: (position: RoomPosition) => void,
+    private onClick: (position: RoomPosition, event: IEventManagerEvent) => void,
     private onOver: (position: RoomPosition) => void,
     private onOut: (position: RoomPosition) => void
   ) {
@@ -64,7 +64,7 @@ export class TileCursor
       roomX: this._roomX,
       roomY: this._roomY,
       roomZ: this._roomZ,
-    });
+    }, event);
   }
 
   triggerPointerDown(event: IEventManagerEvent): void {}

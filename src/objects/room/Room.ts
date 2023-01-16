@@ -19,6 +19,7 @@ import { ParsedTileMap } from "./ParsedTileMap";
 import { getTileColors, getWallColors } from "./util/getTileColors";
 import { EventManager } from "../events/EventManager";
 import { InteractionEvent } from "pixi.js";
+import { IEventManagerEvent } from "../events/interfaces/IEventManagerEvent";
 
 export interface Dependencies {
   animationTicker: IAnimationTicker;
@@ -70,7 +71,7 @@ export class Room
 
   private _currentWallTexture: PIXI.Texture | undefined;
 
-  private _onTileClick: ((position: RoomPosition) => void) | undefined;
+  private _onTileClick: ((position: RoomPosition, event: IEventManagerEvent) => void) | undefined;
 
   private _application: PIXI.Application;
 
@@ -130,7 +131,7 @@ export class Room
     this.addChild(this._visualization);
 
     this._visualization.onTileClick.subscribe((value) => {
-      this.onTileClick && this.onTileClick(value);
+      this.onTileClick && this.onTileClick(value.position, value.event);
     });
   }
 
@@ -284,6 +285,44 @@ export class Room
    */
   public get roomWidth() {
     return this._visualization.rectangle.width;
+  }
+
+  public get visualization() : RoomModelVisualization {
+    return this._visualization;
+  }
+
+  public get eventManager() : EventManager {
+    return this._eventManager;
+  }
+
+  changeTileMap (tileMap : TileType[][]) : void {
+    this._visualization = new RoomModelVisualization(
+        this._eventManager,
+        this.application,
+        new ParsedTileMap(tileMap)
+    );
+
+    const currentVisualization = this.children[0] as RoomModelVisualization;
+
+    [
+        "hideWalls",
+        "wallDepth",
+        "tileHeight",
+        "wallHeight",
+    ].forEach(property => {
+        // @ts-ignore
+        this._visualization[property] = currentVisualization[property];
+    });
+
+    this.removeChildAt(0);
+
+    this.addChild(this._visualization);
+
+    // refresh visualization data
+    this.floorColor = this.floorColor;
+    this.wallColor = this.wallColor;
+    this.floorTexture = this.floorTexture;
+    this.wallTexture = this.wallTexture;
   }
 
   getParsedTileTypes(): ParsedTileType[][] {

@@ -10,6 +10,7 @@ import { getZOrder } from "../../util/getZOrder";
 import { ParsedTileType, ParsedTileWall } from "../../util/parseTileMap";
 import { EventManager } from "../events/EventManager";
 import { EventManagerContainer } from "../events/EventManagerContainer";
+import { IEventManagerEvent } from "../events/interfaces/IEventManagerEvent";
 import { ILandscapeContainer } from "./ILandscapeContainer";
 import { IRoomRectangle, Rectangle } from "./IRoomRectangle";
 import { ParsedTileMap } from "./ParsedTileMap";
@@ -75,7 +76,10 @@ export class RoomModelVisualization
     | undefined
   >();
 
-  private _onTileClick = new Subject<RoomPosition>();
+  private _onTileClick = new Subject<{
+    position: RoomPosition,
+    event: IEventManagerEvent
+  }>();
 
   private _tileMapBounds: {
     minX: number;
@@ -535,8 +539,8 @@ export class RoomModelVisualization
     const cursor = new TileCursor(
       this._eventManager,
       position,
-      () => {
-        this._onTileClick.next(position);
+      (pos, event) => {
+        this._onTileClick.next({position, event});
       },
       () => {
         this._onActiveTileChange.next(position);

@@ -1,6 +1,6 @@
 {
   "name": "@tetreum/shroom",
-  "version": "0.7.3",
+  "version": "0.7.5",
   "main": "dist/index.js",
   "license": "LGPL-3.0-or-later",
   "repository": {
@@ -50,6 +50,7 @@
     "canvas": "^2.6.1",
     "chalk": "^4.1.0",
     "detect-edges": "^1.0.1",
+    "easystarjs": "^0.4.4",
     "events": "^3.2.0",
     "frame-stream": "^2.0.3",
     "glob": "^7.1.6",
@@ -77,7 +78,7 @@
     "dev": "tsc --watch",
     "dump": "yarn ts-node-dev src/downloading/cli/index.tsx dump",
     "test": "jest",
-    "build": "rm -rf dist && tsc",
+    "build": "tsc",
     "prepublishOnly": "yarn build",
     "storybook": "cd storybook && yarn storybook"
   },

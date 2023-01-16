@@ -70,6 +70,10 @@ export class RoomCamera extends PIXI.Container {
     this._target.removeEventListener("pointerup", this._handlePointerUp as any);
   }
 
+  public get container() : PIXI.Container {
+    return this._container;
+  }
+
   private _handlePointerUp = (event: PointerEvent) => {
     if (this._state.type === "WAITING" || this._state.type === "ANIMATE_ZERO")
       return;
