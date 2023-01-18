@@ -78,7 +78,7 @@
     "dev": "tsc --watch",
     "dump": "yarn ts-node-dev src/downloading/cli/index.tsx dump",
     "test": "jest",
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "prepublishOnly": "yarn build",
     "storybook": "cd storybook && yarn storybook"
   },
