@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { Shroom } from "../Shroom";
 import { BaseFurniture } from "./BaseFurniture";
 
-export default class FurnitureHelper {
+export class FurnitureHelper {
 
     public static getFurniPreview (furniId: string, shroom: Shroom) : Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
