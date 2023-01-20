@@ -11,6 +11,7 @@ export { parseTileMapString } from "./util/parseTileMapString";
 export { IFurniture, IFurnitureBehavior } from "./objects/furniture/IFurniture";
 export { IFurnitureData } from "./interfaces/IFurnitureData";
 export { FurnitureData } from "./objects/furniture/FurnitureData";
+export { FurnitureHelper } from "./objects/furniture/FurnitureHelper";
 export { Shroom } from "./objects/Shroom";
 export { Landscape } from "./objects/room/Landscape";
 export { AnimationTicker } from "./objects/animation/AnimationTicker";
