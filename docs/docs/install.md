@@ -9,13 +9,13 @@ slug: /
 To install shroom in your project, use the following command.
 
 ```
-npm install @tetreum/shroom pixi.js
+npm install @tetreum/shroom
 ```
 
 If you are using `yarn`, you can use
 
 ```
-yarn add @tetreum/shroom pixi.js
+yarn add @tetreum/shroom
 ```
 
 ### 2. Dump assets into your project
