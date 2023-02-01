@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Shroom } from "../Shroom";
 import { BaseFurniture } from "./BaseFurniture";
+import { IFurniture } from "./IFurniture";
 
 export class FurnitureHelper {
 
