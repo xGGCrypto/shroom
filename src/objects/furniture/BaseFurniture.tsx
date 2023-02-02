@@ -327,6 +327,15 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     this._updateDirection();
   }
 
+  public async rotate() {
+    if (!this._validDirections) { 
+      this._validDirections = this._loadFurniResult?.directions || await this.validDirections;
+    }
+    
+    const currIndex = this._validDirections?.indexOf(this._direction);
+    this.direction = getDirectionForFurniture(this._validDirections[currIndex +1], this._validDirections);
+  }
+
   public get animation() {
     return this._animation;
   }

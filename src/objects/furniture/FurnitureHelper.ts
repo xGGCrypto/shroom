@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Shroom } from "../Shroom";
 import { BaseFurniture } from "./BaseFurniture";
-import { IFurniture } from "./IFurniture";
+import { IFurnitureExtended } from "./IFurniture";
 
 export class FurnitureHelper {
   public static getFurniPreview(furniId: string, shroom: Shroom): Promise<HTMLImageElement> {
@@ -53,8 +53,4 @@ interface FurniOptions {
   move: (callback: () => void) => void;
   rotate: () => void;
   pickup: (callback: () => void) => void;
-}
-
-interface IFurnitureExtended extends IFurniture {
-  rotate: () => Promise<void>
 }
