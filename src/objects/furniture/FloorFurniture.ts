@@ -9,6 +9,7 @@ import { IMoveable } from "../interfaces/IMoveable";
 import { FurnitureFetchInfo } from "./FurnitureFetchInfo";
 import { getFurnitureFetch } from "./util/getFurnitureFetch";
 import { FurnitureId } from "../../interfaces/IFurnitureData";
+import { getDirectionForFurniture } from "./util/getDirectionForFurniture";
 
 export class FloorFurniture
   extends RoomObject
@@ -28,6 +29,7 @@ export class FloorFurniture
   private _direction: number;
   private _animation?: string;
   private _highlight = false;
+  private _validDirections?: number[];
 
   private _onClick: HitEventHandler | undefined;
   private _onDoubleClick: HitEventHandler | undefined;
@@ -271,6 +273,14 @@ export class FloorFurniture
   set direction(value) {
     this._direction = value;
     this._updateDirection();
+  }
+
+  async rotate() {
+    if (!this._validDirections) {
+      this._validDirections = await this.validDirections;
+    }
+    const currIndex = this._validDirections.indexOf(this.direction);
+    this.direction = getDirectionForFurniture(this._validDirections[currIndex +1], this._validDirections);
   }
 
   /**
