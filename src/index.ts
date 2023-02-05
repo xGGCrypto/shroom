@@ -9,7 +9,7 @@ export { RoomCamera } from "./objects/room/RoomCamera";
 export { loadRoomTexture } from "./util/loadRoomTexture";
 export { parseTileMapString } from "./util/parseTileMapString";
 export { IFurniture, IFurnitureBehavior } from "./objects/furniture/IFurniture";
-export { IFurnitureData } from "./interfaces/IFurnitureData";
+export { IFurnitureData, FurnitureInfo } from "./interfaces/IFurnitureData";
 export { FurnitureData } from "./objects/furniture/FurnitureData";
 export { FurnitureHelper } from "./objects/furniture/FurnitureHelper";
 export { Shroom } from "./objects/Shroom";

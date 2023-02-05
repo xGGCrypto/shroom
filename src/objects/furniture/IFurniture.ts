@@ -19,6 +19,10 @@ export interface IFurniture extends IFurnitureEventHandlers {
   visualization: IFurnitureVisualization;
 }
 
+export interface IFurnitureExtended extends IFurniture {
+  rotate: () => Promise<void>
+}
+
 export type IFurnitureBehavior<T extends IFurniture = IFurniture> = {
   setParent(furniture: T): void;
 };

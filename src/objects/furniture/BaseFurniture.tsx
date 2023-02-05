@@ -68,7 +68,7 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
   private _y = 0;
   private _zIndex = 0;
   private _direction = 0;
-  private _animation: string | undefined;
+  private _animation: string;
   private _type: FurnitureFetch;
   private _unknownTexture: PIXI.Texture | undefined;
   private _unknownSprite: FurnitureSprite | undefined;
@@ -119,7 +119,7 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     dependencies?: BaseFurnitureDependencies;
   } & BaseFurnitureProps) {
     this._direction = direction;
-    this._animation = animation;
+    this._animation = animation || "0";
     this._type = type;
     this._getMaskId = getMaskId;
     this._onLoad = onLoad;
@@ -325,6 +325,15 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
   public set direction(value) {
     this._direction = value;
     this._updateDirection();
+  }
+
+  public async rotate() {
+    if (!this._validDirections) { 
+      this._validDirections = this._loadFurniResult?.directions || await this.validDirections;
+    }
+    
+    const currIndex = this._validDirections?.indexOf(this._direction);
+    this.direction = getDirectionForFurniture(this._validDirections[currIndex +1], this._validDirections);
   }
 
   public get animation() {

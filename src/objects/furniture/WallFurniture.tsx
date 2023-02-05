@@ -19,10 +19,6 @@ export class WallFurniture extends RoomObject {
   private _offsetX = 0;
   private _offsetY = 0;
 
-  private _animation: string | undefined;
-  private _direction: number;
-  private _highlight = false;
-
   constructor(
     options: {
       roomX: number;
@@ -40,15 +36,13 @@ export class WallFurniture extends RoomObject {
 
     this._roomX = options.roomX;
     this._roomY = options.roomY;
-    this._animation = options.animation;
-    this._direction = options.direction;
 
     this._offsetX = options.offsetX;
     this._offsetY = options.offsetY;
 
     this._baseFurniture = new BaseFurniture({
-      animation: this.animation,
-      direction: this.direction,
+      animation: options.animation,
+      direction: options.direction,
       type: getFurnitureFetch(options, "wall"),
       getMaskId: (direction) => getMaskId(direction, this.roomX, this.roomY),
     });
@@ -67,12 +61,11 @@ export class WallFurniture extends RoomObject {
   }
 
   public get highlight() {
-    return this._highlight;
+    return this._baseFurniture.highlight;
   }
 
   public set highlight(value) {
-    this._highlight = value;
-    this._updateHighlight();
+    this._baseFurniture.highlight = value;
   }
 
   public get alpha() {
@@ -88,21 +81,19 @@ export class WallFurniture extends RoomObject {
   }
 
   public get animation() {
-    return this._animation;
+    return this._baseFurniture.animation;
   }
 
   public set animation(value) {
-    this._animation = value;
-    this._updateAnimation();
+    this._baseFurniture.animation = value;
   }
 
   public get direction() {
-    return this._direction;
+    return this._baseFurniture.direction;
   }
 
   public set direction(value) {
-    this._direction = value;
-    this._updateDirection();
+    this._baseFurniture.direction = value;
   }
 
   public get roomX() {
@@ -194,18 +185,6 @@ export class WallFurniture extends RoomObject {
     };
 
     this._updatePosition();
-  }
-
-  private _updateAnimation() {
-    this._baseFurniture.animation = this.animation;
-  }
-
-  private _updateDirection() {
-    this._baseFurniture.direction = this.direction;
-  }
-
-  private _updateHighlight() {
-    this._baseFurniture.highlight = this.highlight;
   }
 
   private _getOffsets(direction: number) {

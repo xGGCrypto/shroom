@@ -3,7 +3,6 @@ import { getZOrder } from "../../util/getZOrder";
 import { BaseFurniture } from "./BaseFurniture";
 import { IFurniture, IFurnitureBehavior } from "./IFurniture";
 import { ObjectAnimation } from "../animation/ObjectAnimation";
-import { HitEventHandler } from "../hitdetection/HitSprite";
 import { RoomPosition } from "../../types/RoomPosition";
 import { IMoveable } from "../interfaces/IMoveable";
 import { FurnitureFetchInfo } from "./FurnitureFetchInfo";
@@ -25,16 +24,6 @@ export class FloorFurniture
   private _roomX: number;
   private _roomY: number;
   private _roomZ: number;
-  private _direction: number;
-  private _animation?: string;
-  private _highlight = false;
-
-  private _onClick: HitEventHandler | undefined;
-  private _onDoubleClick: HitEventHandler | undefined;
-  private _onPointerDown: HitEventHandler | undefined;
-  private _onPointerUp: HitEventHandler | undefined;
-  private _onPointerOver: HitEventHandler | undefined;
-  private _onPointerOut: HitEventHandler | undefined;
 
   constructor(
     options: {
@@ -54,16 +43,14 @@ export class FloorFurniture
     this._roomX = options.roomX;
     this._roomY = options.roomY;
     this._roomZ = options.roomZ;
-    this._direction = options.direction;
-    this._animation = options.animation;
 
     if ("type" in options) {
       this._type = options.type;
     }
 
     this._baseFurniture = new BaseFurniture({
-      animation: this.animation,
-      direction: this.direction,
+      animation: options.animation,
+      direction: options.direction,
       type: getFurnitureFetch(options, "floor"),
     });
 
@@ -140,12 +127,11 @@ export class FloorFurniture
    * If set to true, displays the furniture in the highlight state.
    */
   public get highlight() {
-    return this._highlight;
+    return this._baseFurniture.highlight;
   }
 
   public set highlight(value) {
-    this._highlight = value;
-    this._updateHighlight();
+    this._baseFurniture.highlight = value;
   }
 
   /**
@@ -170,60 +156,54 @@ export class FloorFurniture
    * Callback triggered when the furniture has been clicked on.
    */
   public get onClick() {
-    return this._onClick;
+    return this._baseFurniture.onClick
   }
 
   public set onClick(value) {
-    this._onClick = value;
-    this._baseFurniture.onClick = this.onClick;
+    this._baseFurniture.onClick = value;
   }
 
   /**
    * Callback triggered when the furniture has been double clicked on.
    */
   public get onDoubleClick() {
-    return this._onDoubleClick;
+    return this._baseFurniture.onDoubleClick;
   }
 
   public set onDoubleClick(value) {
-    this._onDoubleClick = value;
-    this._baseFurniture.onDoubleClick = this.onDoubleClick;
+    this._baseFurniture.onDoubleClick = value;
   }
 
   public get onPointerDown() {
-    return this._onPointerDown;
+    return this._baseFurniture.onPointerDown;
   }
 
   public set onPointerDown(value) {
-    this._onPointerDown = value;
-    this._baseFurniture.onPointerDown = this.onPointerDown;
+    this._baseFurniture.onPointerDown = value;
   }
 
   public get onPointerUp() {
-    return this._onPointerUp;
+    return this._baseFurniture.onPointerUp;
   }
 
   public set onPointerUp(value) {
-    this._onPointerUp = value;
-    this._baseFurniture.onPointerUp = this.onPointerUp;
+    this._baseFurniture.onPointerUp = value;
   }
 
   public get onPointerOver() {
-    return this._onPointerOver;
+    return this._baseFurniture.onPointerOver;
   }
 
   public set onPointerOver(value) {
-    this._onPointerOver = value;
-    this._baseFurniture.onPointerOver = this.onPointerOver;
+    this._baseFurniture.onPointerOver = value;
   }
 
   public get onPointerOut() {
-    return this._onPointerOut;
+    return this._baseFurniture.onPointerOut;
   }
 
   public set onPointerOut(value) {
-    this._onPointerOut = value;
-    this._baseFurniture.onPointerOut = this.onPointerOut;
+    this._baseFurniture.onPointerOut = value;
   }
 
   /**
@@ -253,26 +233,28 @@ export class FloorFurniture
    * Animation of the furniture
    */
   get animation() {
-    return this._animation;
+    return this._baseFurniture.animation;
   }
 
   set animation(value) {
-    this._animation = value;
-    this._updateAnimation();
+    this._baseFurniture.animation = value;
   }
 
   /**
    * Direction of the furniture
    */
   get direction() {
-    return this._direction;
+    return this._baseFurniture.direction;
   }
 
   set direction(value) {
-    this._direction = value;
-    this._updateDirection();
+    this._baseFurniture.direction = value;
   }
 
+  rotate() {
+    return this._baseFurniture.rotate;
+  }
+  
   /**
    * The x position of the avatar in the room.
    * The y-Axis is marked in the following graphic:
@@ -347,10 +329,6 @@ export class FloorFurniture
     this._baseFurniture.visualization = value;
   }
 
-  private _updateDirection() {
-    this._baseFurniture.direction = this.direction;
-  }
-
   private _getDisplayRoomPosition() {
     if (this._moving) {
       return this._animatedPosition;
@@ -378,13 +356,5 @@ export class FloorFurniture
       roomYrounded,
       this.roomZ
     );
-  }
-
-  private _updateAnimation() {
-    this._baseFurniture.animation = this.animation;
-  }
-
-  private _updateHighlight() {
-    this._baseFurniture.highlight = this.highlight;
   }
 }
