@@ -42,7 +42,7 @@ export class WallFurniture extends RoomObject {
 
     this._baseFurniture = new BaseFurniture({
       animation: options.animation,
-      direction: option.direction,
+      direction: options.direction,
       type: getFurnitureFetch(options, "wall"),
       getMaskId: (direction) => getMaskId(direction, this.roomX, this.roomY),
     });
