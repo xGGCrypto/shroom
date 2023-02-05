@@ -49,8 +49,8 @@ export class FloorFurniture
     }
 
     this._baseFurniture = new BaseFurniture({
-      animation: this.animation,
-      direction: this.direction,
+      animation: options.animation,
+      direction: options.direction,
       type: getFurnitureFetch(options, "floor"),
     });
 
