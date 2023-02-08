@@ -1,91 +1,21 @@
 {
-  "name": "@tetreum/shroom",
-  "version": "0.7.6",
-  "main": "dist/index.js",
-  "license": "LGPL-3.0-or-later",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tetreum/shroom.git"
-  },
-  "devDependencies": {
-    "@types/axios": "^0.14.0",
-    "@types/bluebird": "^3.5.33",
-    "@types/bytebuffer": "^5.0.42",
-    "@types/glob": "^7.1.3",
-    "@types/jest": "^26.0.15",
-    "@types/jsdom": "^16.2.6",
-    "@types/node": "^14.14.13",
-    "@types/node-fetch": "^2.5.7",
-    "@types/rbush": "^3.0.0",
-    "@types/react": "^16.9.56",
-    "@types/tween.js": "^18.6.1",
-    "@types/ws": "^7.4.0",
-    "@types/xml2js": "^0.4.5",
-    "@typescript-eslint/eslint-plugin": "^4.12.0",
-    "@typescript-eslint/parser": "^4.12.0",
-    "eslint": "^7.17.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-standard": "^16.0.2",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.22.0",
-    "jest": "^26.6.1",
-    "pixi.js": "^5.3.3",
-    "prettier": "2.2.1",
-    "request": "^2.88.2",
-    "ts-jest": "^26.4.3",
-    "ts-mockito": "^2.6.1",
-    "ts-node": "^9.0.0",
-    "ts-node-dev": "^1.1.1",
-    "typescript": "^4.0.3"
-  },
-  "dependencies": {
-    "@gizeta/swf-reader": "^1.0.0",
-    "@timohausmann/quadtree-js": "^1.2.3",
-    "axios": "^0.21.1",
-    "bin-pack": "^1.0.2",
-    "bluebird": "^3.7.2",
-    "bytebuffer": "^5.0.1",
-    "canvas": "^2.6.1",
-    "chalk": "^4.1.0",
-    "detect-edges": "^1.0.1",
-    "easystarjs": "^0.4.4",
-    "events": "^3.2.0",
-    "frame-stream": "^2.0.3",
-    "glob": "^7.1.6",
-    "ink": "^3.0.8",
-    "jsdom": "^16.4.0",
-    "jszip": "^3.5.0",
-    "node-fetch": "^2.6.1",
-    "quadtree-lib": "^1.0.9",
-    "rbush": "^3.0.1",
-    "react": "^16.14.0",
-    "rxjs": "^6.6.3",
-    "stream": "0.0.2",
-    "swf-extract": "^1.1.0",
-    "timers": "^0.1.1",
-    "timers-browserify": "^2.0.11",
-    "tween.js": "^16.6.0",
-    "ws": "^7.4.2",
-    "xml2js": "^0.4.23",
-    "yargs": "^16.2.0"
-  },
-  "peerDependencies": {
-    "pixi.js": "^5.3.3"
-  },
+  "name": "root",
+  "version": "1.0.0",
+  "main": "",
+  "license": "MIT",
+  "private": "true",
+  "workspaces": [
+    "shroom",
+    "storybook",
+    "example",
+    "e2e",
+    "docs"
+  ],
   "scripts": {
-    "dev": "tsc --watch",
-    "dump": "yarn ts-node-dev src/downloading/cli/index.tsx dump",
-    "test": "jest",
-    "build": "rm -rf dist && tsc",
-    "prepublishOnly": "yarn build",
-    "storybook": "cd storybook && yarn storybook"
-  },
-  "bin": {
-    "shroom": "dist/cli/index.js"
-  },
-  "files": [
-    "/dist"
-  ]
+    "dev": " cd shroom && tsc --watch",
+    "build": " cd shroom && rm -rf dist && tsc",
+    "storybook": "cd storybook && yarn storybook",
+    "example": "cd example && yarn dev",
+    "clear-nodes": " rm -r node_modules/ docs/node_modules e2e/node_modules example/node_modules shroom/node_modules storybook/node_modules"
+  }
 }

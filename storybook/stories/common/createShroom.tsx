@@ -28,8 +28,11 @@ export function createShroom(
         width: 1400,
         height: 850,
       });
+      
+      const resourceLink = "./resources";
+
       const shroom = Shroom.create({
-        resourcePath: "./resources",
+        resourcePath: resourceLink,
         application: application,
         configuration: {
           placeholder: PIXI.Texture.from("./images/placeholder.png"),

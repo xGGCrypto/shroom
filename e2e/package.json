@@ -1,5 +1,5 @@
 {
-  "name": "shroom-example",
+  "name": "shroom-e2e",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -27,7 +27,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "@tetreum/shroom": "..",
+    "@tetreum/shroom": "0.7.7",
     "easystarjs": "^0.4.4",
     "events": "^3.2.0",
     "pixi.js": "^5.3.3",

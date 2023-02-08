@@ -17,10 +17,10 @@ import {
 import { createShroom } from "../common/createShroom";
 import { action } from "@storybook/addon-actions";
 import fetch from "node-fetch";
-import {
-  AVATAR,
-  FURNITURE,
-} from "../../../dist/objects/events/interfaces/IEventGroup";
+// import {
+//   AVATAR,
+//   FURNITURE,
+// } from "../../../dist/objects/events/interfaces/IEventGroup";
 
 export default {
   title: "Furniture / General",
@@ -1028,7 +1028,7 @@ export function LoadTest() {
 
           obj.onClick = (event) => {
             console.log("Clicked");
-            event.skip(FURNITURE, AVATAR);
+            // event.skip(FURNITURE, AVATAR);
           };
 
           obj.onPointerOver = (event) => {

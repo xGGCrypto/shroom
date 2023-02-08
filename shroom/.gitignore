@@ -12,11 +12,3 @@ node_modules
 /e2e/public/resources
 yarn.lock
 /.idea
-
-
-/example/node_modules
-/e2e/node_modules
-/storybook/node_modules
-/docs/node_modules
-/shroom/node_modules
-/docs/node_modules

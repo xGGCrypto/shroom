@@ -1,4 +1,4 @@
-import { AvatarAction } from "../../../dist";
+import { AvatarAction } from "@tetreum/shroom"
 import { renderAvatarDirections } from "./renderAvatarDirections";
 
 export default {

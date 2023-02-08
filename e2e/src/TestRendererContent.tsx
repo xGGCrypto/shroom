@@ -7,7 +7,8 @@ import { TestMap } from "./TestMap";
 import { TestRenderer } from "./TestRenderer";
 import { tests } from "./tests";
 
-const shared = Shroom.createShared({ resourcePath: "./resources" });
+const resourceLink = "./resources";
+const shared = Shroom.createShared({ resourcePath: resourceLink });
 
 export function TestRendererContent({ keys }: { keys: string[] }) {
   const ref = useRef<HTMLCanvasElement>(null);
