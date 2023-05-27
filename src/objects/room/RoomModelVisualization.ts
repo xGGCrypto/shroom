@@ -103,14 +103,22 @@ export class RoomModelVisualization
       y: this.parsedTileMap.wallOffsets.y,
     });
 
-    this._positionalContainer.addChild(this._behindWallLayer);
-    this._positionalContainer.addChild(this._wallLayer);
-    this._positionalContainer.addChild(this._wallHitAreaLayer);
-    this._positionalContainer.addChild(this._tileLayer);
-    this._positionalContainer.addChild(this._landscapeLayer);
-    this._positionalContainer.addChild(this._primaryLayer);
+    this._behindWallLayer.name = "BEHIND_WALL";
+    this._wallLayer.name = "WALL";
+    this._wallHitAreaLayer.name = "WALL_HIT";
+    this._tileLayer.name = "TILES";
+    this._landscapeLayer.name = "LANDSCAPE";
+    this._primaryLayer.name = "PRIMARY";
 
-    this._positionalContainer.addChild(this._masksLayer);
+    this.addChild(this._behindWallLayer);
+    this.addChild(this._wallLayer);
+    this.addChild(this._wallHitAreaLayer);
+    this.addChild(this._tileLayer);
+    this.addChild(this._landscapeLayer);
+    this.addChild(this._primaryLayer);
+
+    this.addChild(this._masksLayer);
+    
     this._positionalContainer.x = -this.roomBounds.minX;
     this._positionalContainer.y = -this.roomBounds.minY;
     this._primaryLayer.sortableChildren = true;
