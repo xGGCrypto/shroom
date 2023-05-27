@@ -533,11 +533,13 @@ export class RoomModelVisualization
       showLeftBorder: (
         !Boolean(bottomTile) ||
         ["stairs", "stairCorner", "door", "hidden"].includes(bottomTile?.type as string) ||
+        // @ts-ignore
         (bottomTile?.type as string == 'tile' && bottomTile?.z != currentTile.z)
       ),
       showRightBorder: (
         !Boolean(rightTile) ||
         ["stairs", "stairCorner", "door", "hidden"].includes(rightTile?.type as string) ||
+        // @ts-ignore
         (rightTile?.type as string == 'tile' && rightTile?.z != currentTile.z)
       )
     } 
