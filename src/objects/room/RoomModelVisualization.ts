@@ -509,6 +509,40 @@ export class RoomModelVisualization
     this._createLeftWall(x, y, z, { hideBorder: false, cutawayHeight: 90 });
   }
 
+  private shouldShowBorders (x: number, y: number) : {
+    showLeftBorder: boolean;
+    showRightBorder: boolean;
+} {
+    let bottomTile;
+    let rightTile;
+    const tileMap = this.parsedTileMap.parsedTileTypes;
+    const currentTile = tileMap[y][x];
+
+    if (
+      tileMap[y + 1] !== undefined &&
+      tileMap[y + 1][x] !== undefined
+    ) {
+      bottomTile = tileMap[y + 1][x];
+    }
+
+    if (tileMap[y][x + 1] !== undefined) {
+      rightTile = tileMap[y][x + 1];
+    }
+
+    return {
+      showLeftBorder: (
+        !Boolean(bottomTile) ||
+        ["stairs", "stairCorner", "door", "hidden"].includes(bottomTile?.type as string) ||
+        (bottomTile?.type as string == 'tile' && bottomTile?.z != currentTile.z)
+      ),
+      showRightBorder: (
+        !Boolean(rightTile) ||
+        ["stairs", "stairCorner", "door", "hidden"].includes(rightTile?.type as string) ||
+        (rightTile?.type as string == 'tile' && rightTile?.z != currentTile.z)
+      )
+    } 
+  }
+
   private _createTileElement(
     x: number,
     y: number,
@@ -517,7 +551,9 @@ export class RoomModelVisualization
   ) {
     if (this._hideFloor) return;
 
-    const tile = new Tile({ color: "#eeeeee", tileHeight: this._tileHeight });
+    const showBorders = this.shouldShowBorders(x, y);
+
+    const tile = new Tile({ color: "#eeeeee", tileHeight: this._tileHeight, showBorders });
 
     const xEven = x % 2 === 0;
     const yEven = y % 2 === 0;
