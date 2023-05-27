@@ -434,8 +434,9 @@ export class RoomModelVisualization
 
   private _updateParts() {
     this._setCache(false);
+    const currentRoomPartData = this._getCurrentRoomPartData();
     [...this._tiles, ...this._walls, ...this._parts].forEach((tile) =>
-      tile.update(this._getCurrentRoomPartData())
+      tile.update(currentRoomPartData)
     );
     this._setCache(true);
   }
@@ -608,13 +609,13 @@ export class RoomModelVisualization
 
   private _handleTick = () => {
     if (this._rebuildRoom) {
-      this._updateHeightmap();
       this._rebuildRoom = false;
+      this._updateHeightmap();
     }
 
     if (this._refreshRoom) {
-      this._updateParts();
       this._refreshRoom = false;
+      this._updateParts();
     }
   };
 
