@@ -96,6 +96,11 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
     return this._look;
   }
 
+  public set look(look: string) {
+    this._look = look;
+    this._updateAvatarSprites();
+  }
+
   /**
    * Set this with a callback if you want to capture clicks on the Avatar.
    */
@@ -120,6 +125,9 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
     this._updateEventHandlers();
   }
 
+  /**
+   * Set this with a callback if you want to capture pointer down on the Avatar.
+   */
   get onPointerDown() {
     return this._onPointerDown;
   }
@@ -129,6 +137,9 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
     this._updateEventHandlers();
   }
 
+  /**
+   * Set this with a callback if you want to capture pointer up on the Avatar.
+   */
   get onPointerUp() {
     return this._onPointerUp;
   }
@@ -138,6 +149,9 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
     this._updateEventHandlers();
   }
 
+  /**
+   * Set this with a callback if you want to capture pointer over on the Avatar.
+   */
   public get onPointerOver() {
     return this._onPointerOver;
   }
@@ -147,6 +161,9 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
     this._updateEventHandlers();
   }
 
+  /**
+   * Set this with a callback if you want to capture pointer out on the Avatar.
+   */
   public get onPointerOut() {
     return this._onPointerOut;
   }
