@@ -1,0 +1,41 @@
+{
+  "folders": [
+    {
+      "name": "ROOT",
+      "path": "../"
+    },
+    {
+      "name": "packages/Shroom",
+      "path": "../packages/shroom"
+    },
+    {
+      "name": "packages/e2e",
+      "path": "../packages/e2e"
+    },
+    {
+      "name": "packages/storybook",
+      "path": "../packages/storybook"
+    },
+    {
+      "name": "packages/example",
+      "path": "../packages/example"
+    },
+    {
+      "name": "packages/docs",
+      "path": "../packages/docs"
+    },
+    {
+      "name": "github/workflows",
+      "path": "../.github/workflows"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "node_modules/": true,
+    },
+    "hide-files.files": []
+  },
+  "extensions": {
+    "recommendations": []
+  }
+}
