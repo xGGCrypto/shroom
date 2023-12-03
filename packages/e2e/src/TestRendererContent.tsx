@@ -1,13 +1,14 @@
 import React, { useRef, useState } from "react";
 import * as PIXI from "pixi.js";
-import styled from "styled-components";
+// import styled from "styled-components";
 import { Shroom } from "@tetreum/shroom";
 
 import { TestMap } from "./TestMap";
 import { TestRenderer } from "./TestRenderer";
 import { tests } from "./tests";
 
-const shared = Shroom.createShared({ resourcePath: "./resources" });
+const resourcePath = process.env.resourcePath || "./resources";
+const shared = Shroom.createShared({ resourcePath });
 
 export function TestRendererContent({ keys }: { keys: string[] }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -59,9 +60,9 @@ export function TestRendererContent({ keys }: { keys: string[] }) {
   }, [activeRenderer]);
 
   return (
-    <Content ref={contentRef}>
+    <div ref={contentRef} style={{overflow: "hidden"}}>
       <canvas ref={ref} key={activeRenderer?.index} />
-    </Content>
+    </div>
   );
 }
 
@@ -81,6 +82,6 @@ function getTestFromKeys(keys: string[]) {
   }
 }
 
-const Content = styled.div`
-  overflow: hidden;
-`;
+// const Content = styled.div`
+//   overflow: hidden;
+// `;

@@ -11,6 +11,7 @@
   "scripts": {
     "build-shroom": "cd packages/shroom && npm run build",
     "storybook": "cd packages/storybook && npm run storybook",
-    "docs": "cd packages/docs && npm run start"
+    "docs": "cd packages/docs && npm run start",
+    "e2e": "cd packages/e2e && npm run dev"
   }
 }

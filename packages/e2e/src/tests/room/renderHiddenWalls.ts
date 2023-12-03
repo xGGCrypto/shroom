@@ -1,4 +1,4 @@
-import { Room } from "@tetreum/shroom";
+import { Room, RoomCamera } from "@tetreum/shroom";
 import { TestRenderer } from "../../TestRenderer";
 
 export const renderHiddenWalls: TestRenderer = ({ shroom, application }) => {
@@ -24,6 +24,8 @@ export const renderHiddenWalls: TestRenderer = ({ shroom, application }) => {
   });
 
   room.hideWalls = true;
-
-  application.stage.addChild(room);
+  room.x = application.screen.width / 2 - room.roomWidth / 2;
+  room.y = application.screen.height / 2 - room.roomHeight / 2;
+  const camera = RoomCamera.forScreen(room);
+  application.stage.addChild(camera);
 };

@@ -19,3 +19,4 @@
 yarn.lock
 /.idea
 /.parcel-cache
+.env

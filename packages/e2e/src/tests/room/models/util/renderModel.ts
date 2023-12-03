@@ -1,4 +1,4 @@
-import { Room } from "@tetreum/shroom";
+import { Room, RoomCamera } from "@tetreum/shroom";
 import { TestRenderer } from "../../../../TestRenderer";
 
 export function renderModel(tilemap: string): TestRenderer {
@@ -6,7 +6,11 @@ export function renderModel(tilemap: string): TestRenderer {
     const room = Room.create(shroom, {
       tilemap: tilemap,
     });
+    
+    room.x = application.screen.width / 2 - room.roomWidth / 2;
+    room.y = application.screen.height / 2 - room.roomHeight / 2;
 
-    application.stage.addChild(room);
+    const camera = RoomCamera.forScreen(room);
+    application.stage.addChild(camera);
   };
 }
