@@ -3,6 +3,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const CopyPlugin = require('copy-webpack-plugin');
+const DotEnvConfig = require('dotenv').config();
 
 module.exports = {
     entry: "./src/index.ts",
@@ -45,6 +46,7 @@ module.exports = {
       new webpack.HotModuleReplacementPlugin(),
       new webpack.EnvironmentPlugin({
         NODE_ENV: "development",
+        resourcePath: process.env.resourcePath || "./resources"
       }),
     ],
     devServer: {
