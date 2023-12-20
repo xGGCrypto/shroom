@@ -1,4 +1,3 @@
-import { Room, Avatar } from "@tetreum/shroom";
 import { renderAvatarDirections } from "./renderAvatarDirections";
 
 export default {

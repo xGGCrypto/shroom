@@ -1,6 +1,5 @@
 import {
   FloorFurniture,
-  Room,
   IFurniture,
   Avatar,
   AvatarAction,
@@ -8,6 +7,7 @@ import {
   BaseFurniture,
 } from "@tetreum/shroom";
 import { createShroom } from "./common/createShroom";
+import { RoomCreator } from "./common/createRoom";
 
 export default {
   title: "Documentation",
@@ -15,13 +15,15 @@ export default {
 
 export function ImplementingFurnitureLogic() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-        xxxx
-        x000
-        x000
-        x000
-        `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxx",
+      "x000",
+      "x000",
+      "x000",
+    ]);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const furniture = new FloorFurniture({
@@ -118,13 +120,15 @@ export function ImplementingFurnitureLogic() {
 
 export function AvatarActions() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-          xxxx
-          x000
-          x000
-          x000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxx",
+      "x000",
+      "x000",
+      "x000",
+    ]);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({

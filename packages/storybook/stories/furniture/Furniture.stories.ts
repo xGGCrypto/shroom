@@ -13,14 +13,13 @@ import {
   IFurniture,
   Room,
   WallFurniture,
-} from "@tetreum/shroom";
-import { createShroom } from "../common/createShroom";
-import { action } from "@storybook/addon-actions";
-import fetch from "node-fetch";
-import {
   AVATAR,
   FURNITURE,
-} from "../../../dist/objects/events/interfaces/IEventGroup";
+} from "@tetreum/shroom";
+import { createShroom } from "../common/createShroom";
+import { RoomCreator } from "../common/createRoom";
+import { action } from "@storybook/addon-actions";
+import fetch from "node-fetch";
 
 export default {
   title: "Furniture / General",
@@ -28,18 +27,17 @@ export default {
 
 export function Default() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-       xxxxxxxxxxx
-       x0000000000
-       x0000000000
-       x0000000000
-       x0000000000
-      `,
-    });
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxxxxxxxx",
+      "x0000000000",
+      "x0000000000",
+      "x0000000000",
+      "x0000000000",
+    ]);
 
-    room.x = application.screen.width / 2 - room.roomWidth / 2;
-    room.y = application.screen.height / 2 - room.roomHeight / 2;
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
+    });
 
     for (let i = 0; i < 4; i++) {
       const furniture = new FloorFurniture({
@@ -114,8 +112,7 @@ export function Animated() {
       `,
     });
 
-    room.x = application.screen.width / 2 - room.roomWidth / 2;
-    room.y = application.screen.height / 2 - room.roomHeight / 2;
+    
 
     for (let i = 0; i < 4; i++) {
       const direction = i <= 1 ? 2 : 4;

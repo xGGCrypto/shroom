@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
-import { Room, FloorFurniture } from "@tetreum/shroom";
+import { FloorFurniture } from "@tetreum/shroom";
 
 import { createShroom } from "../common/createShroom";
-
+import { RoomCreator } from "../common/createRoom";
 export default {
   title: "Furniture / Issues",
 };
@@ -12,18 +12,20 @@ export function DestroyFurnitureWhileMoving() {
     const container = new PIXI.Container();
     application.stage.addChild(container);
 
-    const room = Room.create(shroom, {
-      tilemap: `
-         xxxxxxxxxxx
-         x0000000000
-         x0000000000
-         x0000000000
-         x0000000000
-         x0000000000
-         x0000000000
-         x0000000000
-         x0000000000
-        `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxxxxxxxx",
+      "x0000000000",
+      "x0000000000",
+      "x0000000000",
+      "x0000000000",
+      "x0000000000",
+      "x0000000000",
+      "x0000000000",
+      "x0000000000",
+    ]);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const furniture = new FloorFurniture({

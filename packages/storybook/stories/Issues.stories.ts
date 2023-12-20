@@ -1,7 +1,8 @@
 import * as PIXI from "pixi.js";
-import { Avatar, Room, FloorFurniture, RoomCamera } from "@tetreum/shroom";
+import { Avatar, FloorFurniture, RoomCamera } from "@tetreum/shroom";
 import { action } from "@storybook/addon-actions";
 import { createShroom } from "./common/createShroom";
+import { RoomCreator } from "./common/createRoom";
 
 export default {
   title: "Issues",
@@ -9,25 +10,27 @@ export default {
 
 export function Issue28() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-            xxxxxxxxxxxx
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxx000000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxxxxxxxxxx
-            xxxxxxxxxxxx
-            `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxxxxxxxxx",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxx000000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxxxxxxxxxx",
+      "xxxxxxxxxxxx",
+    ]);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
@@ -48,25 +51,27 @@ export function Issue28() {
 
 export function Issue31() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-            xxxxxxxxxxxx
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxx000000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxx00000000
-            xxxxxxxxxxxx
-            xxxxxxxxxxxx
-            `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxxxxxxxxx",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxx000000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxx00000000",
+      "xxxxxxxxxxxx",
+      "xxxxxxxxxxxx",
+    ]);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
@@ -137,18 +142,20 @@ export function Issue31() {
 
 export function Issue38() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-            xxxxxxxxxxxx
-            xxxxx000xxxx
-            xxxxx000xxxx
-            x00000000000
-            x00000000000
-            x00000000000
-            xxxxx000xxxx
-            xxxxx000xxxx
-            xxxxxxxxxxxx
-            `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxxxxxxxxx",
+      "xxxxx000xxxx",
+      "xxxxx000xxxx",
+      "x00000000000",
+      "x00000000000",
+      "x00000000000",
+      "xxxxx000xxxx",
+      "xxxxx000xxxx",
+      "xxxxxxxxxxxx",
+    ]);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
@@ -169,25 +176,27 @@ export function Issue38() {
 
 export function IssueWithAvatarEventsNotHandled() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-            xxxxxxxxxxxx
-            xxxxx000xxxx
-            xxxxx000xxxx
-            x00000000000
-            x00000000000
-            x00000000000
-            xxxxx000xxxx
-            xxxxx000xxxx
-            xxxxxxxxxxxx
-            `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxxxxxxxxx",
+      "xxxxx000xxxx",
+      "xxxxx000xxxx",
+      "x00000000000",
+      "x00000000000",
+      "x00000000000",
+      "xxxxx000xxxx",
+      "xxxxx000xxxx",
+      "xxxxxxxxxxxx",
+    ]);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
       look: "hd-180-1.hr-100-61.ch-210-66.lg-280-110.sh-305-62",
       direction: 2,
-      roomX: 5,
-      roomY: 6,
+      roomX: 3,
+      roomY: 5,
       roomZ: 0,
     });
 
@@ -217,7 +226,7 @@ export function IssueWithAvatarEventsNotHandled() {
       furniture.animation = "-1";
 
       setTimeout(() => {
-        furniture.animation = undefined;
+        furniture.animation = "0";
       }, 3500);
 
       action("Furniture Clicked")(event);
@@ -240,14 +249,16 @@ export function IssueWithAvatarEventsNotHandled() {
 
 export function IssueWithItemNotRenderingProperly() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-            xxxxx
-            x0000
-            x0000
-            x0000
-            x0000
-            `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxx",
+      "x0000",
+      "x0000",
+      "x0000",
+      "x0000",
+    ]);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const furniture = new FloorFurniture({
@@ -268,18 +279,20 @@ export function IssueWithItemNotRenderingProperly() {
 
 export function Issue56() {
   return createShroom(({ application, shroom, container: storyContainer }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-            xxxxxxxxxxxx
-            xxxxx000xxxx
-            xxxxx000xxxx
-            x00000000000
-            x00000000000
-            x00000000000
-            xxxxx000xxxx
-            xxxxx000xxxx
-            xxxxxxxxxxxx
-            `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxxxxxxxxx",
+      "xxxxx000xxxx",
+      "xxxxx000xxxx",
+      "x00000000000",
+      "x00000000000",
+      "x00000000000",
+      "xxxxx000xxxx",
+      "xxxxx000xxxx",
+      "xxxxxxxxxxxx",
+    ]);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const container = RoomCamera.forScreen(room);
@@ -308,15 +321,17 @@ export function Issue56() {
 
 export function IssueZOrder() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-        xxxxxx
-        x00000
-        x00000
-        x00000
-        x00000
-        x00000
-      `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxxx",
+      "x00000",
+      "x00000",
+      "x00000",
+      "x00000",
+      "x00000",
+    ]);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const furniture = new FloorFurniture({

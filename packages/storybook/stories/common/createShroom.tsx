@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
 import { Shroom } from "@tetreum/shroom";
-import { useRef } from "react";
 import React from "react";
 
 type CleanupFn = () => void;
@@ -8,14 +7,15 @@ type CallbackOptions = {
   application: PIXI.Application;
   shroom: Shroom;
   container: HTMLDivElement;
+  [key: string]: any;
 };
 
 export function createShroom(
   cb: (options: CallbackOptions) => CleanupFn | void
 ) {
   const App = () => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const containerRef = React.useRef<HTMLDivElement>(null);
+    const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
     React.useEffect(() => {
       const element = canvasRef.current;
@@ -25,11 +25,13 @@ export function createShroom(
 
       const application = new PIXI.Application({
         view: element,
-        width: 1400,
-        height: 850,
+        width: window?.innerWidth ?? 1400,
+        height: window?.innerHeight ?? 850,
       });
+
+      const resourcePath = process.env.resourcePath || "./resources";
       const shroom = Shroom.create({
-        resourcePath: "./resources",
+        resourcePath,
         application: application,
         configuration: {
           placeholder: PIXI.Texture.from("./images/placeholder.png"),

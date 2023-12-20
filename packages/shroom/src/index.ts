@@ -35,6 +35,7 @@ export { IFurnitureVisualization } from "./objects/furniture/IFurnitureVisualiza
 export { WallLeft } from "./objects/room/parts/WallLeft";
 export { WallRight } from "./objects/room/parts/WallRight";
 export { RoomModelVisualization } from "./objects/room/RoomModelVisualization";
+export { Pathfinding } from "./objects/room/Pathfinding";
 
 export {
   AVATAR,
@@ -43,3 +44,5 @@ export {
 } from "./objects/events/interfaces/IEventGroup";
 
 export type HitEvent = IEventManagerEvent;
+export type { Dependencies as RoomDependencies } from "./objects/room/Room";
+export type { RoomPosition } from "./types/RoomPosition";

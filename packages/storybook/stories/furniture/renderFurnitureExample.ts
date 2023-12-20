@@ -1,5 +1,6 @@
-import { Room, FloorFurniture } from "@tetreum/shroom";
+import { FloorFurniture } from "@tetreum/shroom";
 import { createShroom } from "../common/createShroom";
+import { RoomCreator } from "../common/createRoom";
 
 export function renderFurnitureExample(
   type: string,
@@ -17,15 +18,16 @@ export function renderFurnitureExample(
   }
 ) {
   return createShroom(({ shroom, application }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-                           xxxxxxxxxxxxxxxx
-                           x000000000000000
-                           x000000000000000
-                           x000000000000000
-                           x000000000000000
-                           x000000000000000
-                          `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxxxxxxxxxxxxx",
+      "x000000000000000",
+      "x000000000000000",
+      "x000000000000000",
+      "x000000000000000",
+      "x000000000000000",
+    ]);
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     let y = 0;

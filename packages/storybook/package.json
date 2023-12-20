@@ -1,30 +1,36 @@
 {
-  "name": "storybook",
+  "name": "shroom-storybook",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "storybook": "start-storybook -s ./public -p 6006",
+    "storybook": "storybook dev -s ./public -p 6006",
     "dump": "shroom dump --url https://www.habbo.com/gamedata/external_variables/326b0a1abf9e2571d541ac05e6eb3173b83bddea --location ./public/resources",
-    "build-storybook": "build-storybook"
+    "build-storybook": "storybook build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "@storybook/addon-actions": "^6.2.0-alpha.4",
-    "@storybook/addon-essentials": "^6.2.0-alpha.4",
-    "@storybook/addon-links": "^6.2.0-alpha.4",
-    "@storybook/react": "^6.2.0-alpha.4",
-    "babel-loader": "^8.2.2"
+    "@babel/preset-env": "^7.23.5",
+    "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
+    "@storybook/addon-actions": "^7.6.4",
+    "@storybook/addon-essentials": "^7.6.4",
+    "@storybook/addon-links": "^7.6.4",
+    "@storybook/react": "^7.6.4",
+    "@storybook/react-webpack5": "^7.6.4",
+    "babel-loader": "^8.2.2",
+    "storybook": "^7.6.4",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@tetreum/shroom": "file:../shroom",
     "pixi.js": "^5.3.3",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "nohoist": [
     "**/@storybook/**"

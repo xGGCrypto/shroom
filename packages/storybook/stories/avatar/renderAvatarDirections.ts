@@ -1,5 +1,6 @@
 import { Room, Avatar } from "@tetreum/shroom";
 import { createShroom } from "../common/createShroom";
+import { RoomCreator } from "../common/createRoom";
 
 const directions = [0, 1, 2, 3, 4, 5, 6, 7];
 
@@ -9,13 +10,15 @@ export function renderAvatarDirections(
   callback: (avatar: Avatar) => void
 ) {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-                       xxxxxxxxxxxxxxxx
-                       x000000000000000
-                       x000000000000000
-                       x000000000000000
-                      `,
+    const tilemap = RoomCreator.parseTilemapArr([
+      "xxxxxxxxxxxxxxxx",
+      "x000000000000000",
+      "x000000000000000",
+      "x000000000000000",
+    ]);
+    
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatars: Avatar[] = [];

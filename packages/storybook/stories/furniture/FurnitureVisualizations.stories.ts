@@ -1,7 +1,4 @@
-import {
-  BasicFurnitureVisualization,
-  FurnitureGuildCustomizedVisualization,
-} from "../../../dist";
+import { BasicFurnitureVisualization, FurnitureGuildCustomizedVisualization} from "@tetreum/shroom";
 import { renderFurnitureExample } from "./renderFurnitureExample";
 
 export default {

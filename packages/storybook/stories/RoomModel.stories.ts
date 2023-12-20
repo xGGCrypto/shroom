@@ -1,5 +1,5 @@
-import { Room } from "@tetreum/shroom";
 import { createShroom } from "./common/createShroom";
+import { RoomCreator } from "./common/createRoom";
 
 export default {
   title: "Room / Model",
@@ -468,8 +468,8 @@ export function RoomModelR() {
 
 function renderRoomModel(tilemap: string) {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap,
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     application.stage.addChild(room);
