@@ -25,7 +25,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: cd packages/shroom
-      - run: npm i
-      - run: npm run build --if-present
+      - run: npm i --workspace=packages/shroom
+      - run: npm run build-shroom --if-present
       - run: npm test
