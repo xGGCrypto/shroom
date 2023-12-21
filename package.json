@@ -9,6 +9,7 @@
     "packages/storybook"
   ],
   "scripts": {
+    "test": "cd packages/shroom && npm run test",
     "build-shroom": "cd packages/shroom && npm run build",
     "storybook": "cd packages/storybook && npm run storybook",
     "docs": "cd packages/docs && npm run start",
