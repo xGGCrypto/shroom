@@ -9,7 +9,7 @@ import {
   Shroom,
   Pathfinding,
   RoomCamera,
-} from "@tetreum/shroom";
+} from "@xggcrypto/shroom";
 
 import {
   DiceBehavior,

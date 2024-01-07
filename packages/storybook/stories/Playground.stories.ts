@@ -7,7 +7,7 @@ import {
   FurnitureData,
   FloorFurniture,
   RoomPosition,
-} from "@tetreum/shroom";
+} from "@xggcrypto/shroom";
 import { createShroom } from "./common/createShroom";
 import { RoomCreator } from "./common/createRoom";
 

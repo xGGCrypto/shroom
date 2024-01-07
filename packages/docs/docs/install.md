@@ -9,13 +9,13 @@ slug: /
 To install shroom in your project, use the following command.
 
 ```
-npm install @tetreum/shroom
+npm install @xggcrypto/shroom
 ```
 
 If you are using `yarn`, you can use
 
 ```
-yarn add @tetreum/shroom
+yarn add @xggcrypto/shroom
 ```
 
 ### 2. Dump assets into your project
@@ -25,7 +25,7 @@ The `--url` option specifies the url to the external variables to use. The `--lo
 You can adjust both as needed.
 
 ```
-npm install -g @tetreum/shroom
+npm install -g @xggcrypto/shroom
 shroom dump --url https://www.habbo.com/gamedata/external_variables/326b0a1abf9e2571d541ac05e6eb3173b83bddea --location ./public/resources
 ```
 
@@ -37,7 +37,7 @@ Lastly, in your code, import and initialize the Shroom instance.
 
 ```ts
 import * as PIXI from "pixi.js";
-import { Shroom } from "@tetreum/shroom";
+import { Shroom } from "@xggcrypto/shroom";
 
 const view = document.querySelector("#root") as HTMLCanvasElement;
 const application = new PIXI.Application({ view });

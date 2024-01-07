@@ -1,4 +1,4 @@
-import { Room, RoomCamera } from "@tetreum/shroom";
+import { Room, RoomCamera } from "@xggcrypto/shroom";
 import { TestRenderer } from "../../../../TestRenderer";
 
 export function renderModel(tilemap: string): TestRenderer {

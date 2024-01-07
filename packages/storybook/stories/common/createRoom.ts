@@ -1,4 +1,4 @@
-import { Shroom, Room, loadRoomTexture } from "@tetreum/shroom";
+import { Shroom, Room, loadRoomTexture } from "@xggcrypto/shroom";
 import {
   Application as PixiApplication,
   Texture as PixiTexture,

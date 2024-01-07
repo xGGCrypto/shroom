@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Shroom } from "@tetreum/shroom";
+import { Shroom } from "@xggcrypto/shroom";
 import React from "react";
 
 type CleanupFn = () => void;

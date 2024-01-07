@@ -1,4 +1,4 @@
-import { AvatarAction } from "@tetreum/shroom";
+import { AvatarAction } from "@xggcrypto/shroom";
 import { renderAvatarDirections } from "./renderAvatarDirections";
 
 export default {

@@ -15,7 +15,7 @@ import {
   WallFurniture,
   AVATAR,
   FURNITURE,
-} from "@tetreum/shroom";
+} from "@xggcrypto/shroom";
 import { createShroom } from "../common/createShroom";
 import { RoomCreator } from "../common/createRoom";
 import { action } from "@storybook/addon-actions";
