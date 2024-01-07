@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { FloorFurniture } from "@tetreum/shroom";
+import { FloorFurniture } from "@xggcrypto/shroom";
 
 import { createShroom } from "../common/createShroom";
 import { RoomCreator } from "../common/createRoom";

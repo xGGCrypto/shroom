@@ -1,4 +1,4 @@
-import { Room, Avatar } from "@tetreum/shroom";
+import { Room, Avatar } from "@xggcrypto/shroom";
 import { createShroom } from "../common/createShroom";
 import { RoomCreator } from "../common/createRoom";
 

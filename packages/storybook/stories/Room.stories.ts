@@ -5,7 +5,7 @@ import {
   RoomCamera,
   Avatar,
   FloorFurniture,
-} from "@tetreum/shroom";
+} from "@xggcrypto/shroom";
 
 import { createShroom } from "./common/createShroom";
 import { RoomCreator } from "./common/createRoom";
