@@ -195,20 +195,15 @@ class Propagation {
     for (let i = 0; i < this.path.length; i++) {
       if (this._stopped) return;
       const node = this.path[i];
+      const eventGroupIdentifier = node.target.getGroup().getEventGroupIdentifier();
 
       if (
-        this._skip.has(node.target.getGroup().getEventGroupIdentifier()) &&
-        !this._allow.has(node.target.getGroup().getEventGroupIdentifier())
-      ) {
-        continue;
-      }
+        this._skip.has(eventGroupIdentifier) && !this._allow.has(eventGroupIdentifier)
+      ) { continue; }
 
       if (
-        this._allow.size > 0 &&
-        !this._allow.has(node.target.getGroup().getEventGroupIdentifier())
-      ) {
-        continue;
-      }
+        this._allow.size > 0 && !this._allow.has(eventGroupIdentifier)
+      ) { continue; }
 
       this._trigger(this.path[i].target, event);
     }

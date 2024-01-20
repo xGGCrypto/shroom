@@ -30,14 +30,15 @@ export class Pathfinding {
   }
 
   private locateDoor(): void {
-    this.baseGrid.forEach((row, i) => {
-      if (row[3] === 0) {
-        this.door = {
-          roomX: 3,
-          roomY: i,
-          roomZ: 0,
-        };
-      }
+    this.baseGrid.forEach((row, rowIndex) => {
+      row.forEach((colVal, colIndex) => {
+        if (colVal >= 0 && (colIndex === 0 || rowIndex === 0))
+          this.door = {
+            roomX: colIndex,
+            roomY: rowIndex,
+            roomZ: colVal,
+          };
+      });
     });
   }
 
@@ -190,6 +191,7 @@ export class Pathfinding {
   public findPath(
     origin: RoomPosition,
     target: RoomPosition
+    // enableDiagonals: boolean = false
   ): Promise<
     {
       roomX: number;
@@ -219,7 +221,7 @@ export class Pathfinding {
 
       easystar.setGrid(grid);
       easystar.setAcceptableTiles([1, 0]);
-      //easystar.enableDiagonals();
+      // if (enableDiagonals) easystar.enableDiagonals();
 
       easystar.findPath(
         origin.roomX,

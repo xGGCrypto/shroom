@@ -49,6 +49,18 @@ const roomModels = Object.freeze({
     "x0000000000",
     "x0000000000",
   ],
+  ModelE: [
+    "xxxxxx0xxxx",
+    "x0000000000",
+    "x0000000000",
+    "x0000000000",
+    "x0000000000",
+    "x0000000000",
+    "x0000000000",
+    "x0000000000",
+    "x0000000000",
+    "x0000000000",
+  ],
 });
 
 function ShroomComponent(args: { [key: string]: any }) {
@@ -94,13 +106,14 @@ function ShroomComponent(args: { [key: string]: any }) {
       );
 
       const door = PathFinder.door ?? { roomX: 1, roomY: 1, roomZ: 0 };
+      action("door")(door);
 
       const avatar = new Avatar({
         ...door,
         look:
           args?.avatarLook ??
           "hd-180-1.hr-115-61.ha-1012-110.ch-255-66.lg-280-110.sh-305-62",
-        direction: 4,
+        direction: (door.roomY > 0) ? 2 : 4,
       });
 
       var avatarMoveQueue: {
@@ -108,41 +121,39 @@ function ShroomComponent(args: { [key: string]: any }) {
         roomY: number;
         roomZ: number;
         direction?: number;
-      }[];
+      }[] = [];
 
       room.addRoomObject(avatar); // Add Avatar to Room
 
-      function avatarWalk() {
-        if (avatarMoveQueue.length > 0) {
-          const aMove = avatarMoveQueue.shift();
-          if (!aMove) return;
-          avatar.walk(aMove.roomX, aMove.roomY, aMove.roomZ, {
-            direction: aMove.direction,
+      const roomTick = setInterval(() => {
+        const next = avatarMoveQueue[0];
+
+        if (next != null) {
+          avatar.walk(next.roomX, next.roomY, next.roomZ, {
+            direction: next.direction,
           });
 
-          setTimeout(avatarWalk, 600);
+          avatarMoveQueue.shift();
         }
-      }
+      }, 500);
 
-      room.onTileClick = (position, event) => {
+      room.onTileClick = async (position) => {
         avatar.clearMovement();
-        avatarMoveQueue = [];
 
-        const currentPosition = {
+        const avatarPos = {
           roomX: avatar.roomX,
           roomY: avatar.roomY,
           roomZ: avatar.roomZ,
         };
 
-        PathFinder.findPath(currentPosition, position)
-          .then((newPath) => {
-            avatarMoveQueue = newPath;
-            action("newPath")(newPath);
-            avatarWalk();
+        if (!PathFinder) throw new Error("PathFinder not found.");
+        const path = PathFinder.findPath(avatarPos, position)
+          .then((path) => {
+            avatarMoveQueue = path;
           })
-          .catch(console.error);
-
-        action("tileClick")(position, event);
+          .catch((err) => {
+            console.error(err);
+          });
       };
     }
 

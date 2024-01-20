@@ -119,9 +119,9 @@ export class HitSprite extends PIXI.Sprite implements IEventTarget {
     );
 
     sprite.alpha = 0.1;
-
-    sprite.x = this.getGlobalPosition().x;
-    sprite.y = this.getGlobalPosition().y;
+    const pos = this.getGlobalPosition();
+    sprite.x = pos.x;
+    sprite.y = pos.y;
 
     return sprite;
   }
@@ -216,9 +216,10 @@ export class HitSprite extends PIXI.Sprite implements IEventTarget {
 
     if (inBoundsX && inBoundsY) {
       const hits = this._getHitmap();
+      const pos = this.getGlobalPosition();
       return hits(x, y, {
-        x: this.getGlobalPosition().x,
-        y: this.getGlobalPosition().y,
+        x: pos.x,
+        y: pos.y,
       });
     }
 
