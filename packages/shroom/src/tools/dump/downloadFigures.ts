@@ -1,17 +1,17 @@
 import { FigureMapData } from "../../objects/avatar/data/FigureMapData";
 import * as path from "path";
-import Bluebird from "bluebird";
-import * as readline from "readline";
+// import Bluebird from "bluebird";
+// import * as readline from "readline";
 
 import {
   downloadFile,
   DownloadFileResult,
   DownloadRequest,
 } from "./downloadFile";
-import {
-  downloadFileWithMessage,
-  getDownloadMessage,
-} from "./downloadFileWithMessage";
+// import {
+//   downloadFileWithMessage,
+//   getDownloadMessage,
+// } from "./downloadFileWithMessage";
 import { Logger } from "./Logger";
 import { downloadMultipleFiles } from "./downloadMultipleFiles";
 

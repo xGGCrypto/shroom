@@ -4,11 +4,10 @@ import {
   AvatarLoaderResult,
   IAvatarLoader,
 } from "../../interfaces/IAvatarLoader";
-import { HitTexture } from "../hitdetection/HitTexture";
-import Bluebird from "bluebird";
+// import { HitTexture } from "../hitdetection/HitTexture";
 import { AvatarAnimationData } from "./data/AvatarAnimationData";
 import { FigureMapData } from "./data/FigureMapData";
-import { AvatarOffsetsData } from "./data/AvatarOffsetsData";
+// import { AvatarOffsetsData } from "./data/AvatarOffsetsData";
 import { AvatarPartSetsData } from "./data/AvatarPartSetsData";
 import { FigureData } from "./data/FigureData";
 import { AvatarActionsData } from "./data/AvatarActionsData";
@@ -29,9 +28,8 @@ import { parseLookString } from "./util/parseLookString";
 import { AvatarAssetLibraryCollection } from "./AvatarAssetLibraryCollection";
 import { ManifestLibrary } from "./data/ManifestLibrary";
 import { IManifestLibrary } from "./data/interfaces/IManifestLibrary";
-import { AvatarDependencies, AvatarExternalDependencies } from "./types";
+import { AvatarExternalDependencies } from "./types";
 import { AvatarDrawDefinition } from "./structure/AvatarDrawDefinition";
-import { IAvatarOffsetsData } from "./data/interfaces/IAvatarOffsetsData";
 
 interface Options {
   getAssetBundle: (library: string) => Promise<IAssetBundle>;
@@ -281,9 +279,7 @@ export class AvatarLoader implements IAvatarLoader {
 
     const existing = this._lookOptionsCache.get(key);
 
-    if (existing != null) {
-      return existing;
-    }
+    if (existing != null) return existing;
 
     const drawDefinition = getAvatarDrawDefinition(lookOptions, effect);
     if (drawDefinition == null) return;
@@ -302,21 +298,15 @@ interface EffectCacheEntry {
 async function initializeDefaultAvatarDependencies(
   resourcePath: string
 ): Promise<AvatarExternalDependencies> {
-  const {
-    animationData,
-    figureMap,
-    figureData,
-    partSetsData,
-    actionsData,
-    geometry,
-  } = await Bluebird.props({
-    animationData: AvatarAnimationData.default(),
-    figureData: FigureData.fromUrl(`${resourcePath}/figuredata.xml`),
-    figureMap: FigureMapData.fromUrl(`${resourcePath}/figuremap.xml`),
-    partSetsData: AvatarPartSetsData.default(),
-    actionsData: AvatarActionsData.default(),
-    geometry: AvatarGeometryData.default(),
-  });
+  const [figureData, figureMap] = await Promise.all([
+    FigureData.fromUrl(`${resourcePath}/figuredata.xml`),
+    FigureMapData.fromUrl(`${resourcePath}/figuremap.xml`),
+  ]);
+
+  const partSetsData = AvatarPartSetsData.default();
+  const actionsData = AvatarActionsData.default();
+  const geometry = AvatarGeometryData.default();
+  const animationData = AvatarAnimationData.default();
 
   return {
     animationData,

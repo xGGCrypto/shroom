@@ -2,8 +2,7 @@ import * as PIXI from "pixi.js";
 
 import { Room } from "./Room";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const TWEEN = require("tween.js");
+import TWEEN from "@tweenjs/tween.js";
 
 export class RoomCamera extends PIXI.Container {
   private _state: RoomCameraState = { type: "WAITING" };
@@ -70,7 +69,7 @@ export class RoomCamera extends PIXI.Container {
     this._target.removeEventListener("pointerup", this._handlePointerUp as any);
   }
 
-  public get container() : PIXI.Container {
+  public get container(): PIXI.Container {
     return this._container;
   }
 
@@ -196,10 +195,10 @@ export class RoomCamera extends PIXI.Container {
     const tween = new TWEEN.Tween(newPos)
       .to({ x: 0, y: 0 }, duration)
       .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
-      .onUpdate((value: number) => {
+      .onUpdate((value: { x: number; y: number }) => {
         this._animatedOffsets = newPos;
 
-        if (value >= 1) {
+        if (value.x >= 1 || value.y >= 1) {
           this._state = { type: "WAITING" };
         }
 
