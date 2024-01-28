@@ -1,18 +1,18 @@
 import * as PIXI from "pixi.js";
 
 import { ClickHandler } from "../hitdetection/ClickHandler";
-import { FurniDrawPart } from "./util/DrawDefinition";
+// import { FurniDrawPart } from "./util/DrawDefinition"; // UNUSED
 import { IFurnitureEventHandlers } from "./util/IFurnitureEventHandlers";
 import { LoadFurniResult } from "./util/loadFurni";
-import { HitTexture } from "../hitdetection/HitTexture";
+// import { HitTexture } from "../hitdetection/HitTexture"; // UNUSED
 import { MaskNode } from "../../interfaces/IRoomVisualization";
 import { HighlightFilter } from "./filter/HighlightFilter";
 import {
   FurnitureFetch,
   IFurnitureLoader,
 } from "../../interfaces/IFurnitureLoader";
-import { FurnitureAsset } from "./data/interfaces/IFurnitureAssetsData";
-import { FurnitureLayer } from "./data/interfaces/IFurnitureVisualizationData";
+// import { FurnitureAsset } from "./data/interfaces/IFurnitureAssetsData"; // UNUSED
+// import { FurnitureLayer } from "./data/interfaces/IFurnitureVisualizationData"; // UNUSED
 import { IAnimationTicker } from "../../interfaces/IAnimationTicker";
 import { IRoomContext } from "../../interfaces/IRoomContext";
 import { Shroom } from "../Shroom";

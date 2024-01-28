@@ -1,6 +1,6 @@
 {
   "name": "@xggcrypto/shroom",
-  "version": "0.7.7",
+  "version": "0.7.8",
   "main": "dist/index.js",
   "license": "LGPL-3.0-or-later",
   "repository": {
@@ -49,6 +49,7 @@
   "dependencies": {
     "@gizeta/swf-reader": "^1.0.0",
     "@timohausmann/quadtree-js": "^1.2.3",
+    "@tweenjs/tween.js": "^16.6.0",
     "axios": "^0.21.1",
     "bin-pack": "^1.0.2",
     "bluebird": "^3.7.2",
@@ -74,7 +75,6 @@
     "swf-extract": "^1.1.0",
     "timers": "^0.1.1",
     "timers-browserify": "^2.0.11",
-    "tween.js": "^16.6.0",
     "ws": "^7.4.2",
     "xml2js": "^0.4.23",
     "yargs": "^16.2.0"
