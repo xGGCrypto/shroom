@@ -8,7 +8,7 @@ export class HighlightFilter extends PixiFilter {
   ) {
     super(vertex, fragment, {
       backgroundColor: new Float32Array([
-        ...PIXI.utils.hex2rgb(_backgroundColor),
+        ...PixiUtils.hex2rgb(_backgroundColor),
         _opacity,
       ]),
       borderColor: new Float32Array([...PixiUtils.hex2rgb(_borderColor), 1.0]),
