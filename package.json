@@ -6,7 +6,8 @@
     "packages/e2e",
     "packages/example",
     "packages/docs",
-    "packages/storybook"
+    "packages/storybook",
+    "packages/cli"
   ],
   "scripts": {
     "test": "cd packages/shroom && npm run test",
