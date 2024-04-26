@@ -5,7 +5,7 @@ name: Shroom Node.js Package
 
 on:
   push:
-    tags: [ 'Shroom v*.*.*' ]
+    tags: [ 'v*.*.*-shroom' ]
 
 jobs:
   build:
