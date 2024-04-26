@@ -46,19 +46,14 @@ export class Pathfinding {
     let grid = this.clone(this.baseGrid);
     let furniGrid = this.resetFurniGrid();
 
-    const sub = async (roomObject: any) => {
-      if (roomObject instanceof Avatar) {
-        return;
-      }
-
-      // ignore wall placements
-      if (roomObject.placementType === "wall") {
-        return;
-      }
-
+    const processRoomObject = async (roomObject: any) => {
+      if (roomObject instanceof Avatar) return; // ignore avatars
+      
+      if (roomObject.placementType === "wall") return; // ignore wall placements
+      
       const info = await this.furnitureData.getInfoForFurniture(roomObject);
 
-      // !info.canlayon && !info.cansiton &&
+      // !info.canlayon && !info.cansiton
       if (info && !info.canstandon) {
         this.calculateFilledSpace(roomObject, info, grid, furniGrid);
       }
@@ -66,7 +61,7 @@ export class Pathfinding {
 
     // update navmesh at the end, so meanwhile the existing one can be used/its never empty
     return Promise.all(
-      Array.from(this.room.roomObjects.values()).map(sub)
+      Array.from(this.room.roomObjects.values()).map(processRoomObject)
     ).then(() => {
       this.grid = grid;
       this.furniGrid = furniGrid;

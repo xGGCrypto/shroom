@@ -1,16 +1,26 @@
-import * as PIXI from "pixi.js";
+import { Filter as PixiFilter, utils as PixiUtils } from "pixi.js";
 
-export class HighlightFilter extends PIXI.Filter {
-  constructor(private _backgroundColor: number, private _borderColor: number) {
-    super(vertex, fragment);
-    this.uniforms.backgroundColor = new Float32Array(4);
-    this.uniforms.borderColor = new Float32Array(4);
+export class HighlightFilter extends PixiFilter {
+  constructor(
+    private _backgroundColor: number,
+    private _borderColor: number,
+    private _opacity: number = 0.5
+  ) {
+    super(vertex, fragment, {
+      backgroundColor: new Float32Array([
+        ...PIXI.utils.hex2rgb(_backgroundColor),
+        _opacity,
+      ]),
+      borderColor: new Float32Array([...PixiUtils.hex2rgb(_borderColor), 1.0]),
+    });
+  }
 
-    this.uniforms.backgroundColor = [
-      ...PIXI.utils.hex2rgb(this._backgroundColor),
-      1.0,
-    ];
-    this.uniforms.borderColor = [...PIXI.utils.hex2rgb(this._borderColor), 1.0];
+  public set opacity(value: number) {
+    this.uniforms.backgroundColor[3] = value;
+  }
+
+  public get opacity(): number {
+    return this.uniforms.backgroundColor[3];
   }
 }
 

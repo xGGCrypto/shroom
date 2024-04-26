@@ -25,6 +25,10 @@
       "path": "../packages/docs"
     },
     {
+      "name": "packages/cli",
+      "path": "../packages/cli"
+    },
+    {
       "name": "github/workflows",
       "path": "../.github/workflows"
     }
