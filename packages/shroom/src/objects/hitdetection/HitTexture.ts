@@ -1,22 +1,22 @@
-import * as PIXI from "pixi.js";
+import { ShroomSpritesheet, ShroomTexture } from "../../pixi-proxy";
 import { applyTextureProperties } from "../../util/applyTextureProperties";
 import { loadImageFromBlob } from "../../util/loadImageFromBlob";
 import { HitSprite } from "./HitSprite";
 
 export class HitTexture {
-  private _texture: PIXI.Texture;
+  private _texture: ShroomTexture;
   private _cachedHitmap: Uint32Array | undefined;
 
   public get texture() {
     return this._texture;
   }
 
-  constructor(texture: PIXI.Texture) {
+  constructor(texture: ShroomTexture) {
     this._texture = texture;
     applyTextureProperties(this._texture);
   }
 
-  static async fromSpriteSheet(spritesheet: PIXI.Spritesheet, name: string) {
+  static async fromSpriteSheet(spritesheet: ShroomSpritesheet, name: string) {
     const texture = spritesheet.textures[name];
     return new HitTexture(texture);
   }
@@ -50,7 +50,7 @@ export class HitTexture {
       image.onerror = (value) => reject(value);
     });
 
-    const texture = PIXI.Texture.from(image);
+    const texture = ShroomTexture.from(image);
 
     return new HitTexture(texture);
   }

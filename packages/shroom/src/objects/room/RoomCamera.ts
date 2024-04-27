@@ -1,24 +1,28 @@
-import * as PIXI from "pixi.js";
-
+import {
+  ShroomContainer,
+  ShroomInteractionEvent,
+  ShroomPoint,
+  ShroomRectangle,
+} from "../../pixi-proxy";
 import { Room } from "./Room";
 
 import TWEEN from "@tweenjs/tween.js";
 
-export class RoomCamera extends PIXI.Container {
+export class RoomCamera extends ShroomContainer {
   private _state: RoomCameraState = { type: "WAITING" };
 
   private _offsets: { x: number; y: number } = { x: 0, y: 0 };
   private _animatedOffsets: { x: number; y: number } = { x: 0, y: 0 };
 
-  private _container: PIXI.Container;
-  private _parentContainer: PIXI.Container;
+  private _container: ShroomContainer;
+  private _parentContainer: ShroomContainer;
 
   private _tween: any;
   private _target: EventTarget;
 
   constructor(
     private readonly _room: Room,
-    private readonly _parentBounds: () => PIXI.Rectangle,
+    private readonly _parentBounds: () => ShroomRectangle,
     private readonly _options?: RoomCameraOptions
   ) {
     super();
@@ -26,11 +30,11 @@ export class RoomCamera extends PIXI.Container {
     const target = this._options?.target ?? window;
     this._target = target;
 
-    this._parentContainer = new PIXI.Container();
+    this._parentContainer = new ShroomContainer();
     this._parentContainer.hitArea = this._parentBounds();
     this._parentContainer.interactive = true;
 
-    this._container = new PIXI.Container();
+    this._container = new ShroomContainer();
     this._container.addChild(this._room);
     this._parentContainer.addChild(this._container);
 
@@ -69,7 +73,7 @@ export class RoomCamera extends PIXI.Container {
     this._target.removeEventListener("pointerup", this._handlePointerUp as any);
   }
 
-  public get container(): PIXI.Container {
+  public get container(): ShroomContainer {
     return this._container;
   }
 
@@ -90,7 +94,7 @@ export class RoomCamera extends PIXI.Container {
     }
   };
 
-  private _handlePointerDown = (event: PIXI.InteractionEvent) => {
+  private _handlePointerDown = (event: ShroomInteractionEvent) => {
     const position = event.data.getLocalPosition(this.parent);
     if (this._state.type === "WAITING") {
       this._enterWaitingForDistance(position, event.data.pointerId);
@@ -101,7 +105,7 @@ export class RoomCamera extends PIXI.Container {
 
   private _handlePointerMove = (event: PointerEvent) => {
     const box = this._room.application.view.getBoundingClientRect();
-    const position = new PIXI.Point(
+    const position = new ShroomPoint(
       event.clientX - box.x - this.parent.worldTransform.tx,
       event.clientY - box.y - this.parent.worldTransform.tx
     );
@@ -238,7 +242,10 @@ export class RoomCamera extends PIXI.Container {
     this._updatePosition();
   }
 
-  private _changingDragWhileAnimating(position: PIXI.Point, pointerId: number) {
+  private _changingDragWhileAnimating(
+    position: ShroomPoint,
+    pointerId: number
+  ) {
     this._offsets = this._animatedOffsets;
     this._animatedOffsets = { x: 0, y: 0 };
     this._tween.stop();
@@ -256,7 +263,7 @@ export class RoomCamera extends PIXI.Container {
     this._updatePosition();
   }
 
-  private _enterWaitingForDistance(position: PIXI.Point, pointerId: number) {
+  private _enterWaitingForDistance(position: ShroomPoint, pointerId: number) {
     this._state = {
       type: "WAIT_FOR_DISTANCE",
       pointerId: pointerId,
@@ -267,7 +274,7 @@ export class RoomCamera extends PIXI.Container {
 
   private _tryUpgradeWaitForDistance(
     state: CameraWaitForDistanceState,
-    position: PIXI.Point,
+    position: ShroomPoint,
     pointerId: number
   ) {
     if (state.pointerId !== pointerId) return;
@@ -292,7 +299,7 @@ export class RoomCamera extends PIXI.Container {
 
   private _updateDragging(
     state: CameraDraggingState,
-    position: PIXI.Point,
+    position: ShroomPoint,
     pointerId: number
   ) {
     if (state.pointerId !== pointerId) return;

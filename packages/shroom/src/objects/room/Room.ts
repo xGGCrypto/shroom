@@ -1,4 +1,9 @@
-import * as PIXI from "pixi.js";
+import {
+  ShroomApplication,
+  ShroomContainer,
+  ShroomInteractionEvent,
+  ShroomTexture,
+} from "../../pixi-proxy";
 import { IAnimationTicker } from "../../interfaces/IAnimationTicker";
 import { IAvatarLoader } from "../../interfaces/IAvatarLoader";
 import { IConfiguration } from "../../interfaces/IConfiguration";
@@ -18,7 +23,6 @@ import { RoomModelVisualization } from "./RoomModelVisualization";
 import { ParsedTileMap } from "./ParsedTileMap";
 import { getTileColors, getWallColors } from "./util/getTileColors";
 import { EventManager } from "../events/EventManager";
-import { InteractionEvent } from "pixi.js";
 import { IEventManagerEvent } from "../events/interfaces/IEventManagerEvent";
 
 export interface Dependencies {
@@ -27,7 +31,7 @@ export interface Dependencies {
   furnitureLoader: IFurnitureLoader;
   configuration: IConfiguration;
   furnitureData?: IFurnitureData;
-  application: PIXI.Application;
+  application: ShroomApplication;
 }
 
 type TileMap = TileType[][] | string;
@@ -50,9 +54,9 @@ interface CreateOptions {
 }
 
 export class Room
-  extends PIXI.Container
+  extends ShroomContainer
   implements IRoomGeometry, IRoomObjectContainer, ITileMap {
-  public readonly application: PIXI.Application;
+  public readonly application: ShroomApplication;
 
   private _roomObjectContainer: RoomObjectContainer;
   private _visualization: RoomModelVisualization;
@@ -63,17 +67,19 @@ export class Room
   private _eventManager: EventManager;
   private _configuration: IConfiguration;
 
-  private _wallTexture: Promise<PIXI.Texture> | PIXI.Texture | undefined;
-  private _floorTexture: Promise<PIXI.Texture> | PIXI.Texture | undefined;
+  private _wallTexture: Promise<ShroomTexture> | ShroomTexture | undefined;
+  private _floorTexture: Promise<ShroomTexture> | ShroomTexture | undefined;
 
   private _wallColor: string | undefined;
   private _floorColor: string | undefined;
 
-  private _currentWallTexture: PIXI.Texture | undefined;
+  private _currentWallTexture: ShroomTexture | undefined;
 
-  private _onTileClick: ((position: RoomPosition, event: IEventManagerEvent) => void) | undefined;
+  private _onTileClick:
+    | ((position: RoomPosition, event: IEventManagerEvent) => void)
+    | undefined;
 
-  private _application: PIXI.Application;
+  private _application: ShroomApplication;
 
   public get onActiveTileChange() {
     return this._visualization.onActiveTileChange;
@@ -287,32 +293,29 @@ export class Room
     return this._visualization.rectangle.width;
   }
 
-  public get visualization() : RoomModelVisualization {
+  public get visualization(): RoomModelVisualization {
     return this._visualization;
   }
 
-  public get eventManager() : EventManager {
+  public get eventManager(): EventManager {
     return this._eventManager;
   }
 
-  changeTileMap (tileMap : TileType[][]) : void {
+  changeTileMap(tileMap: TileType[][]): void {
     this._visualization = new RoomModelVisualization(
-        this._eventManager,
-        this.application,
-        new ParsedTileMap(tileMap)
+      this._eventManager,
+      this.application,
+      new ParsedTileMap(tileMap)
     );
 
     const currentVisualization = this.children[0] as RoomModelVisualization;
 
-    [
-        "hideWalls",
-        "wallDepth",
-        "tileHeight",
-        "wallHeight",
-    ].forEach(property => {
+    ["hideWalls", "wallDepth", "tileHeight", "wallHeight"].forEach(
+      (property) => {
         // @ts-ignore
         this._visualization[property] = currentVisualization[property];
-    });
+      }
+    );
 
     this.removeChildAt(0);
 
@@ -370,7 +373,9 @@ export class Room
     this._visualization.destroy();
   }
 
-  public set onBackgroundClick(value: ((event: InteractionEvent) => void) | undefined) {
+  public set onBackgroundClick(
+    value: ((event: ShroomInteractionEvent) => void) | undefined
+  ) {
     this._eventManager.onBackgroundClick = value;
   }
 

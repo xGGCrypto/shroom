@@ -1,4 +1,11 @@
-import * as PIXI from "pixi.js";
+import {
+  ShroomApplication,
+  ShroomContainer,
+  ShroomDisplayObject,
+  ShroomSprite,
+  ShroomTexture,
+  ShroomTicker,
+} from "../../pixi-proxy";
 
 import { ClickHandler } from "../hitdetection/ClickHandler";
 // import { FurniDrawPart } from "./util/DrawDefinition"; // UNUSED
@@ -37,16 +44,16 @@ type MaskIdGetter = (direction: number) => string | undefined;
 export type SpriteWithStaticOffset = {
   x: number;
   y: number;
-  sprite: PIXI.Sprite;
+  sprite: ShroomSprite;
   zIndex?: number;
 };
 
 interface BaseFurnitureDependencies {
-  placeholder: PIXI.Texture | undefined;
+  placeholder: ShroomTexture | undefined;
   visualization: IFurnitureRoomVisualization;
   animationTicker: IAnimationTicker;
   furnitureLoader: IFurnitureLoader;
-  application: PIXI.Application;
+  application: ShroomApplication;
   eventManager: IEventManager;
 }
 
@@ -70,7 +77,7 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
   private _direction = 0;
   private _animation: string;
   private _type: FurnitureFetch;
-  private _unknownTexture: PIXI.Texture | undefined;
+  private _unknownTexture: ShroomTexture | undefined;
   private _unknownSprite: FurnitureSprite | undefined;
 
   private _clickHandler = new ClickHandler();
@@ -101,7 +108,7 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
   private _onLoad: (() => void) | undefined;
 
   private _dependencies?: {
-    placeholder: PIXI.Texture | undefined;
+    placeholder: ShroomTexture | undefined;
     visualization: IFurnitureRoomVisualization;
     animationTicker: IAnimationTicker;
     furnitureLoader: IFurnitureLoader;
@@ -128,7 +135,7 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
       this.dependencies = dependencies;
     }
 
-    PIXI.Ticker.shared.add(this._onTicker);
+    ShroomTicker.shared.add(this._onTicker);
 
     this._loadFurniResultPromise = new Promise<LoadFurniResult>((resolve) => {
       this._resolveLoadFurniResult = resolve;
@@ -151,7 +158,7 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
 
   static fromShroom(
     shroom: Shroom,
-    container: PIXI.Container,
+    container: ShroomContainer,
     props: BaseFurnitureProps
   ) {
     return new BaseFurniture({
@@ -328,12 +335,16 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
   }
 
   public async rotate() {
-    if (!this._validDirections) { 
-      this._validDirections = this._loadFurniResult?.directions || await this.validDirections;
+    if (!this._validDirections) {
+      this._validDirections =
+        this._loadFurniResult?.directions || (await this.validDirections);
     }
-    
+
     const currIndex = this._validDirections?.indexOf(this._direction);
-    this.direction = getDirectionForFurniture(this._validDirections[currIndex +1], this._validDirections);
+    this.direction = getDirectionForFurniture(
+      this._validDirections[currIndex + 1],
+      this._validDirections
+    );
   }
 
   public get animation() {
@@ -365,7 +376,7 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     this._destroySprites();
 
     this._destroyed = true;
-    PIXI.Ticker.shared.remove(this._onTicker);
+    ShroomTicker.shared.remove(this._onTicker);
     this._cancelTicker && this._cancelTicker();
     this._cancelTicker = undefined;
 
@@ -575,6 +586,6 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
 }
 
 export interface IFurnitureRoomVisualization {
-  container: PIXI.Container;
-  addMask(maskId: string, element: PIXI.DisplayObject): MaskNode;
+  container: ShroomContainer;
+  addMask(maskId: string, element: ShroomDisplayObject): MaskNode;
 }

@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { ShroomMatrix } from "../../../pixi-proxy";
 
 type PlanePoints = {
   a: { x: number; y: number };
@@ -42,7 +42,7 @@ export function createPlaneMatrix(
   const baseX = x + points.c.x;
   const baseY = y + points.c.y;
 
-  const matrix: PIXI.Matrix = new PIXI.Matrix(a, b, c, d, baseX, baseY);
+  const matrix: ShroomMatrix = new ShroomMatrix(a, b, c, d, baseX, baseY);
 
   return matrix;
 }

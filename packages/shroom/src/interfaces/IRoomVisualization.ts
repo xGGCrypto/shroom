@@ -1,19 +1,19 @@
 import { IRoomPart } from "../objects/room/parts/IRoomPart";
 import { RoomLandscapeMaskSprite } from "../objects/room/RoomLandscapeMaskSprite";
-
+import { ShroomContainer, ShroomSprite } from "../pixi-proxy";
 export interface IRoomVisualization {
-  container: PIXI.Container;
-  behindWallContainer: PIXI.Container;
-  landscapeContainer: PIXI.Container;
-  floorContainer: PIXI.Container;
-  wallContainer: PIXI.Container;
+  container: ShroomContainer;
+  behindWallContainer: ShroomContainer;
+  landscapeContainer: ShroomContainer;
+  floorContainer: ShroomContainer;
+  wallContainer: ShroomContainer;
 
   addPart(part: IRoomPart): PartNode;
-  addMask(id: string, element: PIXI.Sprite): MaskNode;
+  addMask(id: string, element: ShroomSprite): MaskNode;
 }
 
 export type MaskNode = {
-  sprite: PIXI.Sprite;
+  sprite: ShroomSprite;
   update: () => void;
   remove: () => void;
 };

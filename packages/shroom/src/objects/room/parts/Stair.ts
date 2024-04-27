@@ -1,4 +1,10 @@
-import * as PIXI from "pixi.js";
+import {
+  ShroomContainer,
+  ShroomMatrix,
+  ShroomPoint,
+  ShroomTexture,
+  ShroomTilingSprite,
+} from "../../../pixi-proxy";
 
 import { getFloorMatrix, getLeftMatrix, getRightMatrix } from "../matrixes";
 import { IRoomPart } from "./IRoomPart";
@@ -7,11 +13,11 @@ import { RoomPartData } from "./RoomPartData";
 interface Props {
   tileHeight: number;
   direction: 0 | 2;
-  texture?: PIXI.Texture;
+  texture?: ShroomTexture;
 }
 
-export class Stair extends PIXI.Container implements IRoomPart {
-  private _texture: PIXI.Texture | undefined;
+export class Stair extends ShroomContainer implements IRoomPart {
+  private _texture: ShroomTexture | undefined;
 
   private _tileHeight = 0;
   private _tileLeftColor = 0;
@@ -56,11 +62,11 @@ export class Stair extends PIXI.Container implements IRoomPart {
     const texture = this._texture;
 
     function createSprite(
-      matrix: PIXI.Matrix,
+      matrix: ShroomMatrix,
       tint: number,
-      tilePosition: PIXI.Point
+      tilePosition: ShroomPoint
     ) {
-      const tile = new PIXI.TilingSprite(texture ?? PIXI.Texture.WHITE);
+      const tile = new ShroomTilingSprite(texture ?? ShroomTexture.WHITE);
       tile.tilePosition = tilePosition;
       tile.transform.setFromMatrix(matrix);
 
@@ -72,7 +78,7 @@ export class Stair extends PIXI.Container implements IRoomPart {
     const tile = createSprite(
       getFloorMatrix(baseX, baseY),
       this._tileTopColor,
-      new PIXI.Point(0, 0)
+      new ShroomPoint(0, 0)
     );
     tile.width = 32;
     tile.height = 8;
@@ -80,7 +86,7 @@ export class Stair extends PIXI.Container implements IRoomPart {
     const borderLeft = createSprite(
       getLeftMatrix(baseX, baseY, { width: 32, height: this._tileHeight }),
       this._tileLeftColor,
-      new PIXI.Point(0, 0)
+      new ShroomPoint(0, 0)
     );
     borderLeft.width = 32;
     borderLeft.height = this._tileHeight;
@@ -88,7 +94,7 @@ export class Stair extends PIXI.Container implements IRoomPart {
     const borderRight = createSprite(
       getRightMatrix(baseX, baseY, { width: 8, height: this._tileHeight }),
       this._tileRightColor,
-      new PIXI.Point(0, 0)
+      new ShroomPoint(0, 0)
     );
 
     borderRight.width = 8;
@@ -102,9 +108,9 @@ export class Stair extends PIXI.Container implements IRoomPart {
     const baseY = -stairBase * index * 1.5;
     const texture = this._texture;
 
-    function createSprite(matrix: PIXI.Matrix, tint: number) {
-      const tile = new PIXI.TilingSprite(texture ?? PIXI.Texture.WHITE);
-      tile.tilePosition = new PIXI.Point(0, 0);
+    function createSprite(matrix: ShroomMatrix, tint: number) {
+      const tile = new ShroomTilingSprite(texture ?? ShroomTexture.WHITE);
+      tile.tilePosition = new ShroomPoint(0, 0);
       tile.transform.setFromMatrix(matrix);
 
       tile.tint = tint;

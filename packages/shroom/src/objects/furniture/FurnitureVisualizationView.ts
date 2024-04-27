@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { ShroomBlendModes, ShroomContainer } from "../../pixi-proxy";
 import { EventOverOutHandler } from "../events/EventOverOutHandler";
 
 import {
@@ -90,7 +90,7 @@ export class FurnitureVisualizationView
     private _eventManager: IEventManager,
     private _clickHandler: ClickHandler,
     private _overOutHandler: EventOverOutHandler,
-    private _container: PIXI.Container,
+    private _container: ShroomContainer,
     private _furniture: LoadFurniResult
   ) {}
 
@@ -264,7 +264,7 @@ class FurnitureVisualizationLayer
 
   constructor(
     private _parent: FurnitureVisualizationView,
-    private _container: PIXI.Container,
+    private _container: ShroomContainer,
     private _part: FurniDrawPart,
     private _eventManager: IEventManager,
     private _clickHandler: ClickHandler,
@@ -465,7 +465,7 @@ class FurnitureVisualizationLayer
           sprite.visible = false;
         }
         sprite.blendMode =
-          layer.ink === "ADD" ? PIXI.BLEND_MODES.ADD : PIXI.BLEND_MODES.NORMAL;
+          layer.ink === "ADD" ? ShroomBlendModes.ADD : ShroomBlendModes.NORMAL;
       }
     }
 

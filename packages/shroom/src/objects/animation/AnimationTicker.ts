@@ -1,5 +1,5 @@
 import { IAnimationTicker } from "../../interfaces/IAnimationTicker";
-
+import { ShroomApplication } from "../../pixi-proxy";
 const ANIM_FPS = 24;
 const TARGET_FPS = 60;
 
@@ -12,13 +12,13 @@ export class AnimationTicker implements IAnimationTicker {
     (frame: number, accurateFrame: number) => void
   >();
 
-  constructor(application: PIXI.Application) {
+  constructor(application: ShroomApplication) {
     application.ticker.maxFPS = TARGET_FPS;
     application.ticker.minFPS = ANIM_FPS;
     application.ticker.add(() => this._increment());
   }
 
-  static create(application: PIXI.Application) {
+  static create(application: ShroomApplication) {
     return new AnimationTicker(application);
   }
 

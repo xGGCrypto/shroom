@@ -1,4 +1,8 @@
-import * as PIXI from "pixi.js";
+import {
+  ShroomSprite,
+  ShroomTexture,
+  ShroomTilingSprite,
+} from "../../pixi-proxy";
 import { BehaviorSubject, Observable } from "rxjs";
 import { EventEmitter } from "../events/EventEmitter";
 import { IEventGroup } from "../events/interfaces/IEventGroup";
@@ -11,7 +15,7 @@ import { HitTexture } from "./HitTexture";
 
 export type HitEventHandler = (event: IEventManagerEvent) => void;
 
-export class HitSprite extends PIXI.Sprite implements IEventTarget {
+export class HitSprite extends ShroomSprite implements IEventTarget {
   private _group: IEventGroup;
 
   private _hitTexture: HitTexture | undefined;
@@ -106,14 +110,14 @@ export class HitSprite extends PIXI.Sprite implements IEventTarget {
     this._eventEmitter.trigger("pointerout", event);
   }
 
-  createDebugSprite(): PIXI.Sprite | undefined {
+  createDebugSprite(): ShroomSprite | undefined {
     if (this._hitTexture == null) return;
 
     const hitMap = this._hitTexture.getHitMap();
     if (hitMap == null) return;
 
-    const sprite = new PIXI.TilingSprite(
-      PIXI.Texture.WHITE,
+    const sprite = new ShroomTilingSprite(
+      ShroomTexture.WHITE,
       this._hitTexture.texture.width,
       this._hitTexture.texture.height
     );

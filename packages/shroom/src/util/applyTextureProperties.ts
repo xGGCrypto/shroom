@@ -1,5 +1,5 @@
-import * as PIXI from "pixi.js";
+import { ShroomScaleModes, ShroomTexture } from "../pixi-proxy";
 
-export function applyTextureProperties(texture: PIXI.Texture) {
-  texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+export function applyTextureProperties(texture: ShroomTexture) {
+  texture.baseTexture.scaleMode = ShroomScaleModes.NEAREST;
 }

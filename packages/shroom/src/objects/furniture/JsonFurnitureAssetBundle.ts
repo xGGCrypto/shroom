@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { ShroomBaseTexture, ShroomSpritesheet } from "../../pixi-proxy";
 
 import { IAssetBundle } from "../../assets/IAssetBundle";
 import { loadImageFromBlob } from "../../util/loadImageFromBlob";
@@ -17,7 +17,7 @@ export class JsonFurnitureAssetBundle implements IFurnitureAssetBundle {
     assets: IFurnitureAssetsData;
     visualization: IFurnitureVisualizationData;
     index: IFurnitureIndexData;
-    spritesheet: PIXI.Spritesheet;
+    spritesheet: ShroomSpritesheet;
   }>;
 
   constructor(private _assetBundle: IAssetBundle) {
@@ -57,9 +57,9 @@ export class JsonFurnitureAssetBundle implements IFurnitureAssetBundle {
     const imageUrl = await loadImageFromBlob(blob);
     const baseTextureImage = await loadImageFromUrl(imageUrl);
 
-    const baseTexture = PIXI.BaseTexture.from(baseTextureImage);
+    const baseTexture = ShroomBaseTexture.from(baseTextureImage);
 
-    const spritesheet = new PIXI.Spritesheet(baseTexture, json.spritesheet);
+    const spritesheet = new ShroomSpritesheet(baseTexture, json.spritesheet);
 
     await new Promise<void>((resolve) => {
       spritesheet.parse(() => {
