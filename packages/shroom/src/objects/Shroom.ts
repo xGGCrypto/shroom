@@ -3,7 +3,7 @@ import { AvatarLoader } from "./avatar/AvatarLoader";
 import { FurnitureLoader } from "./furniture/FurnitureLoader";
 import { FurnitureData } from "./furniture/FurnitureData";
 import { Dependencies } from "./room/Room";
-
+import { ShroomApplication } from "../pixi-proxy";
 export class Shroom {
   constructor(public readonly dependencies: Dependencies) {}
 
@@ -13,7 +13,7 @@ export class Shroom {
   static create(
     options: {
       resourcePath?: string;
-      application: PIXI.Application;
+      application: ShroomApplication;
     } & Partial<Dependencies>
   ) {
     return this.createShared(options).for(options.application);
@@ -21,7 +21,7 @@ export class Shroom {
 
   /**
    * Create a shared shroom instance. This is useful if you have multiple
-   * `PIXI.Application` which all share the same shroom dependencies.
+   * `ShroomApplication` which all share the same shroom dependencies.
    */
   static createShared({
     resourcePath,
@@ -42,7 +42,7 @@ export class Shroom {
     const _configuration = configuration ?? {};
 
     return {
-      for: (application: PIXI.Application) => {
+      for: (application: ShroomApplication) => {
         const _animationTicker =
           animationTicker ?? AnimationTicker.create(application);
 

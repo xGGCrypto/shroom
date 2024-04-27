@@ -1,9 +1,14 @@
-import * as PIXI from "pixi.js";
+import {
+  ShroomContainer,
+  ShroomMatrix,
+  ShroomTexture,
+  ShroomTilingSprite,
+} from "../../../pixi-proxy";
 
 import { IRoomPart } from "./IRoomPart";
 import { RoomPartData } from "./RoomPartData";
 
-export class WallOuterCorner extends PIXI.Container implements IRoomPart {
+export class WallOuterCorner extends ShroomContainer implements IRoomPart {
   private _borderWidth = 0;
   private _wallHeight = 0;
   private _roomZ = 0;
@@ -34,12 +39,12 @@ export class WallOuterCorner extends PIXI.Container implements IRoomPart {
   }
 
   private _createTopSprite() {
-    const border = new PIXI.TilingSprite(
-      PIXI.Texture.WHITE,
+    const border = new ShroomTilingSprite(
+      ShroomTexture.WHITE,
       this._borderWidth,
       this._borderWidth
     );
-    border.transform.setFromMatrix(new PIXI.Matrix(1, 0.5, 1, -0.5));
+    border.transform.setFromMatrix(new ShroomMatrix(1, 0.5, 1, -0.5));
     border.tint = this._wallTopColor;
     border.x = -this._borderWidth;
     border.y =

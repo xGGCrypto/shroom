@@ -9,6 +9,7 @@ import { IRoomGeometry } from "./IRoomGeometry";
 import { IRoomObjectContainer } from "./IRoomObjectContainer";
 import { IRoomVisualization } from "./IRoomVisualization";
 import { ITileMap } from "./ITileMap";
+import { ShroomApplication } from "../pixi-proxy";
 
 export interface IRoomContext {
   geometry: IRoomGeometry;
@@ -20,7 +21,7 @@ export interface IRoomContext {
   configuration: IConfiguration;
   tilemap: ITileMap;
   landscapeContainer: ILandscapeContainer;
-  application: PIXI.Application;
+  application: ShroomApplication;
   room: Room;
   eventManager: IEventManager;
 }

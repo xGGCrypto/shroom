@@ -1,10 +1,10 @@
-import { InteractionEvent } from "pixi.js";
+import { ShroomInteractionEvent } from "../../../pixi-proxy";
 import { EventGroupIdentifier } from "./IEventGroup";
 
 export interface IEventManagerEvent {
   tag?: string;
   mouseEvent: MouseEvent | TouchEvent | PointerEvent;
-  interactionEvent: InteractionEvent;
+  interactionEvent: ShroomInteractionEvent;
   stopPropagation(): void;
   skip(...identifiers: EventGroupIdentifierParam[]): void;
   skipExcept(...identifiers: EventGroupIdentifierParam[]): void;

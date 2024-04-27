@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { ShroomContainer, ShroomBlendModes } from "../../pixi-proxy";
 import { LookOptions } from "./util/createLookServer";
 import {
   AvatarLoaderResult,
@@ -59,8 +59,8 @@ export interface BaseAvatarDependencies {
   avatarLoader: IAvatarLoader;
 }
 
-export class BaseAvatar extends PIXI.Container implements IEventGroup {
-  private _container: PIXI.Container | undefined;
+export class BaseAvatar extends ShroomContainer implements IEventGroup {
+  private _container: ShroomContainer | undefined;
   private _avatarLoaderResult: AvatarLoaderResult | undefined;
   private _avatarDrawDefinition: AvatarDrawDefinition | undefined;
   private _avatarDestroyed = false;
@@ -294,7 +294,7 @@ export class BaseAvatar extends PIXI.Container implements IEventGroup {
     });
     this._container?.destroy();
 
-    this._container = new PIXI.Container();
+    this._container = new ShroomContainer();
     this._container.sortableChildren = true;
 
     drawDefinition.getDrawDefinition().forEach((part) => {
@@ -350,7 +350,7 @@ export class BaseAvatar extends PIXI.Container implements IEventGroup {
 
         switch (part.ink) {
           case 33:
-            sprite.blendMode = PIXI.BLEND_MODES.ADD;
+            sprite.blendMode = ShroomBlendModes.ADD;
             break;
         }
 

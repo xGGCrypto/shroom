@@ -1,6 +1,6 @@
-import { Filter as PixiFilter, utils as PixiUtils } from "pixi.js";
+import { ShroomFilter, ShroomUtils } from "../../../pixi-proxy";
 
-export class HighlightFilter extends PixiFilter {
+export class HighlightFilter extends ShroomFilter {
   constructor(
     private _backgroundColor: number,
     private _borderColor: number,
@@ -8,10 +8,10 @@ export class HighlightFilter extends PixiFilter {
   ) {
     super(vertex, fragment, {
       backgroundColor: new Float32Array([
-        ...PixiUtils.hex2rgb(_backgroundColor),
+        ...ShroomUtils.hex2rgb(_backgroundColor),
         _opacity,
       ]),
-      borderColor: new Float32Array([...PixiUtils.hex2rgb(_borderColor), 1.0]),
+      borderColor: new Float32Array([...ShroomUtils.hex2rgb(_borderColor), 1.0]),
     });
   }
 

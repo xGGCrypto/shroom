@@ -1,23 +1,29 @@
-import * as PIXI from "pixi.js";
+import {
+  ShroomTilingSprite,
+  ShroomTexture,
+  ShroomInteractionEvent,
+  ShroomInteractionManager,
+  ShroomApplication,
+} from "../../pixi-proxy";
 import { EventManager } from "./EventManager";
 
 export class EventManagerContainer {
-  private _box: PIXI.TilingSprite | undefined;
+  private _box: ShroomTilingSprite | undefined;
 
   constructor(
-    private _application: PIXI.Application,
+    private _application: ShroomApplication,
     private _eventManager: EventManager
   ) {
     this._updateRectangle();
 
     _application.ticker.add(this._updateRectangle);
 
-    const interactionManager: PIXI.InteractionManager = this._application
+    const interactionManager: ShroomInteractionManager = this._application
       .renderer.plugins.interaction;
 
     interactionManager.addListener(
       "pointermove",
-      (event: PIXI.InteractionEvent) => {
+      (event: ShroomInteractionEvent) => {
         const position = event.data.getLocalPosition(this._application.stage);
 
         this._eventManager.move(event, position.x, position.y);
@@ -27,7 +33,7 @@ export class EventManagerContainer {
 
     interactionManager.addListener(
       "pointerup",
-      (event: PIXI.InteractionEvent) => {
+      (event: ShroomInteractionEvent) => {
         const position = event.data.getLocalPosition(this._application.stage);
 
         this._eventManager.pointerUp(event, position.x, position.y);
@@ -37,7 +43,7 @@ export class EventManagerContainer {
 
     interactionManager.addListener(
       "pointerdown",
-      (event: PIXI.InteractionEvent) => {
+      (event: ShroomInteractionEvent) => {
         const position = event.data.getLocalPosition(this._application.stage);
 
         this._eventManager.pointerDown(event, position.x, position.y);
@@ -57,7 +63,7 @@ export class EventManagerContainer {
     const width = renderer.width / renderer.resolution;
     const height = renderer.height / renderer.resolution;
 
-    this._box = new PIXI.TilingSprite(PIXI.Texture.WHITE, width, height);
+    this._box = new ShroomTilingSprite(ShroomTexture.WHITE, width, height);
     this._box.alpha = 0.3;
 
     //this._application.stage.addChild(this._box);

@@ -1,4 +1,10 @@
-import * as PIXI from "pixi.js";
+import {
+  ShroomContainer,
+  ShroomGraphics,
+  ShroomMatrix,
+  ShroomPoint,
+  ShroomTexture,
+} from "../../../pixi-proxy";
 
 import { getFloorMatrix, getLeftMatrix, getRightMatrix } from "../matrixes";
 import { IRoomPart } from "./IRoomPart";
@@ -8,7 +14,7 @@ interface Props {
   edge?: boolean;
   tileHeight: number;
   color: string;
-  texture?: PIXI.Texture;
+  texture?: ShroomTexture;
   door?: boolean;
   showBorders: {
     showLeftBorder: boolean;
@@ -16,17 +22,17 @@ interface Props {
   };
 }
 
-export class Tile extends PIXI.Container implements IRoomPart {
-  private _texture: PIXI.Texture | undefined;
+export class Tile extends ShroomContainer implements IRoomPart {
+  private _texture: ShroomTexture | undefined;
   private _color: string | undefined;
 
   private _tileHeight: number;
   private _roomPartData: RoomPartData | undefined;
-  private _tilePositions: PIXI.Point = new PIXI.Point(0, 0);
+  private _tilePositions: ShroomPoint = new ShroomPoint(0, 0);
   private _showBorders: {
     showLeftBorder: boolean;
     showRightBorder: boolean;
-  } = { showLeftBorder: true, showRightBorder: true};
+  } = { showLeftBorder: true, showRightBorder: true };
 
   get color() {
     return this._color;
@@ -77,11 +83,11 @@ export class Tile extends PIXI.Container implements IRoomPart {
     this.removeChildren();
     const tileMatrix = getFloorMatrix(0, 0);
 
-    const top = new PIXI.Graphics()
+    const top = new ShroomGraphics()
       .beginTextureFill({
-        texture: this._texture ?? PIXI.Texture.WHITE,
+        texture: this._texture ?? ShroomTexture.WHITE,
         color: this._roomPartData?.tileTopColor ?? 0,
-        matrix: new PIXI.Matrix(1, 0.5, 1, -0.5, 0, 0)
+        matrix: new ShroomMatrix(1, 0.5, 1, -0.5, 0, 0),
       })
       .moveTo(0, 0)
       .lineTo(32, -16)
@@ -99,11 +105,11 @@ export class Tile extends PIXI.Container implements IRoomPart {
         height: this.tileHeight,
       });
 
-      const left: PIXI.Graphics = new PIXI.Graphics()
+      const left: ShroomGraphics = new ShroomGraphics()
         .beginTextureFill({
-          texture: this._texture ?? PIXI.Texture.WHITE,
+          texture: this._texture ?? ShroomTexture.WHITE,
           color: this._roomPartData?.tileLeftColor ?? 0,
-          matrix: borderLeftMatrix
+          matrix: borderLeftMatrix,
         })
         .moveTo(0, 0)
         .lineTo(0, this.tileHeight)
@@ -113,17 +119,17 @@ export class Tile extends PIXI.Container implements IRoomPart {
       left.position.set(0, 16);
       this.addChild(left);
     }
-    
+
     if (this._showBorders.showRightBorder) {
       const borderRightMatrix = getRightMatrix(0, 0, {
         width: 32,
         height: this.tileHeight,
       });
-      const right: PIXI.Graphics = new PIXI.Graphics()
+      const right: ShroomGraphics = new ShroomGraphics()
         .beginTextureFill({
-          texture: this._texture ?? PIXI.Texture.WHITE,
+          texture: this._texture ?? ShroomTexture.WHITE,
           color: this._roomPartData?.tileRightColor ?? 0,
-          matrix: borderRightMatrix
+          matrix: borderRightMatrix,
         })
         .moveTo(32, 16)
         .lineTo(32, 16 + this.tileHeight)

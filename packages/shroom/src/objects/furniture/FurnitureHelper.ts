@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { ShroomContainer } from "../../pixi-proxy";
 import { Shroom } from "../Shroom";
 import { BaseFurniture } from "./BaseFurniture";
 import { IFurnitureExtended } from "./IFurniture";
@@ -6,7 +6,7 @@ import { IFurnitureExtended } from "./IFurniture";
 export class FurnitureHelper {
   public static getFurniPreview(furniId: string, shroom: Shroom): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
-      const container = new PIXI.Container();
+      const container = new ShroomContainer();
 
       BaseFurniture.fromShroom(shroom, container, {
         animation: "0",

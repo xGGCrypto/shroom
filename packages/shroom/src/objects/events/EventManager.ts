@@ -12,27 +12,31 @@ import {
   TILE_CURSOR,
 } from "./interfaces/IEventGroup";
 import { IEventManager } from "./interfaces/IEventManager";
-import { InteractionEvent } from "pixi.js";
+import { ShroomInteractionEvent } from "../../pixi-proxy";
 
 export class EventManager {
   private _nodes = new Map<IEventTarget, EventManagerNode>();
   private _bush = new RBush<EventManagerNode>();
   private _currentOverElements: Set<EventManagerNode> = new Set();
   private _pointerDownElements: Set<EventManagerNode> = new Set();
-  private _onBackgroundClick: ((event: InteractionEvent) => void) | undefined = undefined;
+  private _onBackgroundClick:
+    | ((event: ShroomInteractionEvent) => void)
+    | undefined = undefined;
 
-  public set onBackgroundClick(value: ((event: InteractionEvent) => void) | undefined) {
+  public set onBackgroundClick(
+    value: ((event: ShroomInteractionEvent) => void) | undefined
+  ) {
     this._onBackgroundClick = value;
   }
 
-  click(event: InteractionEvent, x: number, y: number) {
+  click(event: ShroomInteractionEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
     new Propagation(event, elements.activeNodes, (target, event) =>
       target.triggerClick(event)
     );
   }
 
-  pointerDown(event: InteractionEvent, x: number, y: number) {
+  pointerDown(event: ShroomInteractionEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
 
     this._pointerDownElements = new Set(elements.activeNodes);
@@ -42,7 +46,7 @@ export class EventManager {
     );
   }
 
-  pointerUp(event: InteractionEvent, x: number, y: number) {
+  pointerUp(event: ShroomInteractionEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
 
     const elementsSet = new Set(elements.activeNodes);
@@ -53,7 +57,11 @@ export class EventManager {
       }
     });
 
-    if (elements.activeNodes.length === 0 && clickedNodes.size === 0 && this._onBackgroundClick) {
+    if (
+      elements.activeNodes.length === 0 &&
+      clickedNodes.size === 0 &&
+      this._onBackgroundClick
+    ) {
       this._onBackgroundClick(event);
     }
 
@@ -66,7 +74,7 @@ export class EventManager {
     });
   }
 
-  move(event: InteractionEvent, x: number, y: number) {
+  move(event: ShroomInteractionEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
     const current = new Set(
       elements.activeNodes.filter(
@@ -183,7 +191,7 @@ class Propagation {
   private _stopped = false;
 
   constructor(
-    private event: InteractionEvent,
+    private event: ShroomInteractionEvent,
     private path: EventManagerNode[],
     private _trigger: (target: IEventTarget, event: IEventManagerEvent) => void
   ) {
@@ -195,15 +203,20 @@ class Propagation {
     for (let i = 0; i < this.path.length; i++) {
       if (this._stopped) return;
       const node = this.path[i];
-      const eventGroupIdentifier = node.target.getGroup().getEventGroupIdentifier();
+      const eventGroupIdentifier = node.target
+        .getGroup()
+        .getEventGroupIdentifier();
 
       if (
-        this._skip.has(eventGroupIdentifier) && !this._allow.has(eventGroupIdentifier)
-      ) { continue; }
+        this._skip.has(eventGroupIdentifier) &&
+        !this._allow.has(eventGroupIdentifier)
+      ) {
+        continue;
+      }
 
-      if (
-        this._allow.size > 0 && !this._allow.has(eventGroupIdentifier)
-      ) { continue; }
+      if (this._allow.size > 0 && !this._allow.has(eventGroupIdentifier)) {
+        continue;
+      }
 
       this._trigger(this.path[i].target, event);
     }

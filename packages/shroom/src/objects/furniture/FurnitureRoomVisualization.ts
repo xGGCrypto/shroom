@@ -1,14 +1,14 @@
 import { MaskNode } from "../../interfaces/IRoomVisualization";
 import { IFurnitureRoomVisualization } from "./BaseFurniture";
-
+import { ShroomContainer } from "../../pixi-proxy";
 export class FurnitureRoomVisualization implements IFurnitureRoomVisualization {
-  constructor(private _container: PIXI.Container) {}
+  constructor(private _container: ShroomContainer) {}
 
   public get container() {
     return this._container;
   }
 
-  static fromContainer(container: PIXI.Container) {
+  static fromContainer(container: ShroomContainer) {
     return new FurnitureRoomVisualization(container);
   }
 

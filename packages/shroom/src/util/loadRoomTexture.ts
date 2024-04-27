@@ -1,7 +1,7 @@
-import * as PIXI from "pixi.js";
+import { ShroomTexture } from "../pixi-proxy";
 import { applyTextureProperties } from "./applyTextureProperties";
 
-export async function loadRoomTexture(url: string): Promise<PIXI.Texture> {
+export async function loadRoomTexture(url: string): Promise<ShroomTexture> {
   const image = new Image();
 
   image.crossOrigin = "anonymous";
@@ -13,7 +13,7 @@ export async function loadRoomTexture(url: string): Promise<PIXI.Texture> {
     };
   });
 
-  const texture = PIXI.Texture.from(image);
+  const texture = ShroomTexture.from(image);
   applyTextureProperties(texture);
 
   return texture;

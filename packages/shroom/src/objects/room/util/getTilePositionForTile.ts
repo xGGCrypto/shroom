@@ -1,5 +1,5 @@
 import { getTilePosition } from "./getTilePosition";
-
+import { ShroomPoint } from "../../../pixi-proxy";
 export function getTilePositionForTile(roomX: number, roomY: number) {
   return {
     top: getTilePosition(roomX, roomY),
@@ -9,7 +9,7 @@ export function getTilePositionForTile(roomX: number, roomY: number) {
 }
 
 export interface TilePositionForTile {
-  left: PIXI.Point;
-  right: PIXI.Point;
-  top: PIXI.Point;
+  left: ShroomPoint;
+  right: ShroomPoint;
+  top: ShroomPoint;
 }

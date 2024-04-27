@@ -1,6 +1,5 @@
-import * as PIXI from "pixi.js";
-
+import { ShroomTexture } from "../pixi-proxy";
 export interface ITexturable {
-  texture: PIXI.Texture | undefined;
+  texture: ShroomTexture | undefined;
   color: string | undefined;
 }

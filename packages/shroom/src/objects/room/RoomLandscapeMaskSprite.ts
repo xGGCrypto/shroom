@@ -1,7 +1,13 @@
-import * as PIXI from "pixi.js";
-import { Room } from "./Room";
+import {
+  ShroomColorMatrixFilter,
+  ShroomSprite,
+  ShroomRenderer,
+  ShroomRenderTexture,
+  ShroomContainer,
+} from "../../pixi-proxy";
+// import { Room } from "./Room";
 
-const negativeFilter = new PIXI.filters.ColorMatrixFilter();
+const negativeFilter = new ShroomColorMatrixFilter();
 negativeFilter.negative(false);
 
 /**
@@ -18,14 +24,14 @@ negativeFilter.negative(false);
  * we need a sprite which is able to combine multiple sprites into a single
  * sprite.
  *
- * This Sprite renders its sub-sprites through `PIXI.RenderTexture`
+ * This Sprite renders its sub-sprites through `ShroomRenderTexture`
  * into a single texture, and uses that as a texture for itself.
  */
-export class RoomLandscapeMaskSprite extends PIXI.Sprite {
-  private _sprites: Set<PIXI.Sprite> = new Set();
+export class RoomLandscapeMaskSprite extends ShroomSprite {
+  private _sprites: Set<ShroomSprite> = new Set();
   private _roomWidth: number;
   private _roomHeight: number;
-  private _renderer: PIXI.Renderer;
+  private _renderer: ShroomRenderer;
   private _roomBounds: {
     minX: number;
     minY: number;
@@ -38,7 +44,7 @@ export class RoomLandscapeMaskSprite extends PIXI.Sprite {
     renderer,
   }: {
     roomBounds: { minX: number; minY: number; maxX: number; maxY: number };
-    renderer: PIXI.Renderer;
+    renderer: ShroomRenderer;
   }) {
     super();
     this._roomBounds = roomBounds;
@@ -47,29 +53,29 @@ export class RoomLandscapeMaskSprite extends PIXI.Sprite {
     this._renderer = renderer;
   }
 
-  addSprite(element: PIXI.Sprite) {
+  addSprite(element: ShroomSprite) {
     this._sprites.add(element);
     this._updateTexture();
   }
 
-  updateSprite(element: PIXI.Sprite) {
+  updateSprite(element: ShroomSprite) {
     if (!this._sprites.has(element)) return;
 
     this._updateTexture();
   }
 
-  removeSprite(element: PIXI.Sprite) {
+  removeSprite(element: ShroomSprite) {
     this._sprites.delete(element);
     this._updateTexture();
   }
 
   private _updateTexture() {
-    const texture = PIXI.RenderTexture.create({
+    const texture = ShroomRenderTexture.create({
       width: this._roomWidth * 2,
       height: this._roomHeight,
     });
 
-    const container = new PIXI.Container();
+    const container = new ShroomContainer();
     this._sprites.forEach((sprite) => {
       // We apply a negative filter to the mask sprite, because the mask assets
       // of the furniture are usually completly black. `pixi.js` requires white

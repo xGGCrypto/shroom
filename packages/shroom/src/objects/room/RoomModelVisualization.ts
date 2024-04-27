@@ -1,4 +1,10 @@
-import * as PIXI from "pixi.js";
+import {
+  ShroomApplication,
+  ShroomContainer,
+  ShroomPoint,
+  ShroomSprite,
+  ShroomTexture,
+} from "../../pixi-proxy";
 import { Subject } from "rxjs";
 import {
   IRoomVisualization,
@@ -27,7 +33,7 @@ import { RoomLandscapeMaskSprite } from "./RoomLandscapeMaskSprite";
 import { getTileMapBounds } from "./util/getTileMapBounds";
 
 export class RoomModelVisualization
-  extends PIXI.Container
+  extends ShroomContainer
   implements IRoomVisualization, IRoomRectangle, ILandscapeContainer {
   private _hideTileCursor = false;
   private _hideWalls = false;
@@ -41,17 +47,17 @@ export class RoomModelVisualization
   private _tileRightColor: number | undefined;
   private _tileTopColor: number | undefined;
 
-  private _positionalContainer = new PIXI.Container();
-  private _behindWallLayer: PIXI.Container = new PIXI.Container();
-  private _wallLayer: PIXI.Container = new PIXI.Container();
-  private _tileLayer: PIXI.Container = new PIXI.Container();
-  private _primaryLayer: PIXI.Container = new PIXI.Container();
-  private _landscapeLayer: PIXI.Container = new PIXI.Container();
-  private _wallHitAreaLayer: PIXI.Container = new PIXI.Container();
-  private _masksLayer: PIXI.Container = new PIXI.Container();
+  private _positionalContainer = new ShroomContainer();
+  private _behindWallLayer: ShroomContainer = new ShroomContainer();
+  private _wallLayer: ShroomContainer = new ShroomContainer();
+  private _tileLayer: ShroomContainer = new ShroomContainer();
+  private _primaryLayer: ShroomContainer = new ShroomContainer();
+  private _landscapeLayer: ShroomContainer = new ShroomContainer();
+  private _wallHitAreaLayer: ShroomContainer = new ShroomContainer();
+  private _masksLayer: ShroomContainer = new ShroomContainer();
 
-  private _wallTexture: PIXI.Texture | undefined;
-  private _floorTexture: PIXI.Texture | undefined;
+  private _wallTexture: ShroomTexture | undefined;
+  private _floorTexture: ShroomTexture | undefined;
 
   private _walls: (WallLeft | WallRight | WallOuterCorner)[] = [];
   private _tiles: (Tile | Stair | StairCorner)[] = [];
@@ -77,8 +83,8 @@ export class RoomModelVisualization
   >();
 
   private _onTileClick = new Subject<{
-    position: RoomPosition,
-    event: IEventManagerEvent
+    position: RoomPosition;
+    event: IEventManagerEvent;
   }>();
 
   private _tileMapBounds: {
@@ -93,7 +99,7 @@ export class RoomModelVisualization
 
   constructor(
     private _eventManager: EventManager,
-    private _application: PIXI.Application,
+    private _application: ShroomApplication,
     public readonly parsedTileMap: ParsedTileMap
   ) {
     super();
@@ -118,7 +124,7 @@ export class RoomModelVisualization
     this.addChild(this._primaryLayer);
 
     this.addChild(this._masksLayer);
-    
+
     this._positionalContainer.x = -this.roomBounds.minX;
     this._positionalContainer.y = -this.roomBounds.minY;
     this._primaryLayer.sortableChildren = true;
@@ -339,7 +345,7 @@ export class RoomModelVisualization
     this._destroyAllSprites();
   }
 
-  addMask(id: string, element: PIXI.Sprite): MaskNode {
+  addMask(id: string, element: ShroomSprite): MaskNode {
     /*
     const existing = this._masks.get(id);
     const current =
@@ -389,8 +395,8 @@ export class RoomModelVisualization
       tileLeftColor: this._tileLeftColor ?? 0x838357,
       tileRightColor: this._tileRightColor ?? 0x666644,
       tileTopColor: this._tileTopColor ?? 0x989865,
-      tileTexture: this._floorTexture ?? PIXI.Texture.WHITE,
-      wallTexture: this._wallTexture ?? PIXI.Texture.WHITE,
+      tileTexture: this._floorTexture ?? ShroomTexture.WHITE,
+      wallTexture: this._wallTexture ?? ShroomTexture.WHITE,
       masks: this._masks,
     };
   }
@@ -510,19 +516,19 @@ export class RoomModelVisualization
     this._createLeftWall(x, y, z, { hideBorder: false, cutawayHeight: 90 });
   }
 
-  private shouldShowBorders (x: number, y: number) : {
+  private shouldShowBorders(
+    x: number,
+    y: number
+  ): {
     showLeftBorder: boolean;
     showRightBorder: boolean;
-} {
-    let bottomTile;
-    let rightTile;
+  } {
+    let bottomTile: ParsedTileTypeExtended | undefined;
+    let rightTile: ParsedTileTypeExtended | undefined;
     const tileMap = this.parsedTileMap.parsedTileTypes;
-    const currentTile = tileMap[y][x];
+    const currentTile: ParsedTileTypeExtended = tileMap[y][x];
 
-    if (
-      tileMap[y + 1] !== undefined &&
-      tileMap[y + 1][x] !== undefined
-    ) {
+    if (tileMap[y + 1] !== undefined && tileMap[y + 1][x] !== undefined) {
       bottomTile = tileMap[y + 1][x];
     }
 
@@ -531,37 +537,45 @@ export class RoomModelVisualization
     }
 
     return {
-      showLeftBorder: (
+      showLeftBorder:
         !Boolean(bottomTile) ||
-        ["stairs", "stairCorner", "door", "hidden"].includes(bottomTile?.type as string) ||
+        ["stairs", "stairCorner", "door", "hidden"].includes(
+          bottomTile?.type as string
+        ) ||
         // @ts-ignore
-        (bottomTile?.type as string == 'tile' && bottomTile?.z != currentTile.z)
-      ),
-      showRightBorder: (
+        ((bottomTile?.type as string) == "tile" &&
+          bottomTile?.z != currentTile.z),
+      showRightBorder:
         !Boolean(rightTile) ||
-        ["stairs", "stairCorner", "door", "hidden"].includes(rightTile?.type as string) ||
+        ["stairs", "stairCorner", "door", "hidden"].includes(
+          rightTile?.type as string
+        ) ||
         // @ts-ignore
-        (rightTile?.type as string == 'tile' && rightTile?.z != currentTile.z)
-      )
-    } 
+        ((rightTile?.type as string) == "tile" &&
+          rightTile?.z != currentTile.z),
+    };
   }
 
   private _createTileElement(
     x: number,
     y: number,
     z: number,
-    container?: PIXI.Container
+    container?: ShroomContainer
   ) {
     if (this._hideFloor) return;
 
     const showBorders = this.shouldShowBorders(x, y);
 
-    const tile = new Tile({ color: "#eeeeee", tileHeight: this._tileHeight, showBorders });
+    const tile = new Tile({
+      color: "#eeeeee",
+      tileHeight: this._tileHeight,
+      showBorders,
+    });
 
     const xEven = x % 2 === 0;
     const yEven = y % 2 === 0;
 
-    tile.tilePositions = new PIXI.Point(xEven ? 32 : 0, yEven ? 32 : 0);
+    tile.tilePositions = new ShroomPoint(xEven ? 32 : 0, yEven ? 32 : 0);
 
     const position = this._getPosition(x, y, z);
 
@@ -578,7 +592,7 @@ export class RoomModelVisualization
     x: number,
     y: number,
     z: number,
-    container?: PIXI.Container
+    container?: ShroomContainer
   ) {
     if (this._hideTileCursor) return;
 
@@ -587,7 +601,7 @@ export class RoomModelVisualization
       this._eventManager,
       position,
       (pos, event) => {
-        this._onTileClick.next({position, event});
+        this._onTileClick.next({ position, event });
       },
       () => {
         this._onActiveTileChange.next(position);
@@ -763,3 +777,5 @@ export class RoomModelVisualization
     };
   }
 }
+
+type ParsedTileTypeExtended = ParsedTileType & { z?: number };

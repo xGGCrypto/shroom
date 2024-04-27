@@ -1,4 +1,12 @@
-import * as PIXI from "pixi.js";
+import {
+  ShroomContainer,
+  ShroomTexture,
+  ShroomSprite,
+  ShroomGraphics,
+  ShroomTilingSprite,
+  ShroomMatrix,
+  ShroomPoint,
+} from "../../pixi-proxy";
 import { PartNode } from "../../interfaces/IRoomVisualization";
 import { ParsedTileType } from "../../util/parseTileMap";
 import { RoomObject } from "../RoomObject";
@@ -16,19 +24,22 @@ interface WallCollectionMeta {
 type Unsubscribe = () => void;
 
 export class Landscape extends RoomObject implements IRoomPart {
-  private _container: PIXI.Container | undefined;
-  private _leftTexture: PIXI.Texture | undefined;
-  private _rightTexture: PIXI.Texture | undefined;
+  private _container: ShroomContainer | undefined;
+  private _leftTexture: ShroomTexture | undefined;
+  private _rightTexture: ShroomTexture | undefined;
   private _wallHeight = 0;
   private _wallHeightWithZ = 0;
 
-  private _leftTexturePromise: PIXI.Texture | Promise<PIXI.Texture> | undefined;
+  private _leftTexturePromise:
+    | ShroomTexture
+    | Promise<ShroomTexture>
+    | undefined;
   private _rightTexturePromise:
-    | PIXI.Texture
-    | Promise<PIXI.Texture>
+    | ShroomTexture
+    | Promise<ShroomTexture>
     | undefined;
 
-  private _masks: Map<string, PIXI.Sprite> = new Map();
+  private _masks: Map<string, ShroomSprite> = new Map();
   private _color: string | undefined;
   private _unsubscribe: Unsubscribe | undefined = undefined;
 
@@ -90,7 +101,7 @@ export class Landscape extends RoomObject implements IRoomPart {
   }
 
   private _createDefaultMask() {
-    return new PIXI.Graphics();
+    return new ShroomGraphics();
   }
 
   private _getMask(direction: number, roomX: number, roomY: number) {
@@ -110,7 +121,7 @@ export class Landscape extends RoomObject implements IRoomPart {
 
     const meta = getWallCollectionMeta(this.tilemap.getParsedTileTypes());
     this._container?.destroy();
-    const container = new PIXI.Container();
+    const container = new ShroomContainer();
 
     let offsetRow = 0;
     let offsetCol = 0;
@@ -118,10 +129,10 @@ export class Landscape extends RoomObject implements IRoomPart {
     meta.forEach((meta) => {
       const width = Math.abs(meta.end - meta.start) * 32;
 
-      const wall = new PIXI.Container();
+      const wall = new ShroomContainer();
 
-      const colored = new PIXI.TilingSprite(
-        PIXI.Texture.WHITE,
+      const colored = new ShroomTilingSprite(
+        ShroomTexture.WHITE,
         width,
         this._wallHeightWithZ
       );
@@ -148,19 +159,19 @@ export class Landscape extends RoomObject implements IRoomPart {
           0
         );
 
-        wall.transform.setFromMatrix(new PIXI.Matrix(1, -0.5, 0, 1));
+        wall.transform.setFromMatrix(new ShroomMatrix(1, -0.5, 0, 1));
 
         wall.x = position.x;
         wall.y = position.y + 16;
 
         if (this._leftTexture != null) {
-          const graphics = new PIXI.TilingSprite(
+          const graphics = new ShroomTilingSprite(
             this._leftTexture,
             width,
             this._leftTexture.height
           );
 
-          graphics.tilePosition = new PIXI.Point(offsetRow, 0);
+          graphics.tilePosition = new ShroomPoint(offsetRow, 0);
           graphics.texture = this._leftTexture;
           graphics.x = 0;
           graphics.y = -this._leftTexture.height;
@@ -179,13 +190,13 @@ export class Landscape extends RoomObject implements IRoomPart {
           0
         );
 
-        wall.transform.setFromMatrix(new PIXI.Matrix(1, 0.5, 0, 1));
+        wall.transform.setFromMatrix(new ShroomMatrix(1, 0.5, 0, 1));
 
         wall.x = position.x + 32;
         wall.y = position.y;
 
         if (this._rightTexture != null) {
-          const graphics = new PIXI.TilingSprite(
+          const graphics = new ShroomTilingSprite(
             this._rightTexture,
             width,
             this._rightTexture.height
@@ -193,7 +204,7 @@ export class Landscape extends RoomObject implements IRoomPart {
           graphics.texture = this._rightTexture;
           graphics.x = 0;
           graphics.y = -this._rightTexture.height;
-          graphics.tilePosition = new PIXI.Point(offsetCol, 0);
+          graphics.tilePosition = new ShroomPoint(offsetCol, 0);
           wall.addChild(graphics);
         }
 

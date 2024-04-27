@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { ShroomContainer, ShroomGraphics } from "../../../pixi-proxy";
 import { BehaviorSubject, Observable } from "rxjs";
 import { RoomPosition } from "../../../types/RoomPosition";
 import { isPointInside } from "../../../util/isPointInside";
@@ -13,19 +13,22 @@ import { IEventTarget } from "../../events/interfaces/IEventTarget";
 import { Rectangle } from "../IRoomRectangle";
 
 export class TileCursor
-  extends PIXI.Container
+  extends ShroomContainer
   implements IEventTarget, IEventGroup {
   private _roomX: number;
   private _roomY: number;
   private _roomZ: number;
-  private _graphics: PIXI.Graphics;
+  private _graphics: ShroomGraphics;
   private _hover = false;
   private _subject = new BehaviorSubject<Rectangle | undefined>(undefined);
 
   constructor(
     private _eventManager: IEventManager,
     private _position: RoomPosition,
-    private onClick: (position: RoomPosition, event: IEventManagerEvent) => void,
+    private onClick: (
+      position: RoomPosition,
+      event: IEventManagerEvent
+    ) => void,
     private onOver: (position: RoomPosition) => void,
     private onOut: (position: RoomPosition) => void
   ) {
@@ -60,11 +63,14 @@ export class TileCursor
   triggerPointerTargetChanged(event: IEventManagerEvent): void {}
 
   triggerClick(event: IEventManagerEvent): void {
-    this.onClick({
-      roomX: this._roomX,
-      roomY: this._roomY,
-      roomZ: this._roomZ,
-    }, event);
+    this.onClick(
+      {
+        roomX: this._roomX,
+        roomY: this._roomY,
+        roomZ: this._roomZ,
+      },
+      event
+    );
   }
 
   triggerPointerDown(event: IEventManagerEvent): void {}
@@ -131,7 +137,7 @@ export class TileCursor
   }
 
   private _createGraphics() {
-    const graphics = new PIXI.Graphics();
+    const graphics = new ShroomGraphics();
 
     return graphics;
   }
@@ -174,7 +180,7 @@ const points = {
 };
 
 function drawBorder(
-  graphics: PIXI.Graphics,
+  graphics: ShroomGraphics,
   color: number,
   alpha = 1,
   offsetY: number
