@@ -7,9 +7,15 @@ import {
   FurnitureData,
   FloorFurniture,
   RoomPosition,
+  Shroom,
 } from "@xggcrypto/shroom";
 import { createShroom } from "./common/createShroom";
 import { RoomCreator } from "./common/createRoom";
+import {
+  DiceBehavior,
+  FurniInfoBehavior,
+  MultiStateBehavior,
+} from "./common/behaviors";
 
 import { action } from "@storybook/addon-actions";
 
@@ -66,6 +72,17 @@ const roomModels = Object.freeze({
 function ShroomComponent(args: { [key: string]: any }) {
   return createShroom(({ application, shroom }) => {
     action("args")(args);
+    let resourcePath = process.env.resourcePath || "./resources"; // Shroom Resource Path
+
+    if (args?.customResourcesEnabled) {
+      resourcePath = args.customResourcesLink; // Custom Shroom Resource Path
+
+      shroom = Shroom.create({
+        resourcePath,
+        application: application,
+      });
+    }
+
     const tilemap = RoomCreator.parseTilemapArr(
       args.roomModel ?? roomModels.ModelA
     );
@@ -94,9 +111,7 @@ function ShroomComponent(args: { [key: string]: any }) {
 
     if (args?.avatarEnabled) {
       if (!shroom.dependencies.furnitureData) {
-        shroom.dependencies.furnitureData = FurnitureData.create(
-          process.env.resourcePath || "./resources"
-        );
+        shroom.dependencies.furnitureData = FurnitureData.create(resourcePath);
       }
 
       const PathFinder = new Pathfinding(
@@ -113,7 +128,7 @@ function ShroomComponent(args: { [key: string]: any }) {
         look:
           args?.avatarLook ??
           "hd-180-1.hr-115-61.ha-1012-110.ch-255-66.lg-280-110.sh-305-62",
-        direction: (door.roomY > 0) ? 2 : 4,
+        direction: door.roomY > 0 ? 2 : 4,
       });
 
       var avatarMoveQueue: {
@@ -164,6 +179,27 @@ function ShroomComponent(args: { [key: string]: any }) {
           animation: furni.animation ?? "0",
         });
 
+        furniture.extradata.then(({ logic, visualization }) => {
+          new FurniInfoBehavior(shroom.dependencies.furnitureData!).setParent(
+            furniture
+          ); // Get Furni Data onClick
+          action(`${furniture.type}_extadata_logic`)(logic);
+          action(`${furniture.type}_extadata_visualization`)(visualization);
+
+          switch (logic) {
+            case "furniture_dice":
+              new DiceBehavior().setParent(furniture);
+              break;
+
+            case "furniture_multistate":
+              // new MultiStateBehavior().setParent(furniture); // TODO: Find all animation
+              break;
+
+            default:
+              break;
+          }
+        });
+
         room.addRoomObject(furniture);
       });
     }
@@ -208,10 +244,14 @@ const meta: Meta<typeof ShroomComponent> = {
 
     // Avatar
     avatarEnabled: { control: "boolean" },
-    avatarLook: { control: "string" },
+    avatarLook: { control: "text" },
 
     // Furniture
     floorFurni: { control: "object" },
+
+    // Custom Resources
+    customResourcesEnabled: { control: "boolean" },
+    customResourcesLink: { control: "text" },
   },
 
   args: {
@@ -238,6 +278,10 @@ const meta: Meta<typeof ShroomComponent> = {
       { type: "club_sofa", roomX: 2, roomY: 1, roomZ: 0, direction: 4 },
       { type: "edice", roomX: 5, roomY: 1, roomZ: 0, direction: 4 },
     ],
+
+    // Custom Resources
+    customResourcesEnabled: false,
+    customResourcesLink: "",
   },
 };
 
