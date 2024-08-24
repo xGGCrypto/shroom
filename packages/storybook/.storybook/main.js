@@ -3,16 +3,15 @@ module.exports = {
   typescript: {
     check: false,
     checkOptions: {},
+    reactDocgen: "react-docgen-typescript"
   },
 
-  "stories": [
-    "../stories/**/*.stories.mdx",
-    "../stories/**/*.stories.@(js|jsx|ts|tsx)"
-  ],
+  "stories": ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|jsx|ts|tsx)"],
 
   "addons": [
     getAbsolutePath("@storybook/addon-links"),
-    getAbsolutePath("@storybook/addon-essentials")
+    getAbsolutePath("@storybook/addon-essentials"),
+    "@storybook/addon-webpack5-compiler-babel"
   ],
 
   framework: {
@@ -20,9 +19,7 @@ module.exports = {
     options: {}
   },
 
-  docs: {
-    autodocs: true
-  }
+  docs: {}
 }
 
 function getAbsolutePath(value) {
