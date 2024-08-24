@@ -29,7 +29,8 @@ export function createShroom(
         height: window?.innerHeight ?? 850,
       });
 
-      const resourcePath = process.env.resourcePath || "./resources";
+      const resourcePath =
+        process.env.resourcePath || "https://psociety.github.io/shroom-static";
       const shroom = Shroom.create({
         resourcePath,
         application: application,

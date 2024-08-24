@@ -72,7 +72,8 @@ const roomModels = Object.freeze({
 function ShroomComponent(args: { [key: string]: any }) {
   return createShroom(({ application, shroom }) => {
     action("args")(args);
-    let resourcePath = process.env.resourcePath || "./resources"; // Shroom Resource Path
+    let resourcePath =
+      process.env.resourcePath || "https://psociety.github.io/shroom-static"; // Shroom Resource Path
 
     if (args?.customResourcesEnabled) {
       resourcePath = args.customResourcesLink; // Custom Shroom Resource Path
@@ -277,6 +278,7 @@ const meta: Meta<typeof ShroomComponent> = {
     floorFurni: [
       { type: "club_sofa", roomX: 2, roomY: 1, roomZ: 0, direction: 4 },
       { type: "edice", roomX: 5, roomY: 1, roomZ: 0, direction: 4 },
+      { type: "party_discol", roomX: 3, roomY: 3, roomZ: 0, direction: 4 },
     ],
 
     // Custom Resources
