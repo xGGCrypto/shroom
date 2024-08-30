@@ -22,6 +22,7 @@ export interface IFurnitureVisualizationData {
     size: number,
     animationId: number
   ): FurnitureAnimation | undefined;
+  getAnimationIds(size: number): number[];
   getTransitionForAnimation(
     size: number,
     animationId: number

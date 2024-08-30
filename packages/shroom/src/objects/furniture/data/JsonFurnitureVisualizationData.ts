@@ -6,6 +6,7 @@ import {
   FurnitureLayer,
   IFurnitureVisualizationData,
 } from "./interfaces/IFurnitureVisualizationData";
+import { notNullOrUndefined } from "../../../util/notNullOrUndefined";
 
 export class JsonFurnitureVisualizationData
   implements IFurnitureVisualizationData {
@@ -105,6 +106,14 @@ export class JsonFurnitureVisualizationData
         id: animationId,
       };
     }
+  }
+
+  getAnimationIds(size: number) {
+    const animation = this._getVisualization(size).animations;
+    // TODO: Get all animation ids
+    return Object.keys(animation)
+      .filter(notNullOrUndefined)
+      .map((id) => Number(id));
   }
 
   getTransitionForAnimation(
