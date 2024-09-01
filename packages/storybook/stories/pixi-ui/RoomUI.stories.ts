@@ -1,6 +1,5 @@
-import { createShroom } from "../common/createShroom";
+import { createShroom } from "../common";
 import { ChatBubble } from "./utils/PIXI_ChatBubble";
-import { action } from "@storybook/addon-actions";
 
 export default {
   title: "Pixi UI/RoomUI",

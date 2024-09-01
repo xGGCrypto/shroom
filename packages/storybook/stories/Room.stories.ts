@@ -7,8 +7,7 @@ import {
   FloorFurniture,
 } from "@xggcrypto/shroom";
 
-import { createShroom } from "./common/createShroom";
-import { RoomCreator } from "./common/createRoom";
+import { createShroom, RoomCreator } from "./common";
 
 export function DefaultRoom() {
   return createShroom(({ application, shroom }) => {

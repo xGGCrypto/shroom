@@ -7,6 +7,8 @@ import {
   FloorFurniture,
   RoomPosition,
   Shroom,
+  AnimatedFurnitureVisualization,
+  StaticFurnitureVisualization,
 } from "@xggcrypto/shroom";
 import { createShroom } from "./createShroom";
 import { RoomCreator } from "./createRoom";
@@ -17,56 +19,7 @@ import {
 } from "./behaviors";
 
 import { action } from "@storybook/addon-actions";
-
-export const roomModels = {
-  ModelA: [
-    "xxxxxxxxxxx",
-    "x0000000000",
-    "x0000000000",
-    "x0000000000",
-    "x0000000000",
-  ],
-  ModelB: [
-    "xxxxxxxxxxx",
-    "x0000000000",
-    "00000000000",
-    "x0000000000",
-    "x0000000000",
-  ],
-  ModelC: [
-    "xxxxxxxxxxxxxx",
-    "x0000000000000",
-    "x0000000000000",
-    "00000000000000",
-    "x0000000000000",
-    "x0000000000000",
-    "x0000000000000",
-  ],
-  ModelD: [
-    "xxxxxxxxxxx",
-    "x0000000000",
-    "x0000000000",
-    "x0000000000",
-    "x0000000000",
-    "00000000000",
-    "x0000000000",
-    "x0000000000",
-    "x0000000000",
-    "x0000000000",
-  ],
-  ModelE: [
-    "xxxxxxxxxxx",
-    "x0000000000",
-    "x0000000000",
-    "x0000000000",
-    "x0000000000",
-    "x0000000000",
-    "x0000000000",
-    "00000000000",
-    "x0000000000",
-    "x0000000000",
-  ],
-};
+import { roomModels } from "./roomModels";
 
 export function ShroomComponent(args: { [key: string]: any }) {
   return createShroom(({ application, shroom }) => {
@@ -170,6 +123,15 @@ export function ShroomComponent(args: { [key: string]: any }) {
         );
         action(`${furniture.type}_extradata_logic`)(logic);
         action(`${furniture.type}_extradata_visualization`)(visualization);
+
+        switch (visualization) {
+          case "furniture_animated":
+            furniture.visualization = new AnimatedFurnitureVisualization();
+            break;
+          case "furniture_static":
+            furniture.visualization = new StaticFurnitureVisualization();
+            break;
+        }
 
         switch (logic) {
           case "furniture_dice":

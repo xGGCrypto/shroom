@@ -15,17 +15,19 @@ import {
   WallFurniture,
   AVATAR,
   FURNITURE,
+  RoomCamera,
 } from "@xggcrypto/shroom";
-import { createShroom } from "../common/createShroom";
-import { RoomCreator } from "../common/createRoom";
+import { createShroom, RoomCreator } from "../common";
 import { action } from "@storybook/addon-actions";
-import fetch from "node-fetch";
+import furniJson from "../assets/furni.json";
 
 export default {
   title: "Furniture / General",
+  argTypes: { roomCamera: { control: "boolean" } },
+  args: { roomCamera: false },
 };
 
-export function Default() {
+export function Default(args: any) {
   return createShroom(({ application, shroom }) => {
     const tilemap = RoomCreator.parseTilemapArr([
       "xxxxxxxxxxx",
@@ -96,11 +98,13 @@ export function Default() {
 
     room.addRoomObject(dice);
 
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function Animated() {
+export function Animated(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -111,8 +115,6 @@ export function Animated() {
         x0000000000
       `,
     });
-
-    
 
     for (let i = 0; i < 4; i++) {
       const direction = i <= 1 ? 2 : 4;
@@ -150,11 +152,13 @@ export function Animated() {
       room.addRoomObject(furniture);
     }
 
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function Movement() {
+export function Movement(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -188,11 +192,13 @@ export function Movement() {
 
     room.addRoomObject(furniture);
 
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function Highlighted() {
+export function Highlighted(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -237,11 +243,13 @@ export function Highlighted() {
     room.addRoomObject(furniture1);
     room.addRoomObject(furniture2);
 
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function AlphaFurniture() {
+export function AlphaFurniture(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -278,11 +286,13 @@ export function AlphaFurniture() {
     room.addRoomObject(furniture1);
     room.addRoomObject(furniture2);
 
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function MultipleFurnitures() {
+export function MultipleFurnitures(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -325,11 +335,13 @@ export function MultipleFurnitures() {
       furnis.forEach((furni) => furni.move(furni.roomX, furni.roomY + 1, 0));
     }, 2500);
 
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function DifferentFetchTypes() {
+export function DifferentFetchTypes(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -367,11 +379,13 @@ export function DifferentFetchTypes() {
     room.addRoomObject(wallFurniture);
     room.addRoomObject(floorFurniture);
 
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function DetachedFurniture() {
+export function DetachedFurniture(args: any) {
   return createShroom(({ application, shroom }) => {
     const container = new PIXI.Container();
     container.sortableChildren = true;
@@ -392,7 +406,7 @@ export function DetachedFurniture() {
   });
 }
 
-export function GldGate() {
+export function GldGate(args: any) {
   return createShroom(({ application, shroom }) => {
     const container = new PIXI.Container();
     application.stage.addChild(container);
@@ -484,11 +498,13 @@ export function GldGate() {
     room.addRoomObject(floorFurniture2);
     room.addRoomObject(floorFurniture3);
 
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function TileCursorFloorItems() {
+export function TileCursorFloorItems(args: any) {
   return createShroom(({ application, shroom }) => {
     const container = new PIXI.Container();
     application.stage.addChild(container);
@@ -529,11 +545,13 @@ export function TileCursorFloorItems() {
     room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(furniture);
     room.addRoomObject(furniture2);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function ValidDirections() {
+export function ValidDirections(args: any) {
   return createShroom(({ application, shroom }) => {
     const container = new PIXI.Container();
     application.stage.addChild(container);
@@ -594,11 +612,13 @@ export function ValidDirections() {
     room.addRoomObject(furniture2);
     room.addRoomObject(furniture3);
     room.addRoomObject(furniture4);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function DestroyFurniture() {
+export function DestroyFurniture(args: any) {
   return createShroom(({ application, shroom }) => {
     const container = new PIXI.Container();
     application.stage.addChild(container);
@@ -633,11 +653,13 @@ export function DestroyFurniture() {
     room.x = application.screen.width / 2 - room.roomWidth / 2;
     room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(furniture);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function DestroyFurnitureWhileLoading() {
+export function DestroyFurnitureWhileLoading(args: any) {
   return createShroom(({ application, shroom }) => {
     const container = new PIXI.Container();
     application.stage.addChild(container);
@@ -677,11 +699,13 @@ export function DestroyFurnitureWhileLoading() {
     room.x = application.screen.width / 2 - room.roomWidth / 2;
     room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(furniture);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function WallWindowDestroy() {
+export function WallWindowDestroy(args: any) {
   return createShroom(({ application, shroom }) => {
     const container = new PIXI.Container();
     application.stage.addChild(container);
@@ -717,11 +741,13 @@ export function WallWindowDestroy() {
     room.x = application.screen.width / 2 - room.roomWidth / 2;
     room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(furniture);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function WallWindowDestroyWhileLoading() {
+export function WallWindowDestroyWhileLoading(args: any) {
   return createShroom(({ application, shroom }) => {
     const container = new PIXI.Container();
     application.stage.addChild(container);
@@ -762,11 +788,13 @@ export function WallWindowDestroyWhileLoading() {
     room.x = application.screen.width / 2 - room.roomWidth / 2;
     room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(furniture);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function FurnitureColoring() {
+export function FurnitureColoring(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -814,11 +842,13 @@ export function FurnitureColoring() {
     room.addRoomObject(furniture1);
     room.addRoomObject(furniture2);
     room.addRoomObject(furniture3);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function WallFurniturePosition() {
+export function WallFurniturePosition(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -888,11 +918,13 @@ export function WallFurniturePosition() {
     room.addRoomObject(furniture1);
     room.addRoomObject(furniture2);
     room.addRoomObject(furniture3);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function FurnitureFlip() {
+export function FurnitureFlip(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -930,11 +962,13 @@ export function FurnitureFlip() {
     room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(furniture1);
     room.addRoomObject(furniture2);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function LayingAvatarsBehindBed() {
+export function LayingAvatarsBehindBed(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -977,11 +1011,13 @@ export function LayingAvatarsBehindBed() {
     room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(furniture1);
     room.addRoomObject(avatar);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function LoadTest() {
+export function LoadTest(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -999,51 +1035,47 @@ export function LoadTest() {
 
     let activeFurniture: FloorFurniture | undefined;
 
-    fetch(`./furni.json`)
-      .then((response) => response.json())
-      .then((furnitures: any[]) => {
-        furnitures.forEach((furni) => {
-          const obj = new FloorFurniture({
-            roomX: furni.x,
-            roomY: furni.y,
-            roomZ: furni.z,
-            type: furni.item,
-            direction: furni.rot,
-            animation: furni.extra_data,
-          });
-
-          obj.extradata.then(({ visualization }) => {
-            switch (visualization) {
-              case "furniture_animated":
-                obj.visualization = new AnimatedFurnitureVisualization();
-                break;
-              case "furniture_static":
-                obj.visualization = new BasicFurnitureVisualization();
-                break;
-            }
-          });
-
-          obj.onClick = (event) => {
-            console.log("Clicked");
-            event.skip(FURNITURE, AVATAR);
-          };
-
-          obj.onPointerOver = (event) => {
-            if (activeFurniture != null) return;
-
-            activeFurniture = obj;
-            console.log("Active Furniture", obj.type, obj.roomX, obj.roomY);
-          };
-
-          obj.onPointerOut = (event) => {
-            if (activeFurniture === obj) {
-              activeFurniture = undefined;
-            }
-          };
-
-          room.addRoomObject(obj);
-        });
+    furniJson.forEach((furni) => {
+      const obj = new FloorFurniture({
+        roomX: furni.x,
+        roomY: furni.y,
+        roomZ: furni.z,
+        type: furni.item,
+        direction: furni.rot,
+        animation: furni.extra_data,
       });
+
+      obj.extradata.then(({ visualization }) => {
+        switch (visualization) {
+          case "furniture_animated":
+            obj.visualization = new AnimatedFurnitureVisualization();
+            break;
+          case "furniture_static":
+            obj.visualization = new BasicFurnitureVisualization();
+            break;
+        }
+      });
+
+      obj.onClick = (event) => {
+        console.log("Clicked");
+        event.skip(FURNITURE, AVATAR);
+      };
+
+      obj.onPointerOver = (event) => {
+        if (activeFurniture != null) return;
+
+        activeFurniture = obj;
+        console.log("Active Furniture", obj.type, obj.roomX, obj.roomY);
+      };
+
+      obj.onPointerOut = (event) => {
+        if (activeFurniture === obj) {
+          activeFurniture = undefined;
+        }
+      };
+
+      room.addRoomObject(obj);
+    });
 
     const furniture1 = new FloorFurniture({
       roomX: 1,
@@ -1062,11 +1094,13 @@ export function LoadTest() {
       console.log(event);
     };
 
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }
 
-export function AnimationResetTest() {
+export function AnimationResetTest(args: any) {
   return createShroom(({ application, shroom }) => {
     const room = Room.create(shroom, {
       tilemap: `
@@ -1098,6 +1132,8 @@ export function AnimationResetTest() {
     room.x = application.screen.width / 2 - room.roomWidth / 2;
     room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(furniture1);
-    application.stage.addChild(room);
+    application.stage.addChild(
+      args.roomCamera ? RoomCamera.forScreen(room) : room
+    );
   });
 }

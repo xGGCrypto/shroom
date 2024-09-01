@@ -157,7 +157,7 @@ export class AvatarLoader implements IAvatarLoader {
     return this._getAvatarDrawDefinition(getDrawDefinition, options);
   }
 
-  async _getAvatarDrawDefinition(
+  private async _getAvatarDrawDefinition(
     getDrawDefinition: LookServer,
     options: LookOptions
   ): Promise<AvatarLoaderResult> {

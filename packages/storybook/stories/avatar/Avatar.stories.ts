@@ -1,32 +1,16 @@
 import { Avatar, AvatarAction, Room, BaseAvatar } from "@xggcrypto/shroom";
-import { createShroom } from "../common/createShroom";
+import { createShroom, RoomCreator, roomModels } from "../common";
 import { action } from "@storybook/addon-actions";
 
 export default {
   title: "Avatar / General",
 };
-
+// TODO: refactor
 export function Default() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-            xxxxxxxxxxxxxxxx
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-            x000000000000000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr(roomModels.ModelF);
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const looks: string[] = [
@@ -91,14 +75,10 @@ export function Default() {
 
 export function Walking() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-           xxxxxxxx
-           x0000000
-           x0000000
-           x0000000
-           x0000000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr(roomModels.ModelA);
+
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
@@ -117,8 +97,6 @@ export function Walking() {
       }, 500);
     }, 3000);
 
-    room.x = application.screen.width / 2 - room.roomWidth / 2;
-    room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(avatar);
 
     application.stage.addChild(room);
@@ -127,14 +105,9 @@ export function Walking() {
 
 export function Drinking() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-            xxxxxxxx
-            x0000000
-            x0000000
-            x0000000
-            x0000000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr(roomModels.ModelA);
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatars: Avatar[] = [];
@@ -171,23 +144,15 @@ export function Drinking() {
       avatars.push(avatar);
     }
 
-    room.x = application.screen.width / 2 - room.roomWidth / 2;
-    room.y = application.screen.height / 2 - room.roomHeight / 2;
-
     application.stage.addChild(room);
   });
 }
 
 export function AvatarInDoor() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-           xxxxxxxx
-           x0000000
-           x0000000
-           00000000
-           x0000000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr(roomModels.ModelC);
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
@@ -202,9 +167,6 @@ export function AvatarInDoor() {
       avatar.walk(1, 3, 0, { direction: 2 });
     }, 3000);
 
-    room.x = application.screen.width / 2 - room.roomWidth / 2;
-    room.y = application.screen.height / 2 - room.roomHeight / 2;
-
     room.addRoomObject(avatar);
 
     application.stage.addChild(room);
@@ -215,14 +177,9 @@ export function AvatarHairBack() {
   return createShroom(({ application, shroom }) => {
     const look = `hd-180-1.hr-831-61.ha-1012-68.ch-215-66.lg-280-110.sh-305-62`;
 
-    const room = Room.create(shroom, {
-      tilemap: `
-           xxxxxxxx
-           x0000000
-           x0000000
-           00000000
-           x0000000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr(roomModels.ModelC);
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
@@ -232,9 +189,6 @@ export function AvatarHairBack() {
       roomY: 4,
       roomZ: 0,
     });
-
-    room.x = application.screen.width / 2 - room.roomWidth / 2;
-    room.y = application.screen.height / 2 - room.roomHeight / 2;
 
     room.addRoomObject(avatar);
 
@@ -246,14 +200,9 @@ export function AvatarPlain() {
   return createShroom(({ application, shroom }) => {
     const look = `hd-99999-99999`;
 
-    const room = Room.create(shroom, {
-      tilemap: `
-           xxxxxxxx
-           x0000000
-           x0000000
-           00000000
-           x0000000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr(roomModels.ModelC);
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
@@ -264,9 +213,6 @@ export function AvatarPlain() {
       roomZ: 0,
     });
 
-    room.x = application.screen.width / 2 - room.roomWidth / 2;
-    room.y = application.screen.height / 2 - room.roomHeight / 2;
-
     room.addRoomObject(avatar);
 
     application.stage.addChild(room);
@@ -275,14 +221,9 @@ export function AvatarPlain() {
 
 export function EventHandling() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-           xxxxxxxx
-           x0000000
-           x0000000
-           x0000000
-           x0000000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr(roomModels.ModelA);
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
@@ -302,8 +243,6 @@ export function EventHandling() {
       avatar.walk(3, 2, 0, { direction: 2 });
     }, 3000);
 
-    room.x = application.screen.width / 2 - room.roomWidth / 2;
-    room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(avatar);
 
     application.stage.addChild(room);
@@ -312,14 +251,9 @@ export function EventHandling() {
 
 export function headRotation() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-           xxxxxxxx
-           x0000000
-           x0000000
-           x0000000
-           x0000000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr(roomModels.ModelA);
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
@@ -372,8 +306,6 @@ export function headRotation() {
       // }
     }, 3000);
 
-    room.x = application.screen.width / 2 - room.roomWidth / 2;
-    room.y = application.screen.height / 2 - room.roomHeight / 2;
     room.addRoomObject(avatar);
     // room.addRoomObject(avatar2);
     // room.addRoomObject(avatar3);
@@ -504,14 +436,9 @@ export function BaseAvatarBroke() {
 
 export function AvatarDestroy() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-           xxxxxxxx
-           x0000000
-           x0000000
-           x0000000
-           x0000000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr(roomModels.ModelA);
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatar = new Avatar({
@@ -540,17 +467,9 @@ export function AvatarDestroy() {
 
 export function AvatarDance() {
   return createShroom(({ application, shroom }) => {
-    const room = Room.create(shroom, {
-      tilemap: `
-           xxxxxxxxxxxxxxxx
-           x000000000000000
-           x000000000000000
-           x000000000000000
-           x000000000000000
-           x000000000000000
-           x000000000000000
-           x000000000000000
-          `,
+    const tilemap = RoomCreator.parseTilemapArr(roomModels.ModelF);
+    const room = RoomCreator.createRoom(shroom, application, tilemap, {
+      centerRoom: true,
     });
 
     const avatars: Avatar[] = [];

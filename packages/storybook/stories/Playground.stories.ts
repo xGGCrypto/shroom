@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react";
-import { ShroomComponent, roomModels } from "./common/createShroomComponent";
+import { ShroomComponent, roomModels } from "./common";
 
 const meta: Meta<typeof ShroomComponent> = {
   title: "Playground / General",
