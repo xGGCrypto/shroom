@@ -5,6 +5,11 @@ type FinishCurrentCallback = () => void;
 
 type CancelTicker = () => void;
 
+/**
+ * ObjectAnimation animates an object from one RoomPosition to another over a set duration.
+ * Handles queuing, cancellation, and destruction, and calls user-provided callbacks for animation events.
+ * @template T Additional data passed to callbacks.
+ */
 export class ObjectAnimation<T> {
   private _current: RoomPosition | undefined;
   private _diff: RoomPosition | undefined;
@@ -29,11 +34,17 @@ export class ObjectAnimation<T> {
     private _duration: number = 500
   ) {}
 
+  /**
+   * Clears the animation queue and returns the next position (if any).
+   */
   clear() {
     this._enqueued = [];
     return this._nextPosition;
   }
 
+  /**
+   * Destroys this animation, cancelling any ongoing animation and unsubscribing from the ticker.
+   */
   destroy() {
     this._destroyed = true;
     if (this._cancelTicker != null) {
@@ -41,6 +52,13 @@ export class ObjectAnimation<T> {
     }
   }
 
+  /**
+   * Starts animating from currentPos to newPos, with the given data.
+   * If an animation is in progress, it is finished and the new animation starts.
+   * @param currentPos The starting RoomPosition.
+   * @param newPos The target RoomPosition.
+   * @param data Additional data for callbacks.
+   */
   move(
     currentPos: { roomX: number; roomY: number; roomZ: number },
     newPos: { roomX: number; roomY: number; roomZ: number },
