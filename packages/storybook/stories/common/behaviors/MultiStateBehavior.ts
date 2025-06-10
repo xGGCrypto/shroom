@@ -48,9 +48,19 @@ export class MultiStateBehavior implements IFurnitureBehavior {
 
   // Loads the list of valid animations for the furniture
   private async loadAnimationList() {
-    const loadFurni = await this.shroom.dependencies.furnitureLoader.loadFurni({
-      type: this.furniture!.type!,
-    } as any);
+    if (!this.furniture) return;
+    let furni_type = this.furniture.type;
+    let furniFetch: FurnitureFetch = furni_type
+      ? { type: furni_type, kind: "type" }
+      : {
+          id: this.furniture.id!,
+          kind: "id",
+          placementType: this.furniture.placementType,
+        };
+
+    const loadFurni = await this.shroom.dependencies.furnitureLoader.loadFurni(
+      furniFetch
+    );
 
     // Retrieve the animation IDs and store them
     this.validAnimations = loadFurni.visualizationData.getAnimationIds(64);
@@ -73,3 +83,14 @@ export class MultiStateBehavior implements IFurnitureBehavior {
     return index >= 0 && index < this.validAnimations.length;
   }
 }
+
+export type FurnitureFetch =
+  | {
+      kind: "id";
+      id: string | number;
+      placementType: "wall" | "floor";
+    }
+  | {
+      kind: "type";
+      type: string;
+    };
