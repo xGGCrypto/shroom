@@ -1,30 +1,72 @@
 import ByteBuffer from "bytebuffer";
 import { IAssetBundle } from "./IAssetBundle";
 
+type CacheEntry<T> = {
+  key: string;
+  value: T;
+};
+
+function withTimeout<T>(promise: Promise<T>, ms = 30000, errorMsg = 'Request timed out'): Promise<T> {
+  let timeout: NodeJS.Timeout;
+  const timeoutPromise = new Promise<T>((_, reject) => {
+    timeout = setTimeout(() => reject(new Error(errorMsg)), ms);
+  });
+  return Promise.race([
+    promise.finally(() => clearTimeout(timeout)),
+    timeoutPromise,
+  ]);
+}
+
 export class ShroomAssetBundle implements IAssetBundle {
   public static readonly VERSION = 1;
 
   private _files: Map<string, ArrayBuffer | Buffer> = new Map();
   private _blobs: Map<string, Blob> = new Map();
   private _strings: Map<string, string> = new Map();
+  private _cacheOrder: string[] = [];
+  private _cacheLimit: number | undefined;
 
   constructor(
-    files: { fileName: string; buffer: ArrayBuffer | Buffer }[] = []
+    files: { fileName: string; buffer: ArrayBuffer | Buffer }[] = [],
+    cacheLimit?: number
   ) {
     files.forEach((file) => this._files.set(file.fileName, file.buffer));
+    this._cacheLimit = cacheLimit;
   }
 
   public get files() {
     return Array.from(this._files.entries());
   }
 
-  static async fromUrl(url: string) {
-    const response = await fetch(url);
-    if (response.status >= 400)
-      throw new Error(`Failed to load: ${url} - ${response.status}`);
+  clearCache() {
+    this._blobs.clear();
+    this._strings.clear();
+    this._cacheOrder = [];
+  }
 
-    const buffer = await response.arrayBuffer();
+  private _evictIfNeeded(key: string) {
+    if (this._cacheLimit && this._cacheOrder.length >= this._cacheLimit) {
+      const oldest = this._cacheOrder.shift();
+      if (oldest) {
+        this._blobs.delete(oldest);
+        this._strings.delete(oldest);
+      }
+    }
+    this._cacheOrder.push(key);
+  }
 
+  static async fromUrl(url: string, timeoutMs = 30000) {
+    const fetchPromise = fetch(url)
+      .then(async (response) => {
+        if (response.status >= 400)
+          throw new Error(`Failed to load: ${url} - ${response.status}`);
+        return response.arrayBuffer();
+      })
+      .catch((err) => {
+        console.error(`[ShroomAssetBundle] Error fetching url '${url}':`, err);
+        throw err;
+      });
+    const buffer = await withTimeout(fetchPromise, timeoutMs, `Fetching asset bundle '${url}' timed out`);
     return ShroomAssetBundle.fromBuffer(buffer);
   }
 
@@ -79,11 +121,21 @@ export class ShroomAssetBundle implements IAssetBundle {
     if (current != null) return current;
 
     const buffer = this._files.get(name);
-    if (buffer == null) throw new Error(`Couldn't find ${name}.`);
+    if (buffer == null) {
+      const err = new Error(`[ShroomAssetBundle] Couldn't find blob '${name}'.`);
+      console.error(err);
+      throw err;
+    }
 
-    const blob = new Blob([buffer]);
+    let blob: Blob;
+    try {
+      blob = new Blob([buffer]);
+    } catch (err) {
+      console.error(`[ShroomAssetBundle] Error creating Blob for '${name}':`, err);
+      throw err;
+    }
     this._blobs.set(name, blob);
-
+    this._evictIfNeeded(name);
     return blob;
   }
 
@@ -92,12 +144,22 @@ export class ShroomAssetBundle implements IAssetBundle {
     if (current != null) return current;
 
     const buffer = this._files.get(name);
-    if (buffer == null) throw new Error(`Couldn't find ${name}.`);
+    if (buffer == null) {
+      const err = new Error(`[ShroomAssetBundle] Couldn't find string '${name}'.`);
+      console.error(err);
+      throw err;
+    }
 
-    const encoder = new TextDecoder();
-    const string = encoder.decode(buffer);
+    let string: string;
+    try {
+      const encoder = new TextDecoder();
+      string = encoder.decode(buffer);
+    } catch (err) {
+      console.error(`[ShroomAssetBundle] Error decoding string for '${name}':`, err);
+      throw new Error(`[ShroomAssetBundle] Failed to decode string for '${name}': ${err}`);
+    }
     this._strings.set(name, string);
-
+    this._evictIfNeeded(name);
     return string;
   }
 }
