@@ -4,11 +4,20 @@ import { FurnitureLoader } from "./furniture/FurnitureLoader";
 import { FurnitureData } from "./furniture/FurnitureData";
 import { Dependencies } from "./room/Room";
 import { ShroomApplication } from "../pixi-proxy";
+/**
+ * Main entry point for creating and managing Shroom application dependencies.
+ * Provides factory methods for instantiating and sharing core services.
+ */
 export class Shroom {
+  /**
+   * Constructs a new Shroom instance with the given dependencies.
+   * @param dependencies The core dependencies for the Shroom application.
+   */
   constructor(public readonly dependencies: Dependencies) {}
 
   /**
-   * Create a shroom instance
+   * Create a shroom instance for a specific application.
+   * @param options Options including resourcePath, application, and partial dependencies.
    */
   static create(
     options: {
@@ -22,6 +31,8 @@ export class Shroom {
   /**
    * Create a shared shroom instance. This is useful if you have multiple
    * `ShroomApplication` which all share the same shroom dependencies.
+   * @param options Options including resourcePath and partial dependencies.
+   * @returns An object with a `for` method to bind to a specific application.
    */
   static createShared({
     resourcePath,
@@ -42,6 +53,11 @@ export class Shroom {
     const _configuration = configuration ?? {};
 
     return {
+      /**
+       * Binds the shared dependencies to a specific ShroomApplication instance.
+       * @param application The application instance to bind.
+       * @returns A new Shroom instance with all dependencies.
+       */
       for: (application: ShroomApplication) => {
         const _animationTicker =
           animationTicker ?? AnimationTicker.create(application);
