@@ -32,22 +32,40 @@ export class AvatarBodyPart {
   ) {}
 
   public get z() {
+  /**
+   * Gets the z-index (depth) of this body part for draw ordering.
+   */
     return this._bodyPart.z;
   }
 
   public get id() {
+  /**
+   * Gets the unique identifier for this body part.
+   */
     return this._bodyPart.id;
   }
 
   public get parts() {
+  /**
+   * Gets the list of avatar parts managed by this body part.
+   */
     return this._parts;
   }
 
   public addAddition(addition: AvatarAdditionPart) {
+  /**
+   * Adds an additional effect part (such as an FX addition) to this body part.
+   * @param addition The addition part to add.
+   */
     this._additions.push(addition);
   }
 
   public getSortedParts(geometry: string): IAvatarDrawablePart[] {
+  /**
+   * Returns the parts of this body part, sorted by their geometry radius, and includes any additions.
+   * @param geometry The geometry type to use for sorting (e.g., "vertical").
+   * @returns The sorted list of drawable parts for this body part.
+   */
     const baseParts = this._parts
       .map((part) => {
         const item = this._geometry.getBodyPartItem(
@@ -69,6 +87,10 @@ export class AvatarBodyPart {
   }
 
   public setActiveAction(action: AvatarActionInfo) {
+  /**
+   * Sets the active action for all parts in this body part, if the action's part set matches.
+   * @param action The action to activate.
+   */
     if (action.activepartset == null) return;
     const activePart = this._partSets.getActivePartSet(action.activepartset);
 
@@ -80,24 +102,41 @@ export class AvatarBodyPart {
   }
 
   public setDirection(direction: number) {
+  /**
+   * Sets the direction for all parts in this body part.
+   * @param direction The direction index.
+   */
     this._parts.forEach((part) => {
       part.setDirection(direction);
     });
   }
 
   public setDirectionOffset(offset: number) {
+  /**
+   * Sets the direction offset for all parts in this body part.
+   * @param offset The direction offset.
+   */
     this._parts.forEach((part) => {
       part.setDirectionOffset(offset);
     });
   }
 
   public setFrameRepeat(frameRepeat: number) {
+  /**
+   * Sets the frame repeat value for all parts in this body part.
+   * @param frameRepeat The number of times to repeat each frame.
+   */
     this._parts.forEach((part) => {
       part.setFrameRepeat(frameRepeat);
     });
   }
 
   public setEffectFrame(effect: IAvatarEffectData, frame: number) {
+  /**
+   * Sets the effect frame for all parts in this body part, if the effect applies to this body part.
+   * @param effect The effect data.
+   * @param frame The frame index.
+   */
     const effectBodyPart = effect.getFrameBodyPart(this.id, frame);
     if (effectBodyPart == null) return;
 
@@ -119,6 +158,11 @@ export class AvatarBodyPart {
   }
 
   public setAvatarOffsets(avatarFrame: AvatarEffectFrameFXPart, frame: number) {
+  /**
+   * Sets avatar offsets for all parts and additions in this body part for a given frame.
+   * @param avatarFrame The FX part offsets.
+   * @param frame The frame index.
+   */
     this._parts.forEach((part) => {
       part.setAvatarOffsets(avatarFrame, frame);
     });

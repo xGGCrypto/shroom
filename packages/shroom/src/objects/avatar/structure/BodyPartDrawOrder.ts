@@ -1,4 +1,10 @@
 export class BodyPartDrawOrder {
+  /**
+   * Gets the draw order for body parts based on direction and draw order type.
+   * @param direction The avatar direction index (0-7).
+   * @param drawOrderType The draw order type ("std", "lh-up", or "rh-up").
+   * @returns An array of body part IDs in draw order, or undefined if not found.
+   */
   static getDrawOrder(
     direction: number,
     drawOrderType: "std" | "lh-up" | "rh-up"

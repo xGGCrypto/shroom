@@ -31,14 +31,27 @@ export class AvatarEffectPart implements IAvatarEffectPart {
   ) {}
 
   setDirection(direction: number) {
+    /**
+     * Sets the direction for this effect part.
+     * @param direction The direction index.
+     */
     this._direction = direction;
   }
 
   setDirectionOffset(offset: number) {
+    /**
+     * Sets the direction offset for this effect part.
+     * @param offset The direction offset.
+     */
     this._directionOffset = offset;
   }
 
   getDirection(offset = 0) {
+    /**
+     * Gets the direction for this effect part, applying any offset.
+     * @param offset Additional offset to apply to the direction.
+     * @returns The computed direction index, or 0 if sprite has no directions.
+     */
     if (this._direction == null) return;
 
     if (!this._sprite.directions) {
@@ -49,6 +62,11 @@ export class AvatarEffectPart implements IAvatarEffectPart {
   }
 
   setEffectFrame(effect: IAvatarEffectData, frame: number) {
+    /**
+     * Sets the effect frame for this effect part.
+     * @param effect The effect data.
+     * @param frame The frame index.
+     */
     const part = effect.getFrameEffectPart(this._sprite.id, frame);
 
     if (part != null) {
@@ -72,10 +90,18 @@ export class AvatarEffectPart implements IAvatarEffectPart {
   }
 
   setAvatarOffsets(avatarFrame: AvatarEffectFrameFXPart, frame: number) {
+    /**
+     * Sets avatar offsets for this effect part for a given frame.
+     * @param avatarFrame The FX part offsets.
+     * @param frame The frame index.
+     */
     this._offsets.set(frame, avatarFrame);
   }
 
   setEffectFrameDefaultIfNotSet() {
+    /**
+     * Sets a default effect frame if none are set, using the default action.
+     */
     if (this._customFrames.length > 0) return;
 
     const action = this._actionsData.getAction(AvatarAction.Default);
@@ -86,6 +112,10 @@ export class AvatarEffectPart implements IAvatarEffectPart {
   }
 
   getDrawDefinition(): AvatarEffectDrawPart | undefined {
+    /**
+     * Gets the draw definition for this effect part, or undefined if no assets are available.
+     * @returns The AvatarEffectDrawPart for rendering, or undefined if not drawable.
+     */
     const assets: AvatarAsset[] = [];
 
     const directionData =

@@ -73,6 +73,11 @@ export class AvatarPartList {
     });
   }
 
+  /**
+   * Gets all avatar parts for a given body part, excluding hidden layers.
+   * @param bodyPart The body part to retrieve parts for.
+   * @returns An array of AvatarPart instances for the body part.
+   */
   getPartsForBodyBart(bodyPart: Bodypart) {
     return bodyPart.items
       .flatMap((bodyPartItem) => {
@@ -83,6 +88,11 @@ export class AvatarPartList {
       .filter((part) => !this._hiddenLayers.has(part.type));
   }
 
+  /**
+   * Gets all avatar parts for a given part type, sorted by index.
+   * @param type The part type.
+   * @returns An array of AvatarPart instances for the type.
+   */
   getPartsForType(type: AvatarFigurePartType) {
     const parts = this._partsByType.get(type);
     if (parts == null) return [];
@@ -91,6 +101,9 @@ export class AvatarPartList {
     return sortedParts;
   }
 
+  /**
+   * Gets all avatar parts in this list.
+   */
   public get parts() {
     return this._parts;
   }
