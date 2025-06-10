@@ -6,11 +6,19 @@ import { IAvatarEffectBundle } from "./data/interfaces/IAvatarEffectBundle";
 import { IAvatarEffectData } from "./data/interfaces/IAvatarEffectData";
 import { IAvatarManifestData } from "./data/interfaces/IAvatarManifestData";
 
+/**
+ * Loads and manages avatar effect data and textures from asset bundles.
+ * Uses caching for textures and manifest.
+ */
 export class AvatarEffectBundle implements IAvatarEffectBundle {
   private _data: Promise<IAvatarEffectData>;
   private _textures: Map<string, Promise<HitTexture>> = new Map();
   private _manifest: Promise<IAvatarManifestData>;
 
+  /**
+   * Constructs a new AvatarEffectBundle from an asset bundle.
+   * @param _bundle The asset bundle containing effect data and textures.
+   */
   constructor(private _bundle: IAssetBundle) {
     this._data = _bundle
       .getString(`animation.bin`)
@@ -21,10 +29,17 @@ export class AvatarEffectBundle implements IAvatarEffectBundle {
       .then((xml) => new AvatarManifestData(xml));
   }
 
+  /**
+   * Gets the effect data (animation) for this bundle.
+   */
   async getData(): Promise<IAvatarEffectData> {
     return this._data;
   }
 
+  /**
+   * Gets a texture by name from the bundle, caching the result.
+   * @param name The texture name (without extension).
+   */
   async getTexture(name: string): Promise<HitTexture> {
     const current = this._textures.get(name);
     if (current != null) return current;
@@ -37,6 +52,9 @@ export class AvatarEffectBundle implements IAvatarEffectBundle {
     return texture;
   }
 
+  /**
+   * Gets the manifest data for this bundle.
+   */
   async getManifest(): Promise<IAvatarManifestData> {
     return this._manifest;
   }
