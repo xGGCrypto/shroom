@@ -13,36 +13,31 @@ export const basePartSet = new Set<AvatarFigurePartType>([
 ]);
 
 /**
- * Returns a definition of how the avatar should be drawn.
- * @param options Look options
- * @param deps External figure data, draw order and offsets
+ * Computes and returns a definition of how the avatar should be drawn, including all parts and effects.
+ * Ensures the default action is always included for consistent rendering.
+ *
+ * @param options - Look options including parsed look, actions, direction, etc.
+ * @param deps - External figure data, draw order, and offsets.
+ * @returns The AvatarDrawDefinition instance for rendering, or undefined if not applicable.
  */
 export function getAvatarDrawDefinition(
-  {
-    parsedLook,
-    actions: initialActions,
-    direction,
-    headDirection,
-    item: itemId,
-    effect,
-  }: Options,
+  options: Options,
   deps: AvatarDependencies
 ): AvatarDrawDefinition | undefined {
-  const actions = new Set(initialActions).add(AvatarAction.Default);
-  const def = new AvatarDrawDefinition(
+  // Always include the default action for consistent rendering
+  const actions = new Set(options.actions).add(AvatarAction.Default);
+  return new AvatarDrawDefinition(
     {
       actions,
-      direction,
+      direction: options.direction,
       frame: 0,
-      look: parsedLook,
-      item: itemId,
-      headDirection,
-      effect,
+      look: options.parsedLook,
+      item: options.item,
+      headDirection: options.headDirection,
+      effect: options.effect,
     },
     deps
   );
-
-  return def;
 }
 
 interface Options {

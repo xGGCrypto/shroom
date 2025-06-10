@@ -1,3 +1,13 @@
+/**
+ * Creates a look server for avatar rendering or management.
+ * @param config - The configuration object for the look server.
+ * @returns An object or instance representing the look server.
+ */
+/**
+ * Creates a look server for avatar rendering or management.
+ * @param config - The configuration object for the look server.
+ * @returns An object or instance representing the look server.
+ */
 import { getAvatarDrawDefinition } from "./getAvatarDrawDefinition";
 import { parseLookString } from "./parseLookString";
 import { AvatarAction } from "../enum/AvatarAction";

@@ -5,17 +5,13 @@ import { DIRECTION_IS_FLIPPED, getFlippedMetaData } from "./getFlippedMetaData";
 import { AvatarFigurePartType } from "../enum/AvatarFigurePartType";
 import { getAssetFromPartMeta } from "./getAssetFromPartMeta";
 
-export function getAssetForFrame({
-  animationFrame,
-  actionData,
-  partTypeFlipped,
-  direction,
-  partType,
-  partId,
-  offsetsData,
-  offsetX = 0,
-  offsetY = 0,
-}: {
+
+/**
+ * Retrieves the asset for a given animation frame and part configuration, with optimized logic.
+ * @param params - The options describing the frame, part, and animation context.
+ * @returns The asset object or undefined if not found.
+ */
+export function getAssetForFrame(params: {
   animationFrame?: AvatarAnimationFrame;
   actionData: AvatarActionInfo;
   partTypeFlipped?: AvatarFigurePartType;
@@ -26,55 +22,45 @@ export function getAssetForFrame({
   offsetX?: number;
   offsetY?: number;
 }) {
-  const avatarFlipped = DIRECTION_IS_FLIPPED[direction];
+  const {
+    animationFrame,
+    actionData,
+    partTypeFlipped,
+    partType,
+    direction,
+    partId,
+    offsetsData,
+    offsetX = 0,
+    offsetY = 0,
+  } = params;
 
-  let assetPartDefinition = actionData.assetpartdefinition;
-  let frameNumber = 0;
-
-  if (animationFrame != null) {
-    frameNumber = animationFrame.number;
-    if (
-      animationFrame.assetpartdefinition &&
-      animationFrame.assetpartdefinition !== ""
-    ) {
-      assetPartDefinition = animationFrame.assetpartdefinition;
-    }
-  }
+  // Determine asset part definition and frame number efficiently
+  let assetPartDefinition = animationFrame?.assetpartdefinition && animationFrame.assetpartdefinition !== ""
+    ? animationFrame.assetpartdefinition
+    : actionData.assetpartdefinition;
+  const frameNumber = animationFrame?.number ?? 0;
 
   const flippedMeta = getFlippedMetaData({
     assetPartDefinition,
     flippedPartType: partTypeFlipped,
-    direction: direction,
-    partType: partType,
+    direction,
+    partType,
   });
 
-  let assetId = generateAssetName(
-    assetPartDefinition,
-    flippedMeta.partType,
-    partId,
-    flippedMeta.direction,
-    frameNumber
-  );
+  // Try both the specific and fallback asset IDs in a single array iteration
+  const assetIds = [
+    generateAssetName(assetPartDefinition, flippedMeta.partType, partId, flippedMeta.direction, frameNumber),
+    generateAssetName("std", flippedMeta.partType, partId, flippedMeta.direction, 0),
+  ];
 
-  let offset = offsetsData.getOffsets(assetId);
+  const avatarFlipped = DIRECTION_IS_FLIPPED[direction];
 
-  if (offset == null) {
-    assetId = generateAssetName(
-      "std",
-      flippedMeta.partType,
-      partId,
-      flippedMeta.direction,
-      0
-    );
-    offset = offsetsData.getOffsets(assetId);
-  }
+  for (const assetId of assetIds) {
+    const offset = offsetsData.getOffsets(assetId);
+    if (!offset) continue;
 
-  if (offset != null) {
     let flipH = flippedMeta.flip;
-
-    if (avatarFlipped) {
-      flipH = !flipH;
-    }
+    if (avatarFlipped) flipH = !flipH;
 
     const asset = getAssetFromPartMeta(
       assetPartDefinition,
@@ -82,19 +68,26 @@ export function getAssetForFrame({
       offsetsData,
       { offsetX, offsetY }
     );
-
-    if (asset != null) {
-      return asset;
-    }
+    if (asset) return asset;
   }
 }
 
+
+/**
+ * Generates the asset name string for a given part and frame.
+ * @param assetPartDef - The asset part definition string.
+ * @param partType - The part type string.
+ * @param partId - The part ID string.
+ * @param direction - The direction index.
+ * @param frame - The frame index.
+ * @returns The generated asset name string.
+ */
 function generateAssetName(
   assetPartDef: string,
   partType: string,
   partId: string,
   direction: number,
   frame: number
-) {
+): string {
   return `h_${assetPartDef}_${partType}_${partId}_${direction}_${frame}`;
 }
