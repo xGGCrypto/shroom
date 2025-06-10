@@ -1,6 +1,8 @@
+
 import { notNullOrUndefined } from "../../../util/notNullOrUndefined";
 import { AvatarData } from "./AvatarData";
 import { FigureDataPart, IFigureData } from "./interfaces/IFigureData";
+import { getRequiredAttribute, getOptionalAttribute } from "./xmlUtils";
 
 const _getColorKey = (paletteId: string, colorId: string) => {
   return `${paletteId}_${colorId}`;
@@ -62,21 +64,23 @@ export class FigureData extends AvatarData implements IFigureData {
       });
     });
 
+    // Use xmlUtils for attribute extraction and error handling
+    // Import at top: import { getRequiredAttribute, getOptionalAttribute } from "./xmlUtils";
+    // (Assume import is present)
+    const { getRequiredAttribute, getOptionalAttribute } = require("./xmlUtils");
+
     setTypes.forEach((element) => {
-      const setType = element.getAttribute("type");
-      const paletteId = element.getAttribute("paletteid");
+      const setType = getRequiredAttribute(element, "type");
+      const paletteId = getOptionalAttribute(element, "paletteid");
 
       const sets = this.querySelectorAll("set");
-
-      if (setType == null) return;
 
       if (paletteId != null) {
         this._paletteIdForSetType.set(setType, paletteId);
       }
 
       sets.forEach((set) => {
-        const setId = set.getAttribute("id");
-        if (setId == null) return;
+        const setId = getRequiredAttribute(set, "id");
 
         const parts = Array.from(set.querySelectorAll("part"));
         const partArr: FigureDataPart[] = [];
@@ -85,8 +89,7 @@ export class FigureData extends AvatarData implements IFigureData {
         set
           .querySelectorAll(`hiddenlayers layer`)
           .forEach((hiddenLayerElement) => {
-            const partType = hiddenLayerElement.getAttribute("parttype");
-
+            const partType = getOptionalAttribute(hiddenLayerElement, "parttype");
             if (partType != null) {
               hiddenLayers.push(partType);
             }
@@ -96,17 +99,14 @@ export class FigureData extends AvatarData implements IFigureData {
 
         parts
           .map((part) => {
-            const id = part.getAttribute("id");
-            const type = part.getAttribute("type");
-            const colorable = part.getAttribute("colorable");
-            let index = Number(part.getAttribute("index"));
+            const id = getRequiredAttribute(part, "id");
+            const type = getRequiredAttribute(part, "type");
+            const colorable = getOptionalAttribute(part, "colorable");
+            let index = Number(getOptionalAttribute(part, "index"));
 
             if (isNaN(index)) {
               index = 0;
             }
-
-            if (id == null) throw new Error("Invalid id");
-            if (type == null) throw new Error("Invalid type");
 
             return {
               id,

@@ -4,6 +4,7 @@ import {
   ManifestAlias,
   ManifestAsset,
 } from "./interfaces/IAvatarManifestData";
+import { getRequiredAttribute, getOptionalAttribute } from "./xmlUtils";
 
 export class AvatarManifestData
   extends AvatarData
@@ -36,36 +37,30 @@ export class AvatarManifestData
 
     for (const asset of assets) {
       const offsetParam = asset.querySelector(`param[key="offset"]`);
-      const value = offsetParam?.getAttribute("value");
-      const name = asset.getAttribute("name");
-
-      if (value != null && name != null) {
+      const value = offsetParam ? getRequiredAttribute(offsetParam, "value") : undefined;
+      const name = getRequiredAttribute(asset, "name");
+      if (value != null) {
         const offsets = value.split(",");
         const x = Number(offsets[0]);
         const y = Number(offsets[1]);
-
-        const asset: ManifestAsset = { name, x, y, flipH: false, flipV: false };
-        this._assets.push(asset);
-        this._assetbyName.set(name, asset);
+        const assetObj: ManifestAsset = { name, x, y, flipH: false, flipV: false };
+        this._assets.push(assetObj);
+        this._assetbyName.set(name, assetObj);
       }
     }
 
     for (const alias of aliases) {
-      const name = alias.getAttribute("name");
-      const link = alias.getAttribute("link");
-      const fliph = alias.getAttribute("fliph") === "1";
-      const flipv = alias.getAttribute("flipv") === "1";
-
-      if (name != null && link != null) {
-        const alias: ManifestAlias = {
-          name,
-          link,
-          fliph,
-          flipv,
-        };
-
-        this._aliases.push(alias);
-      }
+      const name = getRequiredAttribute(alias, "name");
+      const link = getRequiredAttribute(alias, "link");
+      const fliph = getOptionalAttribute(alias, "fliph") === "1";
+      const flipv = getOptionalAttribute(alias, "flipv") === "1";
+      const aliasObj: ManifestAlias = {
+        name,
+        link,
+        fliph,
+        flipv,
+      };
+      this._aliases.push(aliasObj);
     }
   }
 }
