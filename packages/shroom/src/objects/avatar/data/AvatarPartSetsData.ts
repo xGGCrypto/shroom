@@ -1,7 +1,7 @@
 import { AvatarData } from "./AvatarData";
 import { IAvatarPartSetsData } from "./interfaces/IAvatarPartSetsData";
 import { partsetsXml } from "./static/partsets.xml";
-import { getRequiredAttribute } from "./xmlUtils";
+import { getOptionalAttribute, getRequiredAttribute } from "./xmlUtils";
 
 export class AvatarPartSetsData
   extends AvatarData
@@ -32,8 +32,8 @@ export class AvatarPartSetsData
     const element = this.querySelector(`partSet part[set-type="${id}"]`);
     if (element == null) return;
     return {
-      flippedSetType: getRequiredAttribute(element, "flipped-set-type"),
-      removeSetType: getRequiredAttribute(element, "remove-set-type"),
+      flippedSetType: getOptionalAttribute(element, "flipped-set-type"),
+      removeSetType: getOptionalAttribute(element, "remove-set-type"),
     };
   }
 
