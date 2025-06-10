@@ -1,8 +1,7 @@
 import * as PIXI from "pixi.js";
 import { FloorFurniture } from "@xggcrypto/shroom";
 
-import { createShroom } from "../common/createShroom";
-import { RoomCreator } from "../common/createRoom";
+import { createShroom, RoomCreator } from "../common";
 export default {
   title: "Furniture / Issues",
 };

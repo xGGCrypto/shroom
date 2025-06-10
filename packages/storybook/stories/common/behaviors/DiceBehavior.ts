@@ -20,10 +20,10 @@ export class DiceBehavior implements IFurnitureBehavior {
 
   private _startRoll() {
     this.state = { ...this.state, state: "rolling" };
-    this._updateState();
+    this._updateState(); // Start Rolling Animation
 
     this.timeout = window.setTimeout(() => {
-      this._setValue(Math.floor(Math.random() * 6) + 1);
+      this._setValue(Math.floor(Math.random() * 6) + 1); // Set Random Value to the Dice
     }, 500);
   }
 
@@ -86,7 +86,8 @@ export class DiceBehavior implements IFurnitureBehavior {
 
     switch (event.tag) {
       case "activate":
-        this._handleActivate();
+        if (this.furniture?.type! == "edice") this._startRoll(); // If it's an edice, start rolling
+        else this._handleActivate(); // If it's not an edice, open the dice
         break;
       case "deactivate":
         this._handleDeactivate();

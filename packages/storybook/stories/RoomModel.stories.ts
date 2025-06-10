@@ -1,5 +1,4 @@
-import { createShroom } from "./common/createShroom";
-import { RoomCreator } from "./common/createRoom";
+import { createShroom, RoomCreator } from "./common";
 
 export default {
   title: "Room / Model",

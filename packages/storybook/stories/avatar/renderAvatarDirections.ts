@@ -1,6 +1,5 @@
 import { Room, Avatar } from "@xggcrypto/shroom";
-import { createShroom } from "../common/createShroom";
-import { RoomCreator } from "../common/createRoom";
+import { createShroom, RoomCreator } from "../common";
 
 const directions = [0, 1, 2, 3, 4, 5, 6, 7];
 
@@ -16,7 +15,7 @@ export function renderAvatarDirections(
       "x000000000000000",
       "x000000000000000",
     ]);
-    
+
     const room = RoomCreator.createRoom(shroom, application, tilemap, {
       centerRoom: true,
     });

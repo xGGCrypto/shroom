@@ -4,7 +4,9 @@ import {
   Texture as PixiTexture,
 } from "pixi.js";
 
+//@ts-ignore
 import tile2 from "../assets/tile2.png";
+//@ts-ignore
 import tile1 from "../assets/tile.png";
 
 interface RoomCreatorOptions {
