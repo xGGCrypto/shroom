@@ -32,11 +32,16 @@ yargs(hideBin(process.argv))
           "Provide a location to store the extracted resources"
         );
     },
-    (options: { url?: string; location: string }) => {
-      dump({
-        externalVariables: options.url,
-        downloadPath: options.location,
-      }).catch(console.error);
+    async (options: { url?: string; location: string }) => {
+      try {
+        await dump({
+          externalVariables: options.url,
+          downloadPath: options.location,
+        });
+      } catch (err) {
+        console.error('[CLI] Error in dump command:', err);
+        process.exit(1);
+      }
     }
   )
   .command(
@@ -80,7 +85,7 @@ yargs(hideBin(process.argv))
           "Provide a target port to forward the traffic to"
         );
     },
-    (options: {
+    async (options: {
       _: string[];
       targetPort: number;
       port: number;
@@ -90,15 +95,27 @@ yargs(hideBin(process.argv))
       key?: string;
       targetHost?: string;
     }) => {
-      runForwardingServer({
-        wsPort: options.port,
-        targetPort: options.targetPort,
-        debug: options.debug,
-        prependLengthPrefix: options.prependLengthPrefix,
-        targetHost: options.targetHost,
-        keyPath: options.key,
-        certPath: options.cert,
-      });
+      try {
+        // Validate port numbers
+        if (isNaN(options.port) || options.port <= 0 || options.port > 65535) {
+          throw new Error('Invalid port number for --port');
+        }
+        if (isNaN(options.targetPort) || options.targetPort <= 0 || options.targetPort > 65535) {
+          throw new Error('Invalid port number for --target-port');
+        }
+        await runForwardingServer({
+          wsPort: options.port,
+          targetPort: options.targetPort,
+          debug: options.debug,
+          prependLengthPrefix: options.prependLengthPrefix,
+          targetHost: options.targetHost,
+          keyPath: options.key,
+          certPath: options.cert,
+        });
+      } catch (err) {
+        console.error('[CLI] Error in proxy command:', err);
+        process.exit(1);
+      }
     }
   )
   .strict()
