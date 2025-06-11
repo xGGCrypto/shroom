@@ -7,6 +7,10 @@ import { getFurnitureFetch } from "./util/getFurnitureFetch";
 import { FurnitureId } from "../../interfaces/IFurnitureData";
 import { LegacyWallGeometry } from "../room/util/LegacyWallGeometry";
 
+/**
+ * Represents a piece of furniture placed on a wall in a room.
+ * Handles wall-specific positioning and delegates rendering and events to BaseFurniture.
+ */
 export class WallFurniture extends RoomObject {
   public readonly placementType = "wall";
 
@@ -19,6 +23,10 @@ export class WallFurniture extends RoomObject {
   private _offsetX = 0;
   private _offsetY = 0;
 
+  /**
+   * Constructs a new WallFurniture instance.
+   * @param options - Initialization options for the wall furniture.
+   */
   constructor(
     options: {
       roomX: number;
@@ -175,6 +183,9 @@ export class WallFurniture extends RoomObject {
     this._baseFurniture.destroy();
   }
 
+  /**
+   * Called when the furniture is registered in the room. Sets up dependencies and updates position.
+   */
   registered(): void {
     this._baseFurniture.dependencies = {
       animationTicker: this.animationTicker,
@@ -187,6 +198,12 @@ export class WallFurniture extends RoomObject {
     this._updatePosition();
   }
 
+  /**
+   * Calculates the pixel offsets for the wall furniture based on its direction and wall geometry.
+   * @param direction - The direction the furniture is facing.
+   * @returns The pixel x/y offsets for rendering.
+   * @private
+   */
   private _getOffsets(direction: number) {
     const geo = new LegacyWallGeometry(this.room.getParsedTileTypes());
     const roomPosition = geo.getLocation(
@@ -221,6 +238,10 @@ export class WallFurniture extends RoomObject {
     }
   }
 
+  /**
+   * Updates the pixel position, mask, and z-index of the underlying BaseFurniture based on wall geometry.
+   * @private
+   */
   private _updatePosition() {
     const offsets = this._getOffsets(this.direction);
     if (offsets == null) return;
