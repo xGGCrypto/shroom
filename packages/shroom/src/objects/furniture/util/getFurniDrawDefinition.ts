@@ -1,9 +1,17 @@
+
+
+
+
+
+
+
+
 import { FurniDrawDefinition, FurniDrawPart } from "./DrawDefinition";
 import {
-  FurnitureAnimationLayer,
-  FurnitureDirectionLayer,
   IFurnitureVisualizationData,
   FurnitureLayer,
+  FurnitureAnimationLayer,
+  FurnitureDirectionLayer,
 } from "../data/interfaces/IFurnitureVisualizationData";
 import {
   FurnitureAsset,
@@ -11,17 +19,40 @@ import {
 } from "../data/interfaces/IFurnitureAssetsData";
 import { getCharFromLayerIndex } from ".";
 
-interface FurniDrawDefinitionOptions {
+/**
+ * Options for generating a furniture draw definition.
+ * @category Furniture
+ */
+export interface FurniDrawDefinitionOptions {
+  /** The furniture type string, possibly including color (e.g., "chair*2"). */
   type: string;
+  /** The direction to render (e.g., 0, 90, 180, 270). */
   direction: number;
+  /** Optional animation identifier. */
   animation?: string;
 }
 
-interface FurniDrawDefinitionDependencies {
+/**
+ * Dependencies required to generate a furniture draw definition.
+ * @category Furniture
+ */
+export interface FurniDrawDefinitionDependencies {
+  /** Visualization data for the furniture. */
   visualizationData: IFurnitureVisualizationData;
+  /** Asset data for the furniture. */
   assetsData: IFurnitureAssetsData;
 }
 
+/**
+ * Generates a draw definition for a furniture item, including all parts and assets to render.
+ * Handles color, direction, animation, and shadow logic.
+ *
+ * @param options Options for the draw definition (type, direction, animation).
+ * @param deps Visualization and asset data dependencies.
+ * @returns The draw definition for the furniture item.
+ * @throws If required data is missing or invalid.
+ * @category Furniture
+ */
 export function getFurniDrawDefinition(
   { type: typeWithColor, direction, animation }: FurniDrawDefinitionOptions,
   { visualizationData, assetsData }: FurniDrawDefinitionDependencies
@@ -29,7 +60,7 @@ export function getFurniDrawDefinition(
   const typeSplitted = typeWithColor.split("*");
   const type = typeSplitted[0];
 
-  // If color is not  set, we fallback to the `0` color for the item.
+  // If color is not set, fallback to the `0` color for the item.
   const color = typeSplitted[1] ?? "0";
 
   const size = 64;
@@ -40,6 +71,7 @@ export function getFurniDrawDefinition(
   const getAssetName = (char: string, frame: number) =>
     `${type}_${size}_${char}_${direction}_${frame}`;
 
+  // Add shadow part if available
   const shadow = assetsData.getAsset(getAssetName("sd", 0));
 
   if (shadow != null) {
@@ -101,6 +133,12 @@ export function getFurniDrawDefinition(
   };
 }
 
+/**
+ * Builds a draw part for a single furniture layer, including asset selection and animation handling.
+ * @param params All parameters required to build the draw part.
+ * @returns The draw part for the given layer.
+ * @category Furniture
+ */
 function getDrawPart({
   layerIndex,
   layer,
