@@ -15,20 +15,38 @@ import {
   FurnitureAnimation,
 } from "./interfaces/IFurnitureVisualizationData";
 
+/**
+ * Parses and provides access to furniture visualization data from XML.
+ * Implements IFurnitureVisualizationData for layer, direction, animation, and color lookup.
+ */
 export class FurnitureVisualizationData
   extends XmlData
   implements IFurnitureVisualizationData {
+  /**
+   * Constructs a FurnitureVisualizationData instance from XML.
+   * @param xml - The XML string containing visualization data.
+   */
   constructor(xml: string) {
     super(xml);
   }
 
+  /**
+   * Loads and parses furniture visualization data from a URL.
+   * @param url - The URL to fetch the XML from.
+   * @returns A promise resolving to a FurnitureVisualizationData instance.
+   */
   static async fromUrl(url: string) {
     const response = await fetch(url);
     const text = await response.text();
-
     return new FurnitureVisualizationData(text);
   }
 
+  /**
+   * Gets the number of frames in an animation sequence, not counting repeats.
+   * @param size - The visualization size.
+   * @param animationId - The animation id.
+   * @returns The frame count, or undefined if not found.
+   */
   getFrameCountWithoutRepeat(
     size: number,
     animationId: number
@@ -40,15 +58,19 @@ export class FurnitureVisualizationData
     let count: number | undefined;
     frameSequences.forEach((element) => {
       const value = element.children.length;
-
       if (count == null || value > count) {
         count = value;
       }
     });
-
     return count;
   }
 
+  /**
+   * Gets the transition animation for a given size and transition target.
+   * @param size - The visualization size.
+   * @param transitionTo - The target animation id.
+   * @returns The transition FurnitureAnimation, or undefined if not found.
+   */
   getTransitionForAnimation(
     size: number,
     transitionTo: number
@@ -56,19 +78,22 @@ export class FurnitureVisualizationData
     const animation = this.querySelector(
       `visualization[size="${size}"] animations animation[transitionTo="${transitionTo}"]`
     );
-
     const animationId = Number(animation?.getAttribute("id") ?? undefined);
-
     if (isNaN(animationId)) {
       return;
     }
-
     return {
       id: animationId,
       transitionTo,
     };
   }
 
+  /**
+   * Gets the animation definition for a given size and animation id.
+   * @param size - The visualization size.
+   * @param animationId - The animation id.
+   * @returns The FurnitureAnimation, or undefined if not found.
+   */
   getAnimation(
     size: number,
     animationId: number
@@ -76,13 +101,10 @@ export class FurnitureVisualizationData
     const animation = this.querySelector(
       `visualization[size="${size}"] animations animation[id="${animationId}"]`
     );
-
     if (animation == null) return;
-
     const transitionAnimationId = Number(
       animation?.getAttribute("transitionTo") ?? undefined
     );
-
     return {
       id: animationId,
       transitionTo: isNaN(transitionAnimationId)
@@ -91,11 +113,17 @@ export class FurnitureVisualizationData
     };
   }
 
-  getColor(size: number, colorId: number, layerId: number) {
+  /**
+   * Gets the color value for a given size, color id, and layer id.
+   * @param size - The visualization size.
+   * @param colorId - The color id.
+   * @param layerId - The layer id.
+   * @returns The color string, or undefined if not found.
+   */
+  getColor(size: number, colorId: number, layerId: number): string | undefined {
     const colorElement = this.querySelector(
       `visualization[size="${size}"] colors color[id="${colorId}"] colorLayer[id="${layerId}"]`
     );
-
     return colorElement?.getAttribute("color") ?? undefined;
   }
 
