@@ -4,6 +4,10 @@ import { IEventManagerEvent } from "./interfaces/IEventManagerEvent";
 
 type EventOverOutCallback = (event: IEventManagerEvent) => void;
 
+/**
+ * Handles mouse over and out events for event emitters, managing callbacks and state.
+ * Tracks which emitters are currently hovered and triggers onOver/onOut as needed.
+ */
 export class EventOverOutHandler {
   private _eventEmitters: Map<
     EventEmitter<HitSpriteEventMap>,
@@ -16,22 +20,38 @@ export class EventOverOutHandler {
   private _timeout: any;
   private _targetChanged = false;
 
+  /**
+   * Gets the callback for mouse over events.
+   */
   public get onOver() {
     return this._onOverCallback;
   }
 
+  /**
+   * Sets the callback for mouse over events.
+   */
   public set onOver(value) {
     this._onOverCallback = value;
   }
 
+  /**
+   * Gets the callback for mouse out events.
+   */
   public get onOut() {
     return this._onOutCallback;
   }
 
+  /**
+   * Sets the callback for mouse out events.
+   */
   public set onOut(value) {
     this._onOutCallback = value;
   }
 
+  /**
+   * Registers an event emitter for over/out handling.
+   * @param emitter - The event emitter to register.
+   */
   register(emitter: EventEmitter<HitSpriteEventMap>) {
     if (this._eventEmitters.has(emitter)) return;
 
@@ -46,6 +66,10 @@ export class EventOverOutHandler {
     );
   }
 
+  /**
+   * Removes an event emitter from over/out handling.
+   * @param emitter - The event emitter to remove.
+   */
   remove(emitter: EventEmitter<HitSpriteEventMap>) {
     const handler = this._eventEmitters.get(emitter);
     if (handler == null) return;
@@ -101,6 +125,9 @@ export class EventOverOutHandler {
   }
 }
 
+/**
+ * Internal class for managing event listeners for a single emitter.
+ */
 class RegisteredOverOutHandler {
   constructor(
     private emitter: EventEmitter<HitSpriteEventMap>,
@@ -125,6 +152,9 @@ class RegisteredOverOutHandler {
     );
   }
 
+  /**
+   * Cleans up all event listeners for this handler.
+   */
   destroy() {
     this.emitter.removeEventListener("pointerout", this._handlePointerOut);
     this.emitter.removeEventListener("pointerover", this._handlePointerOver);

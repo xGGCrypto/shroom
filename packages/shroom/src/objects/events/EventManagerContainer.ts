@@ -7,9 +7,18 @@ import {
 } from "../../pixi-proxy";
 import { EventManager } from "./EventManager";
 
+/**
+ * Connects the event manager to the application and manages pointer event listeners.
+ * Handles pointer events and manages a tiling sprite overlay for the event area.
+ */
 export class EventManagerContainer {
   private _box: ShroomTilingSprite | undefined;
 
+  /**
+   * Creates a new EventManagerContainer and sets up pointer event listeners.
+   * @param _application - The application instance.
+   * @param _eventManager - The event manager instance.
+   */
   constructor(
     private _application: ShroomApplication,
     private _eventManager: EventManager
@@ -52,10 +61,17 @@ export class EventManagerContainer {
     );
   }
 
+  /**
+   * Cleans up the container and removes the rectangle update from the ticker.
+   */
   destroy() {
     this._application.ticker.remove(this._updateRectangle);
   }
 
+  /**
+   * Updates the overlay rectangle to match the application size.
+   * (Currently creates a semi-transparent tiling sprite, but does not add it to the stage.)
+   */
   private _updateRectangle = () => {
     //this._box?.destroy();
 
