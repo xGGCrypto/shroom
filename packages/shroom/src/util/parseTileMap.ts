@@ -20,11 +20,9 @@ export type ParsedTileType =
   | { type: "door"; z: number };
 
 /**
- * Parses the standard tilemap format into a format with the following meta data:
- * - Walls
- * - Door
- * - Stairs
- * @param tilemap
+ * Parses the standard tilemap format into a format with meta data (walls, door, stairs).
+ * @param tilemap The 2D array of tile types.
+ * @returns An object with parsed tilemap and metadata.
  */
 export function parseTileMap(
   tilemap: TileType[][]
