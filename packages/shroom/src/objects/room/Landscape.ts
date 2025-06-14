@@ -131,9 +131,12 @@ export class Landscape extends RoomObject implements IRoomPart {
    * @param data The new part data.
    */
   update(data: RoomPartData): void {
+    if (!data || typeof data !== 'object') {
+      console.warn('Landscape.update: Invalid data provided.');
+      return;
+    }
     this._masks = data.masks;
     this._wallHeightWithZ = data.wallHeight;
-
     this._updateLandscapeImages();
   }
 
@@ -141,15 +144,28 @@ export class Landscape extends RoomObject implements IRoomPart {
    * Cleans up resources and removes this part from the visualization.
    */
   destroyed(): void {
-    this._unsubscribe && this._unsubscribe();
-    this._container?.destroy();
-    this._partNode?.remove();
+    if (this._unsubscribe) {
+      this._unsubscribe();
+      this._unsubscribe = undefined;
+    }
+    if (this._container) {
+      this._container.destroy();
+      this._container = undefined;
+    }
+    if (this._partNode) {
+      this._partNode.remove();
+      this._partNode = undefined;
+    }
   }
 
   /**
    * Registers this part with the room visualization and updates graphics.
    */
   registered(): void {
+    if (!this.roomVisualization) {
+      console.warn('Landscape.registered: No roomVisualization available.');
+      return;
+    }
     this._partNode = this.roomVisualization.addPart(this);
     this._updateLandscapeImages();
   }
@@ -185,9 +201,16 @@ export class Landscape extends RoomObject implements IRoomPart {
    */
   private _updateLandscapeImages() {
     if (!this.mounted) return;
+    if (!this.tilemap || !this.roomVisualization || !this.geometry) {
+      console.warn('Landscape._updateLandscapeImages: Missing dependencies.');
+      return;
+    }
 
     const meta = getWallCollectionMeta(this.tilemap.getParsedTileTypes());
-    this._container?.destroy();
+    if (this._container) {
+      this._container.destroy();
+      this._container = undefined;
+    }
     const container = new ShroomContainer();
 
     let offsetRow = 0;
@@ -195,94 +218,95 @@ export class Landscape extends RoomObject implements IRoomPart {
 
     meta.forEach((meta) => {
       const width = Math.abs(meta.end - meta.start) * 32;
-
       const wall = new ShroomContainer();
-
-      const colored = new ShroomTilingSprite(
-        ShroomTexture.WHITE,
-        width,
-        this._wallHeightWithZ
-      );
+      let colored: ShroomTilingSprite;
+      try {
+        colored = new ShroomTilingSprite(
+          ShroomTexture.WHITE,
+          width,
+          this._wallHeightWithZ
+        );
+      } catch (err) {
+        console.warn('Landscape: Failed to create colored tiling sprite', err);
+        return;
+      }
 
       if (this.color != null) {
-        colored.tint = parseInt(this.color.slice(1), 16);
+        try {
+          colored.tint = parseInt(this.color.slice(1), 16);
+        } catch (err) {
+          colored.tint = 0xffffff;
+          console.warn('Landscape: Invalid color format', this.color);
+        }
       } else {
         colored.tint = 0xffffff;
       }
-
       colored.y = -this._wallHeightWithZ;
-
       wall.addChild(colored);
 
       if (meta.type === "rowWall") {
         const maskLevel = this.landscapeContainer.getMaskLevel(meta.level, 0);
-
         const mask = this._getMask(2, maskLevel.roomX, 0);
         wall.mask = mask;
-
         const position = this.geometry.getPosition(
           meta.level + 1,
           meta.start,
           0
         );
-
         wall.transform.setFromMatrix(new ShroomMatrix(1, -0.5, 0, 1));
-
         wall.x = position.x;
         wall.y = position.y + 16;
-
         if (this._leftTexture != null) {
-          const graphics = new ShroomTilingSprite(
-            this._leftTexture,
-            width,
-            this._leftTexture.height
-          );
-
-          graphics.tilePosition = new ShroomPoint(offsetRow, 0);
-          graphics.texture = this._leftTexture;
-          graphics.x = 0;
-          graphics.y = -this._leftTexture.height;
-          wall.addChild(graphics);
+          try {
+            const graphics = new ShroomTilingSprite(
+              this._leftTexture,
+              width,
+              this._leftTexture.height
+            );
+            graphics.tilePosition = new ShroomPoint(offsetRow, 0);
+            graphics.texture = this._leftTexture;
+            graphics.x = 0;
+            graphics.y = -this._leftTexture.height;
+            wall.addChild(graphics);
+          } catch (err) {
+            console.warn('Landscape: Failed to create left wall tiling sprite', err);
+          }
         }
-
         offsetRow += width;
       } else if (meta.type === "colWall") {
         const maskLevel = this.landscapeContainer.getMaskLevel(0, meta.level);
         const mask = this._getMask(4, 0, maskLevel.roomY);
         wall.mask = mask;
-
         const position = this.geometry.getPosition(
           meta.start + 1,
           meta.level + 1,
           0
         );
-
         wall.transform.setFromMatrix(new ShroomMatrix(1, 0.5, 0, 1));
-
         wall.x = position.x + 32;
         wall.y = position.y;
-
         if (this._rightTexture != null) {
-          const graphics = new ShroomTilingSprite(
-            this._rightTexture,
-            width,
-            this._rightTexture.height
-          );
-          graphics.texture = this._rightTexture;
-          graphics.x = 0;
-          graphics.y = -this._rightTexture.height;
-          graphics.tilePosition = new ShroomPoint(offsetCol, 0);
-          wall.addChild(graphics);
+          try {
+            const graphics = new ShroomTilingSprite(
+              this._rightTexture,
+              width,
+              this._rightTexture.height
+            );
+            graphics.texture = this._rightTexture;
+            graphics.x = 0;
+            graphics.y = -this._rightTexture.height;
+            graphics.tilePosition = new ShroomPoint(offsetCol, 0);
+            wall.addChild(graphics);
+          } catch (err) {
+            console.warn('Landscape: Failed to create right wall tiling sprite', err);
+          }
         }
-
         offsetCol += width;
       }
-
       container.addChild(wall);
     });
 
     this._container = container;
-
     this.roomVisualization.landscapeContainer.addChild(container);
   }
 }
