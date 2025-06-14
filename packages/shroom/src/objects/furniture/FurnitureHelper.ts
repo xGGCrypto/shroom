@@ -6,19 +6,19 @@ import { IFurnitureExtended } from "./IFurniture";
 
 /**
  * Helper utilities for working with furniture objects, including preview image extraction and option generation.
+ * @category Furniture
  */
 export class FurnitureHelper {
   /**
    * Generates a preview image for a furniture item by rendering it in a temporary container.
-   * @param furniId - The furniture type or id to preview.
-   * @param shroom - The Shroom application instance.
+   * @param furniId The furniture type or id to preview.
+   * @param shroom The Shroom application instance.
    * @returns A promise that resolves to an HTMLImageElement of the rendered furniture.
    */
   public static getFurniPreview(furniId: string, shroom: Shroom): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       const container = new ShroomContainer();
       let resolved = false;
-
       try {
         BaseFurniture.fromShroom(shroom, container, {
           animation: "0",
@@ -61,8 +61,8 @@ export class FurnitureHelper {
 
   /**
    * Gathers display and action options for a furniture item, including preview image and metadata.
-   * @param furni - The furniture instance to describe.
-   * @param shroom - The Shroom application instance.
+   * @param furni The furniture instance to describe.
+   * @param shroom The Shroom application instance.
    * @returns A promise resolving to FurniOptions, or undefined if unavailable.
    */
   public static async getFurniOptions(furni: IFurnitureExtended, shroom: Shroom): Promise<FurniOptions | undefined> {
@@ -107,6 +107,7 @@ export class FurnitureHelper {
 
 /**
  * Options and actions available for a furniture item, suitable for UI menus or toolbars.
+ * @category Furniture
  */
 export interface FurniOptions {
   /** Display name of the furniture. */
