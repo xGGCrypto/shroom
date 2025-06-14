@@ -25,21 +25,33 @@ import { getTileColors, getWallColors } from "./util/getTileColors";
 import { EventManager } from "../events/EventManager";
 import { IEventManagerEvent } from "../events/interfaces/IEventManagerEvent";
 
+/**
+ * Dependencies required to construct a Room instance.
+ */
 export interface Dependencies {
+  /** Animation ticker for driving room updates. */
   animationTicker: IAnimationTicker;
+  /** Loader for avatar assets. */
   avatarLoader: IAvatarLoader;
+  /** Loader for furniture assets. */
   furnitureLoader: IFurnitureLoader;
+  /** Room configuration. */
   configuration: IConfiguration;
+  /** Optional furniture data. */
   furnitureData?: IFurnitureData;
+  /** The Pixi.js application instance. */
   application: ShroomApplication;
 }
 
 type TileMap = TileType[][] | string;
 
+/**
+ * Options for creating a Room instance.
+ */
 interface CreateOptions {
   /**
-   * A tilemap string or 2d-array. This should have the following format
-   * ```
+   * A tilemap string or 2d-array. This should have the following format:
+   *
    * xxxx  <- Upper padding
    * x000  <- Tiles
    * x000
@@ -48,17 +60,23 @@ interface CreateOptions {
    * |
    * |
    * Side padding
-   * ```
    */
   tilemap: TileMap;
 }
 
+/**
+ * The main Room class, representing a rendered room with geometry, objects, and visualization.
+ * Provides APIs for managing room state, objects, events, and appearance.
+ */
 export class Room
   extends ShroomContainer
   implements IRoomGeometry, IRoomObjectContainer, ITileMap {
+  /** The Pixi.js application instance. */
   public readonly application: ShroomApplication;
 
+  /** Internal container for room objects. */
   private _roomObjectContainer: RoomObjectContainer;
+  /** The visualization component for the room. */
   private _visualization: RoomModelVisualization;
 
   private _animationTicker: IAnimationTicker;
@@ -81,14 +99,24 @@ export class Room
 
   private _application: ShroomApplication;
 
+  /**
+   * Emits when the active tile changes (see RoomModelVisualization).
+   */
   public get onActiveTileChange() {
     return this._visualization.onActiveTileChange;
   }
 
+  /**
+   * Emits when the active wall changes (see RoomModelVisualization).
+   */
   public get onActiveWallChange() {
     return this._visualization.onActiveWallChange;
   }
 
+  /**
+   * Constructs a new Room instance.
+   * @param deps All dependencies and options for the room.
+   */
   constructor({
     animationTicker,
     avatarLoader,
@@ -104,7 +132,6 @@ export class Room
       typeof tilemap === "string" ? parseTileMapString(tilemap) : tilemap;
 
     this._application = application;
-
     this._animationTicker = animationTicker;
     this._furnitureLoader = furnitureLoader;
     this._avatarLoader = avatarLoader;
@@ -142,23 +169,24 @@ export class Room
   }
 
   /**
-   * Creates a new room.
-   * @param shroom A shroom instance
-   * @param options Room creation options
+   * Creates a new Room instance from a Shroom and options.
+   * @param shroom A Shroom instance containing dependencies.
+   * @param options Room creation options.
+   * @returns A new Room instance.
    */
   static create(shroom: Shroom, { tilemap }: CreateOptions) {
     return new Room({ ...shroom.dependencies, tilemap });
   }
 
   /**
-   * Room objects which are attached to the room.
+   * Returns the set of room objects currently attached to the room.
    */
   public get roomObjects() {
     return this._roomObjectContainer.roomObjects;
   }
 
   /**
-   * When set to true, hides the walls
+   * When set to true, hides the walls.
    */
   public get hideWalls() {
     return this._visualization.hideWalls;
@@ -169,7 +197,7 @@ export class Room
   }
 
   /**
-   * When set to true, hide the floor. This will also hide the walls.
+   * When set to true, hides the floor. This will also hide the walls.
    */
   public get hideFloor() {
     return this._visualization.hideFloor;
@@ -179,6 +207,9 @@ export class Room
     this._visualization.hideFloor = value;
   }
 
+  /**
+   * When set to true, hides the tile cursor.
+   */
   public get hideTileCursor() {
     return this._visualization.hideTileCursor;
   }
@@ -199,7 +230,7 @@ export class Room
   }
 
   /**
-   * Height of the tile
+   * Height of the tile.
    */
   public get tileHeight() {
     return this._visualization.tileHeight;
@@ -210,7 +241,7 @@ export class Room
   }
 
   /**
-   * Depth of the wall
+   * Depth of the wall.
    */
   public get wallDepth() {
     return this._visualization.wallDepth;
@@ -293,14 +324,24 @@ export class Room
     return this._visualization.rectangle.width;
   }
 
+  /**
+   * Returns the visualization component for the room.
+   */
   public get visualization(): RoomModelVisualization {
     return this._visualization;
   }
 
+  /**
+   * Returns the event manager for the room.
+   */
   public get eventManager(): EventManager {
     return this._eventManager;
   }
 
+  /**
+   * Changes the tile map for the room, updating the visualization and preserving key properties.
+   * @param tileMap The new tile map to use.
+   */
   changeTileMap(tileMap: TileType[][]): void {
     this._visualization = new RoomModelVisualization(
       this._eventManager,
@@ -318,7 +359,6 @@ export class Room
     );
 
     this.removeChildAt(0);
-
     this.addChild(this._visualization);
 
     // refresh visualization data
@@ -328,13 +368,16 @@ export class Room
     this.wallTexture = this.wallTexture;
   }
 
+  /**
+   * Returns the parsed tile types for the current tile map.
+   */
   getParsedTileTypes(): ParsedTileType[][] {
     return this._visualization.parsedTileMap.parsedTileTypes;
   }
 
   /**
-   * Adds and registers a room object to a room.
-   * @param object The room object to attach
+   * Adds and registers a room object to the room.
+   * @param object The room object to attach.
    */
   addRoomObject(object: IRoomObject) {
     this._roomObjectContainer.addRoomObject(object);
@@ -342,12 +385,19 @@ export class Room
 
   /**
    * Removes and destroys a room object from the room.
-   * @param object The room object to remove
+   * @param object The room object to remove.
    */
   removeRoomObject(object: IRoomObject) {
     this._roomObjectContainer.removeRoomObject(object);
   }
 
+  /**
+   * Gets the screen position for a given room coordinate.
+   * @param roomX The X coordinate in room space.
+   * @param roomY The Y coordinate in room space.
+   * @param roomZ The Z coordinate in room space.
+   * @returns The screen position as an object with x and y.
+   */
   getPosition(
     roomX: number,
     roomY: number,
@@ -356,6 +406,12 @@ export class Room
     return this._visualization.getScreenPosition(roomX, roomY, roomZ);
   }
 
+  /**
+   * Gets the tile type at the given room coordinates.
+   * @param roomX The X coordinate in room space.
+   * @param roomY The Y coordinate in room space.
+   * @returns The tile type, or undefined if not found.
+   */
   getTileAtPosition(roomX: number, roomY: number) {
     const { x, y } = this._getObjectPositionWithOffset(roomX, roomY);
 
@@ -366,19 +422,28 @@ export class Room
     return row[x];
   }
 
+  /**
+   * Destroys the room and all attached objects and visualization.
+   */
   destroy() {
     super.destroy();
     this.roomObjects.forEach((object) => this.removeRoomObject(object));
-
     this._visualization.destroy();
   }
 
+  /**
+   * Sets a callback for background click events.
+   */
   public set onBackgroundClick(
     value: ((event: ShroomInteractionEvent) => void) | undefined
   ) {
     this._eventManager.onBackgroundClick = value;
   }
 
+  /**
+   * Gets the object position with any necessary offset (currently passthrough).
+   * @private
+   */
   private _getObjectPositionWithOffset(roomX: number, roomY: number) {
     return {
       x: roomX,
@@ -386,6 +451,10 @@ export class Room
     };
   }
 
+  /**
+   * Loads and applies the wall texture asynchronously.
+   * @private
+   */
   private _loadWallTextures() {
     Promise.resolve(this.wallTexture).then((texture) => {
       this._currentWallTexture = texture;
@@ -393,24 +462,34 @@ export class Room
     });
   }
 
+  /**
+   * Loads and applies the floor texture asynchronously.
+   * @private
+   */
   private _loadFloorTextures() {
     Promise.resolve(this.floorTexture).then((texture) => {
       this._visualization.floorTexture = texture;
     });
   }
 
+  /**
+   * Updates the wall color tints in the visualization.
+   * @private
+   */
   private _updateWallColor() {
     const wallColors = getWallColors(this._getWallColor());
-
     this._visualization.wallLeftColor = wallColors.rightTint;
     this._visualization.wallRightColor = wallColors.leftTint;
     this._visualization.wallTopColor = wallColors.topTint;
   }
 
+  /**
+   * Updates the tile color tints in the visualization.
+   * @private
+   */
   private _updateTileColor() {
     if (this._floorColor != null) {
       const tileColors = getTileColors(this._floorColor);
-
       this._visualization.tileTopColor = tileColors.tileTint;
       this._visualization.tileLeftColor = tileColors.borderRightTint;
       this._visualization.tileRightColor = tileColors.borderLeftTint;
@@ -421,15 +500,17 @@ export class Room
     }
   }
 
+  /**
+   * Gets the wall color, using defaults if not set.
+   * @private
+   */
   private _getWallColor() {
     if (this.wallColor == null && this._currentWallTexture != null) {
       return "#ffffff";
     }
-
     if (this.wallColor == null && this._currentWallTexture == null) {
       return "#b6b8c7";
     }
-
     return this.wallColor ?? "#ffffff";
   }
 }

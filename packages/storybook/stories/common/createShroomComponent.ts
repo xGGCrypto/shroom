@@ -151,9 +151,14 @@ export function ShroomComponent(args: { [key: string]: any }) {
       room.addRoomObject(furniture);
     });
 
-    application.stage.addChild(
-      args.roomCamera ? RoomCamera.forScreen(room) : room
-    );
+    let rm = args.roomCamera ? RoomCamera.forScreen(room) : room;
+
+    application.stage.addChild(rm);
+
+    return () => {
+      // On unmount, destroy room or room camera.
+      rm.destroy();
+    };
   });
 }
 

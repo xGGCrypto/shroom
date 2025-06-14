@@ -6,9 +6,11 @@ import {
 } from "../../pixi-proxy";
 import { Room } from "./Room";
 
-import TWEEN from "@tweenjs/tween.js";
+import TWEEN, { Tween } from "@tweenjs/tween.js";
 
 export class RoomCamera extends ShroomContainer {
+  /** Tracks if event listeners are attached. */
+  private _listenersAttached = false;
   private _state: RoomCameraState = { type: "WAITING" };
 
   private _offsets: { x: number; y: number } = { x: 0, y: 0 };
@@ -17,9 +19,16 @@ export class RoomCamera extends ShroomContainer {
   private _container: ShroomContainer;
   private _parentContainer: ShroomContainer;
 
-  private _tween: any;
+  /** The current tween animation, if any. */
+  private _tween: Tween<{ x: number; y: number }> | null = null;
   private _target: EventTarget;
 
+  /**
+   * Constructs a new RoomCamera.
+   * @param _room The room to control.
+   * @param _parentBounds Function returning the parent bounds rectangle.
+   * @param _options Optional camera options (duration, event target).
+   */
   constructor(
     private readonly _room: Room,
     private readonly _parentBounds: () => ShroomRectangle,
@@ -31,7 +40,11 @@ export class RoomCamera extends ShroomContainer {
     this._target = target;
 
     this._parentContainer = new ShroomContainer();
-    this._parentContainer.hitArea = this._parentBounds();
+    const bounds = this._parentBounds();
+    if (!bounds || typeof bounds.width !== 'number' || typeof bounds.height !== 'number') {
+      throw new Error('RoomCamera: _parentBounds() must return a valid ShroomRectangle');
+    }
+    this._parentContainer.hitArea = bounds;
     this._parentContainer.interactive = true;
 
     this._container = new ShroomContainer();
@@ -41,38 +54,59 @@ export class RoomCamera extends ShroomContainer {
     this.addChild(this._parentContainer);
 
     // Activation of the camera is only triggered by a down event on the parent container.
-    this._parentContainer.addListener("pointerdown", this._handlePointerDown);
-    this._target.addEventListener(
-      "pointermove",
-      this._handlePointerMove as any
-    );
-    this._target.addEventListener("pointerup", this._handlePointerUp as any);
+
+    this._attachListeners();
 
     let last: number | undefined;
     this._room.application.ticker.add(() => {
-      if (last == null) last = performance.now();
-      const value = performance.now() - last;
-
-      TWEEN.update(value);
+      const now = performance.now();
+      if (last == null) last = now;
+      const delta = now - last;
+      last = now;
+      TWEEN.update(now);
     });
   }
+  /**
+   * Attaches all event listeners, ensuring no duplicates.
+   */
+  private _attachListeners() {
+    if (this._listenersAttached) return;
+    this._parentContainer.addListener("pointerdown", this._handlePointerDown);
+    this._target.addEventListener("pointermove", this._handlePointerMove as any);
+    this._target.addEventListener("pointerup", this._handlePointerUp as any);
+    // No window unload listener; cleanup must be explicit via destroy().
+    this._listenersAttached = true;
+  }
+
+  /**
+   * Removes all event listeners.
+   */
+  private _detachListeners() {
+    if (!this._listenersAttached) return;
+    this._parentContainer.removeListener("pointerdown", this._handlePointerDown);
+    this._target.removeEventListener("pointermove", this._handlePointerMove as any);
+    this._target.removeEventListener("pointerup", this._handlePointerUp as any);
+    // No window unload listener to remove.
+    this._listenersAttached = false;
+  }
+
+  // No window unload handler needed; cleanup is explicit.
 
   static forScreen(room: Room, options?: RoomCameraOptions) {
     return new RoomCamera(room, () => room.application.screen, options);
   }
 
+  /**
+   * Cleans up event listeners and destroys the camera container.
+   */
   destroy() {
-    this._parentContainer.removeListener(
-      "pointerdown",
-      this._handlePointerDown
-    );
-    this._target.removeEventListener(
-      "pointermove",
-      this._handlePointerMove as any
-    );
-    this._target.removeEventListener("pointerup", this._handlePointerUp as any);
+    this._detachListeners();
+    super.destroy();
   }
-
+  
+  /**
+   * Returns the container that holds the room and is moved by the camera.
+   */
   public get container(): ShroomContainer {
     return this._container;
   }
@@ -104,6 +138,11 @@ export class RoomCamera extends ShroomContainer {
   };
 
   private _handlePointerMove = (event: PointerEvent) => {
+    // Defensive: Ensure application and view are available
+    if (!this._room || !this._room.application || !this._room.application.view) {
+      console.warn("RoomCamera: Application or view not available.");
+      return;
+    }
     const box = this._room.application.view.getBoundingClientRect();
     const position = new ShroomPoint(
       event.clientX - box.x - this.parent.worldTransform.tx,
@@ -181,6 +220,10 @@ export class RoomCamera extends ShroomContainer {
     return false;
   }
 
+  /**
+   * Animates the camera back to the origin (0,0) if out of bounds.
+   * @private
+   */
   private _returnToZero(
     state: CameraDraggingState,
     current: { x: number; y: number }
@@ -198,20 +241,27 @@ export class RoomCamera extends ShroomContainer {
 
     const tween = new TWEEN.Tween(newPos)
       .to({ x: 0, y: 0 }, duration)
-      .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
+      .easing(TWEEN.Easing.Quadratic.Out)
       .onUpdate((value: { x: number; y: number }) => {
         this._animatedOffsets = newPos;
-
-        if (value.x >= 1 || value.y >= 1) {
+        // End animation when close to zero
+        if (Math.abs(value.x) < 1 && Math.abs(value.y) < 1) {
           this._state = { type: "WAITING" };
         }
-
         this._updatePosition();
       })
       .start();
 
     this._tween = tween;
-
+    this._updatePosition();
+  }
+  /**
+   * Programmatically resets the camera to the origin (0,0).
+   */
+  public resetCamera() {
+    this._offsets = { x: 0, y: 0 };
+    this._animatedOffsets = { x: 0, y: 0 };
+    this._state = { type: "WAITING" };
     this._updatePosition();
   }
 
@@ -242,13 +292,20 @@ export class RoomCamera extends ShroomContainer {
     this._updatePosition();
   }
 
+  /**
+   * Handles switching from animation to drag if the user interacts during animation.
+   * @private
+   */
   private _changingDragWhileAnimating(
     position: ShroomPoint,
     pointerId: number
   ) {
     this._offsets = this._animatedOffsets;
     this._animatedOffsets = { x: 0, y: 0 };
-    this._tween.stop();
+    if (this._tween) {
+      this._tween.stop();
+      this._tween = null;
+    }
 
     this._state = {
       currentX: position.x,
@@ -314,6 +371,9 @@ export class RoomCamera extends ShroomContainer {
   }
 }
 
+/**
+ * State for when the camera is being dragged.
+ */
 type CameraDraggingState = {
   type: "DRAGGING";
   currentX: number;
@@ -324,6 +384,9 @@ type CameraDraggingState = {
   skipBoundsCheck?: boolean;
 };
 
+/**
+ * State for when the camera is animating back to zero.
+ */
 type CameraAnimateZeroState = {
   type: "ANIMATE_ZERO";
   currentX: number;
@@ -332,6 +395,9 @@ type CameraAnimateZeroState = {
   startY: number;
 };
 
+/**
+ * State for when the camera is waiting for pointer movement to start dragging.
+ */
 type CameraWaitForDistanceState = {
   type: "WAIT_FOR_DISTANCE";
   startX: number;
@@ -339,10 +405,16 @@ type CameraWaitForDistanceState = {
   pointerId: number;
 };
 
+/**
+ * Union type for all possible camera states.
+ */
 type RoomCameraState =
   | { type: "WAITING" }
   | CameraWaitForDistanceState
   | CameraDraggingState
   | CameraAnimateZeroState;
 
+/**
+ * Options for configuring the RoomCamera.
+ */
 type RoomCameraOptions = { duration?: number; target?: EventTarget };

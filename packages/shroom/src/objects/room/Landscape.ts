@@ -14,54 +14,92 @@ import { IRoomPart } from "./parts/IRoomPart";
 import { RoomPartData } from "./parts/RoomPartData";
 import { getMaskId } from "./util/getMaskId";
 
+/**
+ * Metadata describing a contiguous wall segment in the landscape.
+ */
 interface WallCollectionMeta {
+  /** The type of wall: row or column. */
   type: "rowWall" | "colWall";
+  /** The starting index of the wall segment. */
   start: number;
+  /** The ending index of the wall segment. */
   end: number;
+  /** The level (row or column) of the wall segment. */
   level: number;
 }
 
+/**
+ * Function type for unsubscribing from an event or resource.
+ */
 type Unsubscribe = () => void;
 
+/**
+ * Room landscape part responsible for rendering landscape walls and textures.
+ * Handles left/right wall textures, color overlays, and wall masking.
+ * Implements the IRoomPart interface for integration with the room visualization system.
+ */
 export class Landscape extends RoomObject implements IRoomPart {
+  /** The container holding all landscape wall graphics. */
   private _container: ShroomContainer | undefined;
+  /** The resolved left wall texture. */
   private _leftTexture: ShroomTexture | undefined;
+  /** The resolved right wall texture. */
   private _rightTexture: ShroomTexture | undefined;
+  /** The wall height (unused, for future extension). */
   private _wallHeight = 0;
+  /** The wall height including Z offset. */
   private _wallHeightWithZ = 0;
 
+  /** The left wall texture or promise thereof. */
   private _leftTexturePromise:
     | ShroomTexture
     | Promise<ShroomTexture>
     | undefined;
+  /** The right wall texture or promise thereof. */
   private _rightTexturePromise:
     | ShroomTexture
     | Promise<ShroomTexture>
     | undefined;
 
+  /** Map of mask IDs to mask sprites. */
   private _masks: Map<string, ShroomSprite> = new Map();
+  /** The color overlay for the landscape. */
   private _color: string | undefined;
+  /** Unsubscribe function for any event/resource. */
   private _unsubscribe: Unsubscribe | undefined = undefined;
 
+  /** The node representing this part in the visualization. */
   private _partNode: PartNode | undefined;
 
   constructor() {
     super();
   }
 
+  /**
+   * Gets the current color overlay for the landscape.
+   */
   public get color() {
     return this._color;
   }
 
+  /**
+   * Sets the color overlay for the landscape and updates the graphics.
+   */
   public set color(value) {
     this._color = value;
     this._updateLandscapeImages();
   }
 
+  /**
+   * Gets the left wall texture or promise.
+   */
   public get leftTexture() {
     return this._leftTexturePromise;
   }
 
+  /**
+   * Sets the left wall texture (or promise) and updates the graphics when loaded.
+   */
   public set leftTexture(value) {
     this._leftTexturePromise = value;
     Promise.resolve(this._leftTexturePromise).then((value) => {
@@ -70,10 +108,16 @@ export class Landscape extends RoomObject implements IRoomPart {
     });
   }
 
+  /**
+   * Gets the right wall texture or promise.
+   */
   public get rightTexture() {
     return this._rightTexturePromise;
   }
 
+  /**
+   * Sets the right wall texture (or promise) and updates the graphics when loaded.
+   */
   public set rightTexture(value) {
     this._rightTexturePromise = value;
     Promise.resolve(this._rightTexturePromise).then((value) => {
@@ -82,6 +126,10 @@ export class Landscape extends RoomObject implements IRoomPart {
     });
   }
 
+  /**
+   * Updates the landscape part with new data (masks, wall height, etc).
+   * @param data The new part data.
+   */
   update(data: RoomPartData): void {
     this._masks = data.masks;
     this._wallHeightWithZ = data.wallHeight;
@@ -89,21 +137,36 @@ export class Landscape extends RoomObject implements IRoomPart {
     this._updateLandscapeImages();
   }
 
+  /**
+   * Cleans up resources and removes this part from the visualization.
+   */
   destroyed(): void {
     this._unsubscribe && this._unsubscribe();
     this._container?.destroy();
     this._partNode?.remove();
   }
 
+  /**
+   * Registers this part with the room visualization and updates graphics.
+   */
   registered(): void {
     this._partNode = this.roomVisualization.addPart(this);
     this._updateLandscapeImages();
   }
 
+  /**
+   * Creates a default mask (empty graphics) for walls with no mask.
+   */
   private _createDefaultMask() {
     return new ShroomGraphics();
   }
 
+  /**
+   * Gets the mask sprite for a given wall direction and position, or a default if missing.
+   * @param direction The wall direction (2=row, 4=col).
+   * @param roomX The X position in the room.
+   * @param roomY The Y position in the room.
+   */
   private _getMask(direction: number, roomX: number, roomY: number) {
     const maskId = getMaskId(direction, roomX, roomY);
 
@@ -116,6 +179,10 @@ export class Landscape extends RoomObject implements IRoomPart {
     return this._createDefaultMask();
   }
 
+  /**
+   * Rebuilds the landscape wall graphics and textures based on current state.
+   * Handles color overlays, textures, and wall masks for both left and right walls.
+   */
   private _updateLandscapeImages() {
     if (!this.mounted) return;
 
@@ -220,6 +287,12 @@ export class Landscape extends RoomObject implements IRoomPart {
   }
 }
 
+/**
+ * Gets the tile at the given coordinates from a parsed tile map.
+ * @param parsedTileMap The parsed tile map.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ */
 const getTile = (parsedTileMap: ParsedTileType[][], x: number, y: number) => {
   const row = parsedTileMap[y];
   if (row == null) return;
@@ -227,6 +300,11 @@ const getTile = (parsedTileMap: ParsedTileType[][], x: number, y: number) => {
   return row[x];
 };
 
+/**
+ * Extracts contiguous wall segments (row/col) from a parsed tile map for landscape rendering.
+ * @param parsedTileMap The parsed tile map.
+ * @returns Array of wall segment metadata.
+ */
 function getWallCollectionMeta(parsedTileMap: ParsedTileType[][]) {
   const { x: startX, y: startY } = getStartingWall(parsedTileMap);
 
@@ -324,6 +402,11 @@ function getWallCollectionMeta(parsedTileMap: ParsedTileType[][]) {
   return arr;
 }
 
+/**
+ * Finds the starting wall tile in a parsed tile map for wall traversal.
+ * @param parsedTileMap The parsed tile map.
+ * @returns The {x, y} coordinates of the starting wall tile.
+ */
 function getStartingWall(parsedTileMap: ParsedTileType[][]) {
   const startY = parsedTileMap.length - 1;
   let y = startY;
