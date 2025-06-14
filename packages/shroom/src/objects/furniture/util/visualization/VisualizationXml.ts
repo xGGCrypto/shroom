@@ -1,3 +1,7 @@
+/**
+ * Type representing the root visualization XML structure for furniture.
+ * @category FurnitureVisualization
+ */
 export type VisualizationXml = {
   visualizationData: {
     graphics: {
@@ -6,8 +10,14 @@ export type VisualizationXml = {
   };
 };
 
+/**
+ * Type representing a single visualization entry in the XML.
+ * @category FurnitureVisualization
+ */
 export type VisualizationXmlVisualization = {
+  /** Attributes for this visualization (size, layerCount, etc). */
   $: { size: string; layerCount: string };
+  /** Layer definitions for this visualization. */
   layers:
     | {
         layer: {
@@ -22,7 +32,7 @@ export type VisualizationXmlVisualization = {
         }[];
       }[]
     | undefined;
-
+  /** Direction overrides for this visualization. */
   directions: {
     direction: {
       $: { id: string };
@@ -38,7 +48,7 @@ export type VisualizationXmlVisualization = {
         | undefined;
     }[];
   }[];
-
+  /** Color definitions for this visualization. */
   colors:
     | {
         color: {
@@ -54,7 +64,7 @@ export type VisualizationXmlVisualization = {
         }[];
       }[]
     | undefined;
-
+  /** Animation definitions for this visualization. */
   animations:
     | {
         animation: {
