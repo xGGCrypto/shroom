@@ -1,8 +1,13 @@
 import { TileType } from "../../types/TileType";
 
-export function padTileMap(tilemap: TileType[][]) {
+/**
+ * Pads a tilemap with an extra row/column of 'x' tiles if needed for edge detection.
+ * @param tilemap The 2D array of TileType.
+ * @returns The padded tilemap and the offsets applied.
+ */
+export function padTileMap(tilemap: TileType[][]): { tilemap: TileType[][]; offsetX: number; offsetY: number } {
   const firstRow = tilemap[0];
-  if (firstRow == null) throw new Error("Invalid row");
+  if (!Array.isArray(tilemap) || firstRow == null) throw new Error("Invalid tilemap: must be a non-empty 2D array");
 
   let offsetY = 0;
   let offsetX = 0;

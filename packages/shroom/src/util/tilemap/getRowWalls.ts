@@ -1,6 +1,9 @@
 import { TileType } from "../../types/TileType";
 import { getTileInfo } from "../getTileInfo";
 
+/**
+ * Represents a wall segment along a row in the tilemap.
+ */
 export type RowWall = {
   startY: number;
   endY: number;
@@ -8,7 +11,12 @@ export type RowWall = {
   height: number;
 };
 
-export function getRowWalls(tilemap: TileType[][]) {
+/**
+ * Finds all row-aligned wall segments in a tilemap.
+ * @param tilemap The 2D array of TileType.
+ * @returns An array of RowWall objects.
+ */
+export function getRowWalls(tilemap: TileType[][]): RowWall[] {
   let lastY = tilemap.length - 1;
 
   let wallEndY: number | undefined;
@@ -17,6 +25,9 @@ export function getRowWalls(tilemap: TileType[][]) {
 
   const walls: RowWall[] = [];
 
+  if (!Array.isArray(tilemap) || tilemap.length === 0 || !Array.isArray(tilemap[0])) {
+    throw new Error("Invalid tilemap: must be a non-empty 2D array");
+  }
   for (let x = 0; x < tilemap[0].length; x++) {
     for (let y = lastY; y >= 0; y--) {
       const current = getTileInfo(tilemap, x, y);
