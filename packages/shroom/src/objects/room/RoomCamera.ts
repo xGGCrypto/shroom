@@ -15,6 +15,8 @@ export class RoomCamera extends ShroomContainer {
 
   private _offsets: { x: number; y: number } = { x: 0, y: 0 };
   private _animatedOffsets: { x: number; y: number } = { x: 0, y: 0 };
+  /** Tracks the last valid in-bounds camera offset. */
+  private _lastValidOffsets: { x: number; y: number } = { x: 0, y: 0 };
 
   private _container: ShroomContainer;
   private _parentContainer: ShroomContainer;
@@ -165,28 +167,24 @@ export class RoomCamera extends ShroomContainer {
   private _updatePosition() {
     switch (this._state.type) {
       case "DRAGGING": {
-        // When dragging, the current position consists of the current offset of the camera
-        // and the drag difference.
-
         const diffX = this._state.currentX - this._state.startX;
         const diffY = this._state.currentY - this._state.startY;
-
-        this._container.x = this._offsets.x + diffX;
-        this._container.y = this._offsets.y + diffY;
+        const newX = this._offsets.x + diffX;
+        const newY = this._offsets.y + diffY;
+        this._container.x = newX;
+        this._container.y = newY;
+        // Update last valid offsets if in bounds
+        if (!this._isOutOfBounds({ x: newX, y: newY })) {
+          this._lastValidOffsets = { x: newX, y: newY };
+        }
         break;
       }
-
       case "ANIMATE_ZERO": {
-        // When animating back to the zero point, we use the animatedOffsets of the camera.
-
         this._container.x = this._animatedOffsets.x;
         this._container.y = this._animatedOffsets.y;
         break;
       }
-
       default: {
-        // Default behavior: Use the set offsets of the camera.
-
         this._container.x = this._offsets.x;
         this._container.y = this._offsets.y;
       }
@@ -224,6 +222,10 @@ export class RoomCamera extends ShroomContainer {
    * Animates the camera back to the origin (0,0) if out of bounds.
    * @private
    */
+  /**
+   * Animates the camera back to the last valid in-bounds position if out of bounds.
+   * @private
+   */
   private _returnToZero(
     state: CameraDraggingState,
     current: { x: number; y: number }
@@ -235,18 +237,20 @@ export class RoomCamera extends ShroomContainer {
     const duration = this._options?.duration ?? 500;
 
     this._animatedOffsets = current;
-    this._offsets = { x: 0, y: 0 };
-
+    // Animate back to last valid in-bounds position
+    const target = { ...this._lastValidOffsets };
     const newPos = { ...this._animatedOffsets };
 
     const tween = new TWEEN.Tween(newPos)
-      .to({ x: 0, y: 0 }, duration)
+      .to(target, duration)
       .easing(TWEEN.Easing.Quadratic.Out)
       .onUpdate((value: { x: number; y: number }) => {
         this._animatedOffsets = newPos;
-        // End animation when close to zero
-        if (Math.abs(value.x) < 1 && Math.abs(value.y) < 1) {
+        // End animation when close to target
+        if (Math.abs(value.x - target.x) < 1 && Math.abs(value.y - target.y) < 1) {
           this._state = { type: "WAITING" };
+          this._offsets = { ...this._lastValidOffsets };
+          this._animatedOffsets = { ...this._lastValidOffsets };
         }
         this._updatePosition();
       })
@@ -258,9 +262,12 @@ export class RoomCamera extends ShroomContainer {
   /**
    * Programmatically resets the camera to the origin (0,0).
    */
+  /**
+   * Programmatically resets the camera to the last valid in-bounds position.
+   */
   public resetCamera() {
-    this._offsets = { x: 0, y: 0 };
-    this._animatedOffsets = { x: 0, y: 0 };
+    this._offsets = { ...this._lastValidOffsets };
+    this._animatedOffsets = { ...this._lastValidOffsets };
     this._state = { type: "WAITING" };
     this._updatePosition();
   }
