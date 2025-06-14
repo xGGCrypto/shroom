@@ -6,6 +6,7 @@ import { createServer } from "https";
 import { readFileSync } from "fs";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const frame = require("frame-stream");
+import { Socket } from "net";
 
 /**
  * Starts a WebSocket forwarding server that proxies messages to a TCP target (e.g., an emulator server).
@@ -72,7 +73,7 @@ export function runForwardingServer({
     if (debug) console.log(`[${id}] Forwarding WebSocket Client connection`);
 
     // Defensive: handle connection errors
-    let connection;
+    let connection: Socket;
     try {
       connection = createConnection({ port: targetPort, host: targetHost });
     } catch (err) {
