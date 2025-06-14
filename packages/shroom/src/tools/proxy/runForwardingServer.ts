@@ -7,6 +7,19 @@ import { readFileSync } from "fs";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const frame = require("frame-stream");
 
+/**
+ * Starts a WebSocket forwarding server that proxies messages to a TCP target (e.g., an emulator server).
+ * Supports optional TLS, debug logging, and length-prefixed message framing.
+ *
+ * @param options.wsPort - The port to listen for WebSocket connections.
+ * @param options.targetPort - The TCP port to forward traffic to.
+ * @param options.debug - Enable verbose debug logging.
+ * @param options.targetHost - The TCP host to forward traffic to (default: localhost).
+ * @param options.prependLengthPrefix - If true, prepend a length prefix to forwarded messages.
+ * @param options.keyPath - Path to TLS private key (enables HTTPS/WSS if provided with certPath).
+ * @param options.certPath - Path to TLS certificate (enables HTTPS/WSS if provided with keyPath).
+ * @returns An object with a `close` method to stop the server.
+ */
 export function runForwardingServer({
   wsPort,
   targetPort,
@@ -26,14 +39,18 @@ export function runForwardingServer({
 }) {
   let webSocketOptions: WebSocket.ServerOptions;
   if (keyPath && certPath) {
-    webSocketOptions = {
-      server: createServer({
-        key: readFileSync(keyPath),
-        cert: readFileSync(certPath)
-      })
-    };
-
-    webSocketOptions.server?.listen(wsPort);
+    try {
+      webSocketOptions = {
+        server: createServer({
+          key: readFileSync(keyPath),
+          cert: readFileSync(certPath)
+        })
+      };
+      webSocketOptions.server?.listen(wsPort);
+    } catch (err) {
+      console.error("Failed to start secure server:", err);
+      throw err;
+    }
   } else {
     webSocketOptions = {
       port: wsPort
@@ -52,53 +69,71 @@ export function runForwardingServer({
 
   server.on("connection", (ws) => {
     const id = ++idCounter;
-
     if (debug) console.log(`[${id}] Forwarding WebSocket Client connection`);
 
-    // When a websocket client connects, create a socket to the emulator server
-    const connection = createConnection({ port: targetPort, host: targetHost });
+    // Defensive: handle connection errors
+    let connection;
+    try {
+      connection = createConnection({ port: targetPort, host: targetHost });
+    } catch (err) {
+      ws.close();
+      console.error(`[${id}] Failed to connect to target:`, err);
+      return;
+    }
+
+    // Defensive: handle socket errors
+    connection.on("error", (err) => {
+      ws.close();
+      if (debug) console.error(`[${id}] TCP connection error:`, err);
+    });
+    ws.on("error", (err) => {
+      connection.end();
+      if (debug) console.error(`[${id}] WebSocket error:`, err);
+    });
 
     // Pipe to the frame-stream decoder to handle length prefixed messages
     connection.pipe(frame.decode()).on("data", (buffer: Buffer) => {
-      if (prependLengthPrefix) {
-        const framedBuffer: any = buffer;
-
-        const baseBuffer = new ByteBuffer();
-        baseBuffer.writeInt(framedBuffer.frameLength);
-        baseBuffer.append(buffer);
-
-        ws.send(baseBuffer.flip().toBuffer());
-      } else {
-        ws.send(buffer);
+      try {
+        if (prependLengthPrefix) {
+          const framedBuffer = buffer as any;
+          const baseBuffer = new ByteBuffer();
+          baseBuffer.writeInt(framedBuffer.frameLength);
+          baseBuffer.append(buffer);
+          ws.send(baseBuffer.flip().toBuffer());
+        } else {
+          ws.send(buffer);
+        }
+        if (debug) console.log(`[${id}] Server => Client:`, buffer);
+      } catch (err) {
+        if (debug) console.error(`[${id}] Error sending to WebSocket:`, err);
       }
-
-      if (debug) console.log(`[${id}] Server => Client:`, buffer);
     });
 
     // Forward close event from server to websocket client
     connection.on("close", () => {
-      ws.close();
+      if (ws.readyState === ws.OPEN || ws.readyState === ws.CONNECTING) ws.close();
       if (debug) console.log(`[${id}] Server closed the connection`);
     });
 
     // Forward messages sent by the websocket client to the emulator server
     ws.on("message", (message) => {
-      const buffer = message as Buffer;
-      const data = new ByteBuffer();
-
-      // Write an int to the payload with the size of the buffer we are sending
-      data.writeInt(buffer.length);
-      data.append(buffer);
-
-      const sendBuffer = data.flip().toBuffer();
-      connection.write(sendBuffer);
-
-      if (debug) console.log(`[${id}] Client => Server:`, sendBuffer);
+      try {
+        const buffer = message as Buffer;
+        const data = new ByteBuffer();
+        // Write an int to the payload with the size of the buffer we are sending
+        data.writeInt(buffer.length);
+        data.append(buffer);
+        const sendBuffer = data.flip().toBuffer();
+        connection.write(new Uint8Array(sendBuffer));
+        if (debug) console.log(`[${id}] Client => Server:`, sendBuffer);
+      } catch (err) {
+        if (debug) console.error(`[${id}] Error forwarding client message:`, err);
+      }
     });
 
     // Forward close event to the emulator server
     ws.on("close", () => {
-      connection.end();
+      if (!connection.destroyed) connection.end();
       if (debug) console.log(`[${id}] WebSocket closed the connection`);
     });
   });
