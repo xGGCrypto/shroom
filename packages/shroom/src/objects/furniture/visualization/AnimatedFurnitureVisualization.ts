@@ -6,56 +6,81 @@ import { FurnitureVisualization } from "./FurnitureVisualization";
 
 type InProgressAnimation = { id: number; frameCount: number };
 
+/**
+ * AnimatedFurnitureVisualization provides animation logic for furniture objects with frame-based animations.
+ * Handles animation queues, transitions, and frame updates for animated furniture.
+ *
+ * @category FurnitureVisualization
+ */
 export class AnimatedFurnitureVisualization extends FurnitureVisualization {
+  /** Queue of animations to play, including transitions. */
   private _animationQueue: InProgressAnimation[] = [];
-
+  /** The frame number at which the current animation queue started. */
   private _animationQueueStartFrame: number | undefined;
+  /** The number of frames in the current animation. */
   private _animationFrameCount: number | undefined;
-
+  /** The currently active animation id. */
   private _currentAnimationId: number | undefined;
+  /** The current draw definition for the furniture. */
   private _furnitureDrawDefintion: FurniDrawDefinition | undefined;
+  /** The set of sprites currently in use. */
   private _sprites: Set<FurnitureSprite> = new Set();
+  /** Whether to disable animation transitions. */
   private _disableTransitions = false;
+  /** The current frame number. */
   private _frame = 0;
+  /** Optional override for the animation id. */
   private _overrideAnimation: number | undefined;
-  private _modifier:
-    | ((part: IFurnitureVisualizationLayer) => IFurnitureVisualizationLayer)
-    | undefined;
-
+  /** Optional modifier function for customizing layers. */
+  private _modifier?: (part: IFurnitureVisualizationLayer) => IFurnitureVisualizationLayer;
+  /** The current direction for rendering. */
   private _currentDirection: number | undefined;
+  /** The target animation id as a string. */
   private _currentTargetAnimationId: string | undefined;
+  /** Number of times the animation has changed. */
   private _changeAnimationCount = 0;
+  /** Map of layer index to whether the last frame was played. */
   private _lastFramePlayedMap: Map<number, boolean> = new Map();
-
+  /** Whether the furniture needs to be refreshed. */
   private _refreshFurniture = false;
 
+  /**
+   * Creates a new AnimatedFurnitureVisualization.
+   */
   constructor() {
     super();
     this._refreshFurniture = true;
   }
 
+  /**
+   * Gets or sets the current animation id, optionally overridden.
+   */
   public get animationId() {
     if (this._overrideAnimation != null) {
       return this._overrideAnimation;
     }
-
     return this._currentAnimationId;
   }
-
   public set animationId(value) {
     this._overrideAnimation = value;
     this._refreshFurniture = true;
   }
 
+  /**
+   * Gets or sets the modifier function for customizing layers.
+   */
   public get modifier() {
     return this._modifier;
   }
-
   public set modifier(value) {
     this._modifier = value;
     this._updateFurniture();
   }
 
+  /**
+   * Sets the current animation, updating the animation queue and transitions.
+   * @param newAnimation The new animation id to play
+   */
   setCurrentAnimation(newAnimation: number) {
     this._animationQueueStartFrame = undefined;
     // Skip the transitions of the initial animation change.
@@ -63,40 +88,58 @@ export class AnimatedFurnitureVisualization extends FurnitureVisualization {
       this.view.getVisualizationData(),
       newAnimation
     );
-
     this._disableTransitions = this._changeAnimationCount === 0;
     this._changeAnimationCount++;
-
     this._update();
   }
 
+  /**
+   * Updates the animation state based on the given animation id.
+   * @param animation The animation id as a string
+   */
   updateAnimation(animation: string): void {
     this._updateAnimation(this._currentTargetAnimationId, animation);
   }
 
+  /**
+   * Updates the direction for rendering.
+   * @param direction The new direction
+   */
   updateDirection(direction: number): void {
     if (this._currentDirection === direction) return;
-
     this._currentDirection = direction;
     this._updateFurniture();
   }
 
+  /**
+   * Returns true if the last frame was played for the given layer index.
+   * @param layerIndex The layer index
+   */
   isLastFramePlayedForLayer(layerIndex: number) {
     return this._lastFramePlayedMap.get(layerIndex) ?? false;
   }
 
+  /**
+   * Destroys the visualization and cleans up resources.
+   */
   destroy(): void {
     // Do nothing
   }
 
+  /**
+   * Updates the visualization, refreshing the view and layers.
+   */
   update() {
     if (this._currentDirection == null) return;
-
     this.view.setDisplayDirection(this._currentDirection);
     this.view.updateDisplay();
     this._update();
   }
 
+  /**
+   * Updates the animation frame and handles animation queue progression.
+   * @param frame The current frame number
+   */
   updateFrame(frame: number): void {
     if (this._refreshFurniture) {
       this._refreshFurniture = false;
