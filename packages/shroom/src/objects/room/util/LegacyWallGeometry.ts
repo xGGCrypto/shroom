@@ -44,10 +44,8 @@ export class LegacyWallGeometry {
     if (x < 0 || x >= this._width || y < 0 || y >= this._height) return 0;
 
     const row = this._heightmap[y];
-
     if (row == null) return 0;
     const cell = row[x];
-
     switch (cell.type) {
       case "wall":
         return cell.height;
@@ -55,8 +53,8 @@ export class LegacyWallGeometry {
         return cell.z;
       case "tile":
         return cell.z;
+      default:
+        return 0;
     }
-
-    return 0;
   }
 }
