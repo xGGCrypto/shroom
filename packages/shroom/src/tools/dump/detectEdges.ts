@@ -13,7 +13,15 @@ const checkOpacityLevel = (tolerance: number) => (
 const defaultOptions = {
   tolerance: 0,
 };
-
+/**
+ * Detects the non-transparent edges of a canvas image.
+ * Defensive: Throws if no edges are found.
+ *
+ * @param canvas The Canvas object to analyze.
+ * @param options Optional edge detection options (tolerance).
+ * @returns The bounding box of the detected edges.
+ * @throws Error if no edges are detected.
+ */
 export const detectEdges = (
   canvas: Canvas,
   options?: typeof defaultOptions

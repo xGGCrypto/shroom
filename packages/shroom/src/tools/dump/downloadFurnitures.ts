@@ -9,6 +9,13 @@ import {
 import { downloadMultipleFiles } from "./downloadMultipleFiles";
 import { Logger } from "./Logger";
 
+/**
+ * Downloads all furniture SWFs listed in the furniture data file.
+ * Defensive: Skips if furniture data download fails, logs errors.
+ *
+ * @param params Download parameters (downloadPath, hofFurniUrl, file).
+ * @param logger Logger instance for progress and errors.
+ */
 export async function downloadFurnitures(
   {
     downloadPath,

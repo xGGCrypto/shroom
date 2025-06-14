@@ -34,7 +34,15 @@ const defaultOptions = {
   margin: 1,
   crop: false,
 };
-
+/**
+ * Creates a spritesheet from a list of image file paths.
+ * Defensive: Throws if no files are given, and validates options.
+ *
+ * @param paths Array of image file paths.
+ * @param options Spritesheet options (outputFormat, margin, crop).
+ * @returns The generated spritesheet and metadata.
+ * @throws Error if no files are provided or image loading fails.
+ */
 export async function createSpritesheet(
   paths: string[],
   options: { outputFormat?: "png" | "jpeg"; margin?: number; crop?: boolean }

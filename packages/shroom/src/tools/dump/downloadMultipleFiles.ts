@@ -4,6 +4,13 @@ import { getDownloadMessage } from "./downloadFileWithMessage";
 import Bluebird from "bluebird";
 import { ProgressBar } from "./ProgressBar";
 
+/**
+ * Downloads multiple files concurrently with progress reporting and error handling.
+ * Defensive: Handles download failures and logs errors.
+ *
+ * @param params Download parameters (data, concurrency, logger, name).
+ * @param map Function to map each data item to a download task.
+ */
 export async function downloadMultipleFiles<T>(
   {
     data,

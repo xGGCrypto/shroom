@@ -10,6 +10,11 @@ function makeAbsolute(url: string) {
   return url;
 }
 
+/**
+ * Fetches a URL with retry logic for network errors and 5xx responses.
+ * @param url The URL to fetch.
+ * @returns The fetch Response, or undefined if all retries fail.
+ */
 export async function fetchRetry(url: string) {
   let response: Response | undefined;
   let count = 0;
@@ -29,6 +34,11 @@ export async function fetchRetry(url: string) {
   return response;
 }
 
+/**
+ * Downloads a file from a URL and saves it to disk, with retry and error handling.
+ * @param params Download parameters (url, savePath).
+ * @returns A DownloadFileResult indicating success or error type.
+ */
 export async function downloadFile({
   url,
   savePath,
@@ -44,9 +54,17 @@ export async function downloadFile({
 
   if (response.status >= 200 && response.status < 300) {
     try {
+
       await fs.mkdir(path.dirname(savePath), { recursive: true });
       const buffer = await response.buffer();
-      await fs.writeFile(savePath, buffer);
+      // Defensive: Ensure buffer is not undefined/null
+      if (!buffer) {
+        return {
+          type: "FAILED_TO_WRITE",
+        };
+      }
+      // Cast buffer to Uint8Array for compatibility (via unknown)
+      await fs.writeFile(savePath, buffer as unknown as Uint8Array);
 
       return {
         type: "SUCCESS",
