@@ -15,14 +15,14 @@ export class FurnitureHelper {
    * @param shroom The Shroom application instance.
    * @returns A promise that resolves to an HTMLImageElement of the rendered furniture.
    */
-  public static getFurniPreview(furniId: string, shroom: Shroom): Promise<HTMLImageElement> {
+  public static getFurniPreview(furniId: string, shroom: Shroom, furniOptions?: FurniPreviewOptions): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       const container = new ShroomContainer();
       let resolved = false;
       try {
         BaseFurniture.fromShroom(shroom, container, {
-          animation: "0",
-          direction: 2,
+          animation: furniOptions?.animation ?? "0",
+          direction: furniOptions?.direction ?? 2,
           type: { type: furniId, kind: "type" },
           onLoad: () => {
             try {
@@ -124,4 +124,15 @@ export interface FurniOptions {
   rotate: () => void;
   /** Pickup action callback. */
   pickup: (callback: () => void) => void;
+}
+
+/**
+ * Options for rendering a furniture preview, including animation and direction.
+ * @category Furniture
+ */
+export interface FurniPreviewOptions {
+  /** Animation frame to use for the preview. */
+  animation: string;
+  /** Direction to render the furniture. */
+  direction: number;
 }
