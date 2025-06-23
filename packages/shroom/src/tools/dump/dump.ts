@@ -16,6 +16,12 @@ const separator = "=========================================";
 
 const logger: Logger = console;
 
+/**
+ * Main entry point for the asset dumper. Orchestrates downloading and extraction steps.
+ * Defensive: Logs errors and step progress.
+ *
+ * @param params Dump options (externalVariables, downloadPath).
+ */
 export async function dump({ externalVariables, downloadPath }: Options) {
   console.log(separator);
   console.log("Shroom Asset Dumper");

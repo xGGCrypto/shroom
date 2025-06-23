@@ -59,6 +59,10 @@ export interface BaseAvatarDependencies {
   avatarLoader: IAvatarLoader;
 }
 
+/**
+ * BaseAvatar handles rendering and event management for avatar sprites.
+ * Supports dependency injection, animation, and dynamic look changes.
+ */
 export class BaseAvatar extends ShroomContainer implements IEventGroup {
   private _container: ShroomContainer | undefined;
   private _avatarLoaderResult: AvatarLoaderResult | undefined;
@@ -192,6 +196,10 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     this._refreshFrame = true;
   }
 
+  /**
+   * Constructs a new BaseAvatar instance.
+   * @param options Options for look, position, zIndex, and callbacks.
+   */
   constructor(options: BaseAvatarOptions) {
     super();
     this.x = options.position.x;
@@ -205,6 +213,11 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     this._skipCaching = options.skipCaching ?? false;
   }
 
+  /**
+   * Factory method to create a BaseAvatar from a Shroom instance.
+   * @param shroom The Shroom instance.
+   * @param options Avatar options.
+   */
   static fromShroom(shroom: Shroom, options: BaseAvatarOptions) {
     const avatar = new BaseAvatar({ ...options });
     avatar.dependencies = {
@@ -214,10 +227,16 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     return avatar;
   }
 
+  /**
+   * Returns the event group identifier for this avatar.
+   */
   getEventGroupIdentifier(): EventGroupIdentifier {
     return AVATAR;
   }
 
+  /**
+   * Destroys the avatar and all associated assets and event handlers.
+   */
   destroy(): void {
     super.destroy();
     this._destroyAssets();
@@ -227,6 +246,9 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     }
   }
 
+  /**
+   * Destroys all sprite assets and event handlers.
+   */
   private _destroyAssets() {
     this._sprites.forEach((sprite) => {
       this._overOutHandler.remove(sprite.events);
@@ -236,12 +258,18 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     this._container?.destroy();
   }
 
+  /**
+   * Updates the z-index for all sprites.
+   */
   private _updateSpritesZIndex() {
     this._sprites.forEach((sprite) => {
       sprite.zIndex = this.spritesZIndex;
     });
   }
 
+  /**
+   * Updates the look options and triggers a refresh if changed.
+   */
   private _updateLookOptions(
     oldLookOptions: LookOptions | undefined,
     newLookOptions: LookOptions
@@ -260,6 +288,9 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     }
   }
 
+  /**
+   * Updates the position of the avatar container.
+   */
   private _updatePosition(definition: AvatarDrawDefinition) {
     if (this._container == null) return;
 
@@ -267,6 +298,9 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     this._container.y = 0;
   }
 
+  /**
+   * Updates the sprites based on the current avatar draw definition.
+   */
   private _updateSprites() {
     if (this._avatarLoaderResult == null) return;
     if (this._lookOptions == null) return;
@@ -281,6 +315,9 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     this._updatePosition(definition);
   }
 
+  /**
+   * Updates the sprites for the given draw definition and frame.
+   */
   private _updateSpritesWithAvatarDrawDefinition(
     drawDefinition: AvatarDrawDefinition,
     currentFrame: number
@@ -373,6 +410,9 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     this.addChild(this._container);
   }
 
+  /**
+   * Creates a sprite asset for a given avatar part and asset.
+   */
   private _createAsset(
     part: DefaultAvatarDrawPart | AvatarEffectDrawPart,
     asset: AvatarAsset
@@ -420,6 +460,9 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     return sprite;
   }
 
+  /**
+   * Reloads the avatar look and updates sprites.
+   */
   private _reloadLook() {
     if (!this.mounted) return;
 
@@ -452,6 +495,9 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     }
   }
 
+  /**
+   * Updates the current animation frame.
+   */
   private _updateFrame() {
     if (this._avatarDrawDefinition == null) return;
 
@@ -462,6 +508,9 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
     this._updatePosition(this._avatarDrawDefinition);
   }
 
+  /**
+   * Handles dependency injection and ticker subscription.
+   */
   private _handleDependenciesSet(): void {
     this._reloadLook();
 

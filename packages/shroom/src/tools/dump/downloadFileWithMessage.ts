@@ -5,6 +5,12 @@ import {
 } from "./downloadFile";
 import { Logger } from "./Logger";
 
+/**
+ * Downloads a file and logs the result using the provided logger.
+ * @param request Download request parameters.
+ * @param logger Logger instance for progress and errors.
+ * @returns The download result.
+ */
 export async function downloadFileWithMessage(
   request: DownloadRequest,
   logger: Logger
@@ -27,6 +33,12 @@ export async function downloadFileWithMessage(
   return downloadedFile;
 }
 
+/**
+ * Returns a human-readable message for a download result.
+ * @param request The download request.
+ * @param result The download result.
+ * @returns A string describing the result.
+ */
 export function getDownloadMessage(
   request: DownloadRequest,
   result: DownloadFileResult

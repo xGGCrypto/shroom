@@ -22,6 +22,10 @@ interface Props {
   };
 }
 
+/**
+ * Represents a tile part in the room model visualization.
+ * Handles rendering and updating of tile graphics, including borders and textures.
+ */
 export class Tile extends ShroomContainer implements IRoomPart {
   private _texture: ShroomTexture | undefined;
   private _color: string | undefined;
@@ -34,33 +38,55 @@ export class Tile extends ShroomContainer implements IRoomPart {
     showRightBorder: boolean;
   } = { showLeftBorder: true, showRightBorder: true };
 
+  /**
+   * Gets the color of the tile.
+   */
   get color() {
     return this._color;
   }
 
+  /**
+   * Sets the color of the tile and updates the sprites.
+   */
   set color(value) {
     this._color = value;
     this._updateSprites();
   }
 
+  /**
+   * Gets the tile positions (for advanced use).
+   */
   public get tilePositions() {
     return this._tilePositions;
   }
 
+  /**
+   * Sets the tile positions and updates the sprites.
+   */
   public set tilePositions(value) {
     this._tilePositions = value;
     this._updateSprites();
   }
 
+  /**
+   * Gets the tile height.
+   */
   public get tileHeight() {
     return this._tileHeight;
   }
 
+  /**
+   * Sets the tile height and updates the sprites.
+   */
   public set tileHeight(value) {
     this._tileHeight = value;
     this._updateSprites();
   }
 
+  /**
+   * Creates a new Tile.
+   * @param props The tile properties (height, color, texture, borders, etc).
+   */
   constructor(private props: Props) {
     super();
 
@@ -72,6 +98,10 @@ export class Tile extends ShroomContainer implements IRoomPart {
     this._updateSprites();
   }
 
+  /**
+   * Updates the tile with new room part data.
+   * @param data The new room part data.
+   */
   update(data: RoomPartData): void {
     this.tileHeight = data.tileHeight;
     this._roomPartData = data;
@@ -79,7 +109,15 @@ export class Tile extends ShroomContainer implements IRoomPart {
     this._updateSprites();
   }
 
+  /**
+   * Updates the tile's sprites based on the current state and properties.
+   * Defensive: checks for required data before rendering.
+   */
   private _updateSprites() {
+    if (this._tileHeight == null || this._color == null) {
+      // Defensive: do not render if required properties are missing
+      return;
+    }
     this.removeChildren();
     const tileMatrix = getFloorMatrix(0, 0);
 

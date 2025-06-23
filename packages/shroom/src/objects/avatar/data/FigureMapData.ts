@@ -1,5 +1,6 @@
 import { AvatarData } from "./AvatarData";
 import { IFigureMapData } from "./interfaces/IFigureMapData";
+import { getRequiredAttribute } from "./xmlUtils";
 
 function _getLibraryForPartKey(id: string, type: string) {
   return `${id}_${type}`;
@@ -37,20 +38,13 @@ export class FigureMapData extends AvatarData implements IFigureMapData {
     const allLibraries = this.querySelectorAll(`lib`);
 
     allLibraries.forEach((element) => {
-      const libraryId = element.getAttribute("id");
-      if (libraryId == null) return;
-
+      const libraryId = getRequiredAttribute(element, "id");
       this._allLibraries.push(libraryId);
 
       const parts = Array.from(element.querySelectorAll("part"));
-
       parts.forEach((part) => {
-        const partId = part.getAttribute("id");
-        const partType = part.getAttribute("type");
-
-        if (partId == null) return;
-        if (partType == null) return;
-
+        const partId = getRequiredAttribute(part, "id");
+        const partType = getRequiredAttribute(part, "type");
         this._libraryForPartMap.set(
           _getLibraryForPartKey(partId, partType),
           libraryId

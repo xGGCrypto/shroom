@@ -67,46 +67,149 @@ export interface BaseFurnitureProps {
 
 type ResolveLoadFurniResult = (result: LoadFurniResult) => void;
 
+/**
+ * The core class for all furniture objects in the room engine.
+ * Handles loading, visualization, event management, animation, and state for a single furniture instance.
+ *
+ * Use `BaseFurniture.fromRoomContext` or `BaseFurniture.fromShroom` for convenient construction.
+ */
 export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
-  private _sprites: Map<string, FurnitureSprite> = new Map();
+
+  /**
+   * All sprites associated with this furniture, keyed by sprite name.
+   * @readonly
+   */
+  private readonly _sprites: Map<string, FurnitureSprite> = new Map();
+
+  /**
+   * The result of loading the furniture data.
+   */
   private _loadFurniResult: LoadFurniResult | undefined;
 
+  /**
+   * The x position of the furniture.
+   */
   private _x = 0;
+  /**
+   * The y position of the furniture.
+   */
   private _y = 0;
+  /**
+   * The z-index (draw order) of the furniture.
+   */
   private _zIndex = 0;
+  /**
+   * The current direction of the furniture.
+   */
   private _direction = 0;
+  /**
+   * The current animation state of the furniture.
+   */
   private _animation: string;
-  private _type: FurnitureFetch;
+  /**
+   * The type of furniture (fetch key).
+   */
+  private readonly _type: FurnitureFetch;
+  /**
+   * The fallback texture to use if the furniture cannot be loaded.
+   */
   private _unknownTexture: ShroomTexture | undefined;
+  /**
+   * The fallback sprite to use if the furniture cannot be loaded.
+   */
   private _unknownSprite: FurnitureSprite | undefined;
 
-  private _clickHandler = new ClickHandler();
-  private _overOutHandler = new EventOverOutHandler();
+  /**
+   * Handles click events for this furniture.
+   * @readonly
+   */
+  private readonly _clickHandler = new ClickHandler();
+  /**
+   * Handles pointer over/out events for this furniture.
+   * @readonly
+   */
+  private readonly _overOutHandler = new EventOverOutHandler();
 
-  private _loadFurniResultPromise: Promise<LoadFurniResult>;
+  /**
+   * Promise that resolves when the furniture data is loaded.
+   * @readonly
+   */
+  private readonly _loadFurniResultPromise: Promise<LoadFurniResult>;
+  /**
+   * The valid directions for this furniture, if known.
+   */
   private _validDirections: number[] | undefined;
+  /**
+   * Resolver for the load furniture result promise.
+   */
   private _resolveLoadFurniResult: ResolveLoadFurniResult | undefined;
+  /**
+   * The visualization view for this furniture.
+   */
   private _view: FurnitureVisualizationView | undefined;
 
+  /**
+   * The visualization logic for this furniture.
+   */
   private _visualization: IFurnitureVisualization | undefined;
-  private _fallbackVisualization = new AnimatedFurnitureVisualization();
+  /**
+   * Fallback visualization if the main visualization is not loaded.
+   * @readonly
+   */
+  private readonly _fallbackVisualization = new AnimatedFurnitureVisualization();
 
+  /**
+   * Whether the position needs to be refreshed.
+   */
   private _refreshPosition = false;
+  /**
+   * Whether the furniture needs to be refreshed.
+   */
   private _refreshFurniture = false;
+  /**
+   * Whether the z-index needs to be refreshed.
+   */
   private _refreshZIndex = false;
 
+  /**
+   * Whether the furniture is highlighted.
+   */
   private _highlight = false;
+  /**
+   * The alpha (opacity) value for the furniture.
+   */
   private _alpha = 1;
+  /**
+   * Whether this furniture instance has been destroyed.
+   */
   private _destroyed = false;
 
+  /**
+   * The mask nodes currently applied to this furniture.
+   */
   private _maskNodes: MaskNode[] = [];
+  /**
+   * The mask sprites currently applied to this furniture.
+   */
   private _maskSprites: FurnitureSprite[] = [];
 
+  /**
+   * Function to cancel the animation ticker subscription, if any.
+   */
   private _cancelTicker: (() => void) | undefined = undefined;
+  /**
+   * Function to get the mask ID for this furniture.
+   */
   private _getMaskId: MaskIdGetter;
 
+  /**
+   * Optional callback to run when the furniture is loaded.
+   */
   private _onLoad: (() => void) | undefined;
 
+  /**
+   * The dependencies for this furniture instance.
+   */
   private _dependencies?: {
     placeholder: ShroomTexture | undefined;
     visualization: IFurnitureRoomVisualization;
@@ -115,6 +218,10 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     eventManager: IEventManager;
   };
 
+  /**
+   * Constructs a new BaseFurniture instance.
+   * @param props - The furniture properties and optional dependencies.
+   */
   constructor({
     type,
     direction,
@@ -142,6 +249,11 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     });
   }
 
+  /**
+   * Creates a BaseFurniture instance from a room context and props.
+   * @param context - The room context.
+   * @param props - The furniture properties.
+   */
   static fromRoomContext(context: IRoomContext, props: BaseFurnitureProps) {
     return new BaseFurniture({
       dependencies: {
@@ -156,6 +268,12 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     });
   }
 
+  /**
+   * Creates a BaseFurniture instance from a Shroom and container.
+   * @param shroom - The Shroom instance.
+   * @param container - The container for visualization.
+   * @param props - The furniture properties.
+   */
   static fromShroom(
     shroom: Shroom,
     container: ShroomContainer,
@@ -187,115 +305,193 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     });
   }
 
+  /**
+   * Gets the dependencies for this furniture instance.
+   * @throws Error if dependencies are not set.
+   */
   public get dependencies() {
     if (this._dependencies == null) throw new Error("Invalid dependencies");
 
     return this._dependencies;
   }
 
+  /**
+   * Sets the dependencies for this furniture instance and triggers loading.
+   */
   public set dependencies(value) {
     this._dependencies = value;
     this._loadFurniture();
   }
 
+  /**
+   * Gets the current visualization for this furniture, or a fallback if not loaded.
+   */
   public get visualization() {
     if (this._visualization == null) return this._fallbackVisualization;
 
     return this._visualization;
   }
 
+  /**
+   * Sets the visualization for this furniture and updates the display.
+   */
   public set visualization(value) {
     this._visualization?.destroy();
     this._visualization = value;
     this._updateFurniture();
   }
 
+  /**
+   * Returns true if the furniture is mounted (dependencies are set).
+   */
   public get mounted() {
     return this._dependencies != null;
   }
 
+  /**
+   * Gets the extra data for this furniture (async).
+   * @returns A promise resolving to the extra data.
+   */
   public get extradata() {
     return this._loadFurniResultPromise.then((result) => {
       return result.getExtraData();
     });
   }
 
+  /**
+   * Gets the valid directions for this furniture (async).
+   * @returns A promise resolving to the array of valid directions.
+   */
   public get validDirections() {
     return this._loadFurniResultPromise.then((result) => {
       return result.directions;
     });
   }
 
+  /**
+   * Gets whether the furniture is highlighted.
+   */
   public get highlight() {
     return this._highlight;
   }
 
+  /**
+   * Sets whether the furniture is highlighted.
+   */
   public set highlight(value) {
     this._highlight = value;
     this._refreshFurniture = true;
   }
 
+  /**
+   * Gets the alpha (opacity) value for the furniture.
+   */
   public get alpha() {
     return this._alpha;
   }
 
+  /**
+   * Sets the alpha (opacity) value for the furniture.
+   */
   public set alpha(value) {
     this._alpha = value;
     this._refreshFurniture = true;
   }
 
+  /**
+   * Gets the click event handler for this furniture.
+   */
   public get onClick() {
     return this._clickHandler.onClick;
   }
 
+  /**
+   * Sets the click event handler for this furniture.
+   */
   public set onClick(value) {
     this._clickHandler.onClick = value;
   }
 
+  /**
+   * Gets the double-click event handler for this furniture.
+   */
   public get onDoubleClick() {
     return this._clickHandler.onDoubleClick;
   }
 
+  /**
+   * Sets the double-click event handler for this furniture.
+   */
   public set onDoubleClick(value) {
     this._clickHandler.onDoubleClick = value;
   }
 
+  /**
+   * Gets the pointer down event handler for this furniture.
+   */
   public get onPointerDown() {
     return this._clickHandler.onPointerDown;
   }
 
+  /**
+   * Sets the pointer down event handler for this furniture.
+   */
   public set onPointerDown(value) {
     this._clickHandler.onPointerDown = value;
   }
 
+  /**
+   * Gets the pointer up event handler for this furniture.
+   */
   public get onPointerUp() {
     return this._clickHandler.onPointerUp;
   }
 
+  /**
+   * Sets the pointer up event handler for this furniture.
+   */
   public set onPointerUp(value) {
     this._clickHandler.onPointerUp = value;
   }
 
+  /**
+   * Gets the pointer out event handler for this furniture.
+   */
   public get onPointerOut() {
     return this._overOutHandler.onOut;
   }
 
+  /**
+   * Sets the pointer out event handler for this furniture.
+   */
   public set onPointerOut(value) {
     this._overOutHandler.onOut = value;
   }
 
+  /**
+   * Gets the pointer over event handler for this furniture.
+   */
   public get onPointerOver() {
     return this._overOutHandler.onOver;
   }
 
+  /**
+   * Sets the pointer over event handler for this furniture.
+   */
   public set onPointerOver(value) {
     this._overOutHandler.onOver = value;
   }
 
+  /**
+   * Gets the x position of the furniture.
+   */
   public get x() {
     return this._x;
   }
 
+  /**
+   * Sets the x position of the furniture.
+   */
   public set x(value) {
     if (value !== this.x) {
       this._x = value;
@@ -303,10 +499,16 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     }
   }
 
+  /**
+   * Gets the y position of the furniture.
+   */
   public get y() {
     return this._y;
   }
 
+  /**
+   * Sets the y position of the furniture.
+   */
   public set y(value) {
     if (value !== this.y) {
       this._y = value;
@@ -314,10 +516,16 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     }
   }
 
+  /**
+   * Gets the z-index (draw order) of the furniture.
+   */
   public get zIndex() {
     return this._zIndex;
   }
 
+  /**
+   * Sets the z-index (draw order) of the furniture.
+   */
   public set zIndex(value) {
     if (value !== this.zIndex) {
       this._zIndex = value;
@@ -325,32 +533,60 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     }
   }
 
+  /**
+   * Gets the current direction of the furniture.
+   */
   public get direction() {
     return this._direction;
   }
 
+  /**
+   * Sets the direction of the furniture and updates the visualization.
+   */
   public set direction(value) {
     this._direction = value;
     this._updateDirection();
   }
 
+  /**
+   * Rotates the furniture to the next valid direction.
+   * @returns A promise that resolves when the direction is updated.
+   */
+  /**
+   * Rotates the furniture to the next valid direction, wrapping around if needed.
+   * @returns A promise that resolves when the direction is updated.
+   */
   public async rotate() {
     if (!this._validDirections) {
       this._validDirections =
         this._loadFurniResult?.directions || (await this.validDirections);
     }
 
-    const currIndex = this._validDirections?.indexOf(this._direction);
+    if (!this._validDirections || this._validDirections.length === 0) {
+      throw new Error("No valid directions available for this furniture.");
+    }
+
+    const currIndex = this._validDirections.indexOf(this._direction);
+    let nextIndex = currIndex + 1;
+    if (nextIndex >= this._validDirections.length) {
+      nextIndex = 0;
+    }
     this.direction = getDirectionForFurniture(
-      this._validDirections[currIndex + 1],
+      this._validDirections[nextIndex],
       this._validDirections
     );
   }
 
+  /**
+   * Gets the current animation state of the furniture.
+   */
   public get animation() {
     return this._animation;
   }
 
+  /**
+   * Sets the animation state of the furniture and updates the visualization.
+   */
   public set animation(value) {
     this._animation = value;
 
@@ -360,18 +596,30 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     }
   }
 
+  /**
+   * Gets the mask ID getter function for this furniture.
+   */
   public get maskId() {
     return this._getMaskId;
   }
 
+  /**
+   * Sets the mask ID getter function for this furniture.
+   */
   public set maskId(value) {
     this._getMaskId = value;
   }
 
+  /**
+   * Gets the event group identifier for this furniture (always FURNITURE).
+   */
   getEventGroupIdentifier(): EventGroupIdentifier {
     return FURNITURE;
   }
 
+  /**
+   * Destroys this furniture instance, cleaning up sprites, listeners, and views.
+   */
   destroy() {
     this._destroySprites();
 
@@ -383,6 +631,10 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     this._view?.destroy();
   }
 
+  /**
+   * Ticker callback to update furniture state as needed.
+   * @private
+   */
   private _onTicker = () => {
     if (this._refreshFurniture) {
       this._refreshFurniture = false;
@@ -400,6 +652,10 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     }
   };
 
+  /**
+   * Updates the direction of the visualization to match the furniture's direction.
+   * @private
+   */
   private _updateDirection() {
     if (!this.mounted) return;
 
@@ -410,6 +666,11 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     }
   }
 
+  /**
+   * Applies a callback to all sprites associated with this furniture.
+   * @param cb - The callback to apply.
+   * @private
+   */
   private _updateSprites(cb: (element: FurnitureSprite) => void) {
     this._sprites.forEach(cb);
 
@@ -418,12 +679,20 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     }
   }
 
+  /**
+   * Updates the z-index of all sprites to match the furniture's z-index.
+   * @private
+   */
   private _updateZIndex() {
     this._updateSprites((element: FurnitureSprite) => {
       element.baseZIndex = this.zIndex;
     });
   }
 
+  /**
+   * Updates the position of all sprites and the view to match the furniture's position.
+   * @private
+   */
   private _updatePosition() {
     this._updateSprites((element: FurnitureSprite) => {
       element.baseX = this.x;
@@ -438,6 +707,10 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     this._view.updateLayers();
   }
 
+  /**
+   * Updates the furniture's sprites and visualization, or shows a fallback if not loaded.
+   * @private
+   */
   private _updateFurniture() {
     if (!this.mounted) return;
 
@@ -448,6 +721,10 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     }
   }
 
+  /**
+   * Updates the fallback sprite if the furniture cannot be loaded.
+   * @private
+   */
   private _updateUnknown() {
     if (!this.mounted) return;
 
@@ -472,6 +749,12 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     }
   }
 
+  /**
+   * Creates a new visualization view for the furniture.
+   * @param loadFurniResult - The loaded furniture data.
+   * @returns The new FurnitureVisualizationView instance.
+   * @private
+   */
   private _createNewView(loadFurniResult: LoadFurniResult) {
     this._view?.destroy();
 
@@ -494,6 +777,11 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     return view;
   }
 
+  /**
+   * Updates the sprites and visualization for the loaded furniture.
+   * @param loadFurniResult - The loaded furniture data.
+   * @private
+   */
   private _updateFurnitureSprites(loadFurniResult: LoadFurniResult) {
     if (!this.mounted) return;
 
@@ -517,31 +805,50 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     this._updatePosition();
   }
 
+  /**
+   * Destroys all sprites and mask nodes associated with this furniture.
+   * @private
+   */
   private _destroySprites() {
     this._sprites.forEach((sprite) => sprite.destroy());
     this._maskNodes.forEach((node) => node.remove());
     this._unknownSprite?.destroy();
-    this._sprites = new Map();
+    this._sprites.clear();
   }
 
+  /**
+   * Loads the furniture data and updates the visualization.
+   * @private
+   */
   private _loadFurniture() {
     if (!this.mounted) return;
 
     this._unknownTexture = this.dependencies.placeholder ?? undefined;
 
-    this.dependencies.furnitureLoader.loadFurni(this._type).then((result) => {
-      if (this._destroyed) return;
+    this.dependencies.furnitureLoader.loadFurni(this._type)
+      .then((result) => {
+        if (this._destroyed) return;
 
-      this._loadFurniResult = result;
-      this._resolveLoadFurniResult && this._resolveLoadFurniResult(result);
-      this._updateFurniture();
+        this._loadFurniResult = result;
+        this._resolveLoadFurniResult && this._resolveLoadFurniResult(result);
+        this._updateFurniture();
 
-      this._onLoad && this._onLoad();
-    });
+        this._onLoad && this._onLoad();
+      })
+      .catch((err) => {
+        // Improved error handling: log error and show fallback
+        // eslint-disable-next-line no-console
+        console.error("Failed to load furniture:", err);
+        this._updateUnknown();
+      });
 
     this._updateFurniture();
   }
 
+  /**
+   * Handles changes to the animation state, subscribing or unsubscribing from the animation ticker as needed.
+   * @private
+   */
   private _handleAnimationChange() {
     if (
       this.visualization.isAnimated(this.animation) &&
@@ -572,6 +879,12 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
     }
   }
 
+  /**
+   * Computes the effective alpha value for a sprite layer.
+   * @param params - The alpha values.
+   * @returns The computed alpha value.
+   * @private
+   */
   private _getAlpha({
     layerAlpha,
     baseAlpha,

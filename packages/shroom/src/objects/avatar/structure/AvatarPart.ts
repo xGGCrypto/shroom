@@ -54,38 +54,74 @@ export class AvatarPart {
   }
 
   public get type() {
+    /**
+     * Gets the type of this avatar part (e.g., head, body, etc.).
+     */
     return this._figureDataPart.type;
   }
 
   public get index() {
+    /**
+     * Gets the index of this avatar part within its type.
+     */
     return this._figureDataPart.index;
   }
 
   setFrameRepeat(value: number) {
+    /**
+     * Sets the number of times to repeat each frame for this part.
+     * @param value The repeat count.
+     */
     this._frameRepeat = value;
   }
 
   setActiveAction(action: AvatarActionInfo) {
+    /**
+     * Sets the active action for this part.
+     * @param action The action to activate.
+     */
     this._action = action;
   }
 
   setDirection(direction: number) {
+    /**
+     * Sets the direction for this part.
+     * @param direction The direction index.
+     */
     this._direction = getAvatarDirection(direction);
   }
 
   addCustomFrame(customFrame: CustomPartFrame) {
+    /**
+     * Adds a custom frame to this part, typically for effects or overrides.
+     * @param customFrame The custom frame data.
+     */
     this._customFrames.push(customFrame);
   }
 
   setDirectionOffset(offset: number) {
+    /**
+     * Sets the direction offset for this part.
+     * @param offset The direction offset.
+     */
     this._directionOffset = offset;
   }
 
   setAvatarOffsets(avatarFrame: AvatarEffectFrameFXPart, frame: number) {
+    /**
+     * Sets avatar offsets for this part for a given frame.
+     * @param avatarFrame The FX part offsets.
+     * @param frame The frame index.
+     */
     this._offsets.set(frame, avatarFrame);
   }
 
   getDirection(offset = 0) {
+    /**
+     * Gets the direction for this part, applying any offset.
+     * @param offset Additional offset to apply to the direction.
+     * @returns The computed direction index, or undefined if not set.
+     */
     if (this._direction == null) return;
 
     return getAvatarDirection(this._direction + this._directionOffset + offset);

@@ -15,6 +15,13 @@ import {
 import { Logger } from "./Logger";
 import { downloadMultipleFiles } from "./downloadMultipleFiles";
 
+/**
+ * Downloads all figure SWFs listed in a figure map.
+ * Defensive: Skips if figure map download fails, logs errors.
+ *
+ * @param params Download parameters (downloadPath, file, gordonUrl).
+ * @param logger Logger instance for progress and errors.
+ */
 export async function downloadFigures(
   {
     file,

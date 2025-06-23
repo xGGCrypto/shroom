@@ -10,24 +10,44 @@ import { JsonFurnitureAssetBundle } from "./JsonFurnitureAssetBundle";
 import { loadFurni, LoadFurniResult } from "./util/loadFurni";
 import { XmlFurnitureAssetBundle } from "./XmlFurnitureAssetBundle";
 
+/**
+ * FurnitureLoader is responsible for loading and caching furniture assets and data.
+ * It supports both legacy XML and modern JSON asset bundles, and provides async loading with optional artificial delay for testing.
+ *
+ * @category Furniture
+ */
 export class FurnitureLoader implements IFurnitureLoader {
+  /** Cache for loaded furniture, keyed by type string (with color if present). */
   private _furnitureCache: Map<string, Promise<LoadFurniResult>> = new Map();
+  /** Optional artificial delay (in ms) for simulating slow loads. */
   private _artificalDelay: number | undefined;
-  private _assetBundles: Map<
-    string,
-    Promise<IFurnitureAssetBundle>
-  > = new Map();
+  /** Cache for asset bundles, keyed by type_revision. */
+  private _assetBundles: Map<string, Promise<IFurnitureAssetBundle>> = new Map();
 
+  /**
+   * @param _options Loader options, including furniture data and asset bundle fetcher.
+   */
   constructor(private _options: Options) {}
 
+  /**
+   * Gets the artificial delay (in ms) for loading furniture.
+   */
   public get delay() {
     return this._artificalDelay;
   }
 
+  /**
+   * Sets the artificial delay (in ms) for loading furniture.
+   */
   public set delay(value) {
     this._artificalDelay = value;
   }
 
+  /**
+   * Creates a FurnitureLoader for legacy XML-based assets.
+   * @param furnitureData The furniture data source.
+   * @param resourcePath Optional resource path prefix.
+   */
   static create(furnitureData: IFurnitureData, resourcePath = "") {
     return new FurnitureLoader({
       furnitureData,
@@ -40,6 +60,11 @@ export class FurnitureLoader implements IFurnitureLoader {
     });
   }
 
+  /**
+   * Creates a FurnitureLoader for JSON-based assets (modern format).
+   * @param furnitureData The furniture data source.
+   * @param resourcePath Optional resource path prefix.
+   */
   static createForJson(furnitureData: IFurnitureData, resourcePath = "") {
     return new FurnitureLoader({
       furnitureData,
@@ -52,6 +77,12 @@ export class FurnitureLoader implements IFurnitureLoader {
     });
   }
 
+  /**
+   * Loads a furniture asset and its data, using the provided fetch info.
+   * @param fetch The fetch info (by id or type).
+   * @returns A promise resolving to the loaded furniture result.
+   * @throws If the type cannot be determined or asset loading fails.
+   */
   async loadFurni(fetch: FurnitureFetch): Promise<LoadFurniResult> {
     if (this.delay != null) {
       await new Promise((resolve) => setTimeout(resolve, this.delay));
@@ -93,6 +124,12 @@ export class FurnitureLoader implements IFurnitureLoader {
     return furniture;
   }
 
+  /**
+   * Loads or retrieves an asset bundle for a given type and revision.
+   * @param type The furniture type.
+   * @param revision The revision number (optional).
+   * @returns A promise resolving to the asset bundle.
+   */
   private _getAssetBundle(type: string, revision?: number) {
     const key = `${type}_${revision}`;
     const current = this._assetBundles.get(key);
@@ -105,16 +142,29 @@ export class FurnitureLoader implements IFurnitureLoader {
   }
 }
 
+
+/**
+ * Options for FurnitureLoader construction.
+ * @category Furniture
+ */
 interface Options {
+  /** The furniture data source. */
   furnitureData: IFurnitureData;
+  /** Asset bundle fetcher for a given type and revision. */
   getAssetBundle: (
     type: string,
     revision?: number
   ) => Promise<IFurnitureAssetBundle>;
 }
 
+
+/**
+ * Normalizes the asset path for a given revision and type.
+ * @param revision The revision number (optional).
+ * @param type The furniture type.
+ * @returns The normalized path string.
+ */
 const normalizePath = (revision: number | undefined, type: string) => {
   if (revision == null) return type;
-
   return `${revision}/${type}`;
 };

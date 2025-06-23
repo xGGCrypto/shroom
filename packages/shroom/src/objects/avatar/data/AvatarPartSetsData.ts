@@ -1,6 +1,7 @@
 import { AvatarData } from "./AvatarData";
 import { IAvatarPartSetsData } from "./interfaces/IAvatarPartSetsData";
 import { partsetsXml } from "./static/partsets.xml";
+import { getOptionalAttribute, getRequiredAttribute } from "./xmlUtils";
 
 export class AvatarPartSetsData
   extends AvatarData
@@ -29,12 +30,10 @@ export class AvatarPartSetsData
       }
     | undefined {
     const element = this.querySelector(`partSet part[set-type="${id}"]`);
-
     if (element == null) return;
-
     return {
-      flippedSetType: element.getAttribute("flipped-set-type") ?? undefined,
-      removeSetType: element.getAttribute("remove-set-type") ?? undefined,
+      flippedSetType: getOptionalAttribute(element, "flipped-set-type"),
+      removeSetType: getOptionalAttribute(element, "remove-set-type"),
     };
   }
 
@@ -44,12 +43,7 @@ export class AvatarPartSetsData
     );
 
     return new Set(
-      partSet.map((value) => {
-        const setType = value.getAttribute("set-type");
-        if (setType == null) throw new Error("Invalid set type");
-
-        return setType;
-      })
+      partSet.map((value) => getRequiredAttribute(value, "set-type"))
     );
   }
 }

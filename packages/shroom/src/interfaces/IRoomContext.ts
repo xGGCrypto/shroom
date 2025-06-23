@@ -10,7 +10,9 @@ import { IRoomObjectContainer } from "./IRoomObjectContainer";
 import { IRoomVisualization } from "./IRoomVisualization";
 import { ITileMap } from "./ITileMap";
 import { ShroomApplication } from "../pixi-proxy";
-
+/**
+ * Interface for the room context, aggregating all core room services and objects.
+ */
 export interface IRoomContext {
   geometry: IRoomGeometry;
   furnitureLoader: IFurnitureLoader;

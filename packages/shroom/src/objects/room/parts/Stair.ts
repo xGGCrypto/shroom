@@ -16,6 +16,10 @@ interface Props {
   texture?: ShroomTexture;
 }
 
+/**
+ * Represents a stair part in the room model visualization.
+ * Handles rendering and updating of stair graphics for different directions.
+ */
 export class Stair extends ShroomContainer implements IRoomPart {
   private _texture: ShroomTexture | undefined;
 
@@ -24,6 +28,10 @@ export class Stair extends ShroomContainer implements IRoomPart {
   private _tileRightColor = 0;
   private _tileTopColor = 0;
 
+  /**
+   * Creates a new Stair.
+   * @param _props The stair properties (height, direction, texture).
+   */
   constructor(private _props: Props) {
     super();
 
@@ -32,6 +40,10 @@ export class Stair extends ShroomContainer implements IRoomPart {
     this.updateSprites();
   }
 
+  /**
+   * Updates the stair with new room part data.
+   * @param data The new room part data.
+   */
   update(data: RoomPartData): void {
     this._tileHeight = data.tileHeight;
     this._tileLeftColor = data.tileLeftColor;
@@ -42,6 +54,9 @@ export class Stair extends ShroomContainer implements IRoomPart {
     this.updateSprites();
   }
 
+  /**
+   * Updates the sprites for the stair based on the current direction and state.
+   */
   updateSprites() {
     this.removeChildren();
 
@@ -56,6 +71,11 @@ export class Stair extends ShroomContainer implements IRoomPart {
     }
   }
 
+  /**
+   * Creates the display objects for a stair step in direction 0 (up).
+   * @param index The stair step index (0 = closest to viewer).
+   * @returns An array of display objects for this stair step.
+   */
   _createStairBoxDirection0(index: number) {
     const baseX = +stairBase * index;
     const baseY = -stairBase * index * 1.5;
@@ -103,6 +123,11 @@ export class Stair extends ShroomContainer implements IRoomPart {
     return [borderLeft, borderRight, tile];
   }
 
+  /**
+   * Creates the display objects for a stair step in direction 2 (left).
+   * @param index The stair step index (0 = closest to viewer).
+   * @returns An array of display objects for this stair step.
+   */
   _createStairBoxDirection2(index: number) {
     const baseX = -stairBase * index;
     const baseY = -stairBase * index * 1.5;
@@ -146,6 +171,9 @@ export class Stair extends ShroomContainer implements IRoomPart {
     return [borderLeft, borderRight, tile];
   }
 
+  /**
+   * Destroys the stair and cleans up resources.
+   */
   destroy() {
     super.destroy();
     this.removeChildren();

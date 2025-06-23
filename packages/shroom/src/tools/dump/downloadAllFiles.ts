@@ -6,6 +6,14 @@ import { downloadFurnitures } from "./downloadFurnitures";
 import { ExternalVariables } from "./getExternalVariableUrls";
 import { Logger } from "./Logger";
 
+/**
+ * Downloads all figure, furniture, and effect assets using the provided URLs.
+ * Defensive: Handles download failures and logs errors.
+ *
+ * @param downloadPath The base path to save downloaded files.
+ * @param urls The set of external variable URLs.
+ * @param logger Logger instance for progress and errors.
+ */
 export async function downloadAllFiles(
   downloadPath: string,
   {

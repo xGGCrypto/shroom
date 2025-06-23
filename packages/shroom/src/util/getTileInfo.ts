@@ -15,17 +15,18 @@ const offsets = {
 
 export type NumberOfTile = number | "x";
 
+/**
+ * Converts a TileType to a number, or returns 'x' for invalid/empty tiles.
+ * @param tileType The tile type to convert.
+ * @returns The numeric value or 'x'.
+ */
 export function getNumberOfTileType(tileType: TileType): number | "x" {
   if (tileType === "x" || tileType == null) return "x";
-
   const parsedNumber = Number(tileType);
-
   if (isNaN(parsedNumber)) {
     const offset = 9;
-
     return tileType.charCodeAt(0) - 96 + offset;
   }
-
   return parsedNumber;
 }
 
@@ -44,6 +45,13 @@ const getTile = (
   return getNumberOfTileType(tiles[y][x]);
 };
 
+/**
+ * Gets information about a tile and its neighbors, including edge and stair info.
+ * @param tiles The tilemap.
+ * @param x The x coordinate.
+ * @param y The y coordinate.
+ * @returns An object with edge, stair, and height info.
+ */
 export function getTileInfo(tiles: TileType[][], x: number, y: number) {
   const type = getTile(tiles, x, y);
 
@@ -84,6 +92,13 @@ export function getTileInfo(tiles: TileType[][], x: number, y: number) {
 
 /**
  * Get stair information for the tile at the given x/y position.
+ */
+/**
+ * Get stair information for the tile at the given x/y position.
+ * @param tiles The tilemap.
+ * @param x The x coordinate.
+ * @param y The y coordinate.
+ * @returns Stair/corner info or undefined.
  */
 function getStairs(tiles: TileType[][], x: number, y: number) {
   const type = getTile(tiles, x, y);

@@ -1,4 +1,5 @@
 import { createShroom, RoomCreator } from "./common";
+import { RoomCamera } from "@xggcrypto/shroom";
 
 export default {
   title: "Room / Model",
@@ -471,6 +472,13 @@ function renderRoomModel(tilemap: string) {
       centerRoom: true,
     });
 
-    application.stage.addChild(room);
+    const camera = RoomCamera.forScreen(room);
+
+    application.stage.addChild(camera);
+
+    return () => {
+      camera.destroy();
+      room.destroy();
+    };
   });
 }

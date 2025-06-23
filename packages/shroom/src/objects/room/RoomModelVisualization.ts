@@ -32,45 +32,78 @@ import { WallRight } from "./parts/WallRight";
 import { RoomLandscapeMaskSprite } from "./RoomLandscapeMaskSprite";
 import { getTileMapBounds } from "./util/getTileMapBounds";
 
+/**
+ * Visualization component for a room, responsible for rendering tiles, walls, and landscape.
+ * Handles all visual state, layering, and event propagation for the room model.
+ */
 export class RoomModelVisualization
   extends ShroomContainer
   implements IRoomVisualization, IRoomRectangle, ILandscapeContainer {
+  /** Whether to hide the tile cursor. */
   private _hideTileCursor = false;
+  /** Whether to hide the walls. */
   private _hideWalls = false;
+  /** Whether to hide the floor. */
   private _hideFloor = false;
 
+  /** Wall left color tint. */
   private _wallLeftColor: number | undefined;
+  /** Wall right color tint. */
   private _wallRightColor: number | undefined;
+  /** Wall top color tint. */
   private _wallTopColor: number | undefined;
 
+  /** Tile left color tint. */
   private _tileLeftColor: number | undefined;
+  /** Tile right color tint. */
   private _tileRightColor: number | undefined;
+  /** Tile top color tint. */
   private _tileTopColor: number | undefined;
 
+  /** Container for objects positioned relative to the room. */
   private _positionalContainer = new ShroomContainer();
+  /** Layer for objects behind the wall. */
   private _behindWallLayer: ShroomContainer = new ShroomContainer();
+  /** Layer for wall objects. */
   private _wallLayer: ShroomContainer = new ShroomContainer();
+  /** Layer for tile objects. */
   private _tileLayer: ShroomContainer = new ShroomContainer();
+  /** Primary layer for main objects. */
   private _primaryLayer: ShroomContainer = new ShroomContainer();
+  /** Layer for landscape objects. */
   private _landscapeLayer: ShroomContainer = new ShroomContainer();
+  /** Layer for wall hit areas. */
   private _wallHitAreaLayer: ShroomContainer = new ShroomContainer();
+  /** Layer for mask sprites. */
   private _masksLayer: ShroomContainer = new ShroomContainer();
 
+  /** Wall texture. */
   private _wallTexture: ShroomTexture | undefined;
+  /** Floor texture. */
   private _floorTexture: ShroomTexture | undefined;
 
+  /** All wall objects in the room. */
   private _walls: (WallLeft | WallRight | WallOuterCorner)[] = [];
+  /** All tile objects in the room. */
   private _tiles: (Tile | Stair | StairCorner)[] = [];
+  /** All tile cursor objects in the room. */
   private _tileCursors: TileCursor[] = [];
+  /** All mask sprites in the room. */
   private _masks: Map<string, RoomLandscapeMaskSprite> = new Map();
 
+  /** All custom room parts. */
   private _parts: Set<IRoomPart> = new Set();
 
+  /** Border width for walls. */
   private _borderWidth = 8;
+  /** Height of a tile. */
   private _tileHeight = 8;
+  /** Height of a wall. */
   private _wallHeight = 116;
 
+  /** Emits when the active tile changes. */
   private _onActiveTileChange = new Subject<RoomPosition>();
+  /** Emits when the active wall changes. */
   private _onActiveWallChange = new Subject<
     | {
         roomX: number;
@@ -82,11 +115,13 @@ export class RoomModelVisualization
     | undefined
   >();
 
+  /** Emits when a tile is clicked. */
   private _onTileClick = new Subject<{
     position: RoomPosition;
     event: IEventManagerEvent;
   }>();
 
+  /** Bounds of the tile map. */
   private _tileMapBounds: {
     minX: number;
     minY: number;
@@ -94,9 +129,17 @@ export class RoomModelVisualization
     maxY: number;
   };
 
+  /** Whether the room needs a refresh. */
   private _refreshRoom = false;
+  /** Whether the room needs a full rebuild. */
   private _rebuildRoom = false;
 
+  /**
+   * Constructs a new RoomModelVisualization.
+   * @param _eventManager The event manager for the room.
+   * @param _application The Pixi.js application instance.
+   * @param parsedTileMap The parsed tile map for the room.
+   */
   constructor(
     private _eventManager: EventManager,
     private _application: ShroomApplication,

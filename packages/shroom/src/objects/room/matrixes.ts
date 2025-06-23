@@ -1,5 +1,10 @@
 import { createPlaneMatrix } from "./util/createPlaneMatrix";
 
+/**
+ * Returns the transformation matrix for a floor tile at the given coordinates.
+ * @param x The X coordinate of the tile.
+ * @param y The Y coordinate of the tile.
+ */
 export function getFloorMatrix(x: number, y: number) {
   return createPlaneMatrix(
     {
@@ -12,6 +17,12 @@ export function getFloorMatrix(x: number, y: number) {
   );
 }
 
+/**
+ * Returns the transformation matrix for a left wall at the given coordinates and dimensions.
+ * @param x The X coordinate of the wall.
+ * @param y The Y coordinate of the wall.
+ * @param dim The dimensions of the wall (width, height).
+ */
 export function getLeftMatrix(
   x: number,
   y: number,
@@ -28,6 +39,12 @@ export function getLeftMatrix(
   );
 }
 
+/**
+ * Returns the transformation matrix for a right wall at the given coordinates and dimensions.
+ * @param x The X coordinate of the wall.
+ * @param y The Y coordinate of the wall.
+ * @param dim The dimensions of the wall (width, height).
+ */
 export function getRightMatrix(
   x: number,
   y: number,

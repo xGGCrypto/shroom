@@ -3,30 +3,64 @@ import { applyTextureProperties } from "../../util/applyTextureProperties";
 import { loadImageFromBlob } from "../../util/loadImageFromBlob";
 import { HitSprite } from "./HitSprite";
 
+/**
+ * HitTexture wraps a PIXI texture and provides hitmap-based pixel-perfect hit detection.
+ * It supports construction from spritesheets, blobs, or URLs, and caches hitmaps for efficiency.
+ *
+ * @category HitDetection
+ */
 export class HitTexture {
+  /** The underlying PIXI texture. */
   private _texture: ShroomTexture;
+  /** Cached hitmap for pixel-perfect hit detection. */
   private _cachedHitmap: Uint32Array | undefined;
 
+  /**
+   * Gets the underlying PIXI texture.
+   */
   public get texture() {
     return this._texture;
   }
 
+  /**
+   * Constructs a HitTexture from a PIXI texture.
+   * @param texture The PIXI texture to wrap.
+   */
   constructor(texture: ShroomTexture) {
     this._texture = texture;
     applyTextureProperties(this._texture);
   }
 
+  /**
+   * Creates a HitTexture from a spritesheet and frame name.
+   * @param spritesheet The spritesheet containing the texture.
+   * @param name The frame name in the spritesheet.
+   * @returns A promise resolving to the HitTexture.
+   * @throws If the texture is not found in the spritesheet.
+   */
   static async fromSpriteSheet(spritesheet: ShroomSpritesheet, name: string) {
     const texture = spritesheet.textures[name];
+    if (!texture) throw new Error(`Texture '${name}' not found in spritesheet.`);
     return new HitTexture(texture);
   }
 
+  /**
+   * Creates a HitTexture from a Blob (image file).
+   * @param blob The image blob.
+   * @returns A promise resolving to the HitTexture.
+   * @throws If the blob cannot be loaded as an image.
+   */
   static async fromBlob(blob: Blob) {
     const url = await loadImageFromBlob(blob);
-
     return HitTexture.fromUrl(url);
   }
 
+  /**
+   * Creates a HitTexture from an image URL.
+   * @param imageUrl The URL of the image.
+   * @returns A promise resolving to the HitTexture.
+   * @throws If the image cannot be loaded.
+   */
   static async fromUrl(imageUrl: string) {
     const image = new Image();
 
@@ -36,25 +70,21 @@ export class HitTexture {
 
     // TODO: Add option to configure this somewhere?
     image.crossOrigin = "anonymous";
-
     image.src = imageUrl;
 
-    await new Promise<{
-      width: number;
-      height: number;
-    }>((resolve, reject) => {
-      image.onload = () => {
-        resolve({ width: image.width, height: image.height });
-      };
-
-      image.onerror = (value) => reject(value);
+    await new Promise<{ width: number; height: number }>((resolve, reject) => {
+      image.onload = () => resolve({ width: image.width, height: image.height });
+      image.onerror = (value) => reject(new Error("Failed to load image for HitTexture."));
     });
 
     const texture = ShroomTexture.from(image);
-
     return new HitTexture(texture);
   }
 
+  /**
+   * Returns the cached hitmap for this texture, generating it if necessary.
+   * @returns The hitmap as a Uint32Array.
+   */
   public getHitMap() {
     return this._getHitMap();
   }

@@ -22,18 +22,34 @@ import { LoadFurniResult } from "./util/loadFurni";
 
 const highlightFilter = new HighlightFilter(0x999999, 0xffffff);
 
+/**
+ * FurnitureVisualizationView manages the rendering and interaction of a furniture object,
+ * including its display layers, animation, direction, and event handling.
+ * It provides a high-level API for updating the visual state of furniture in the room.
+ *
+ * @category Furniture
+ */
 export class FurnitureVisualizationView
   implements IFurnitureVisualizationView, IBaseFurniture, IEventGroup {
+  /** The current direction index for the furniture visualization. */
   private _direction: number | undefined;
+  /** The current animation name or id for the furniture visualization. */
   private _animation: string | undefined;
 
+  /** Cache for draw definitions, keyed by direction and animation. */
   private _cache: Map<string, FurniDrawDefinition> = new Map();
+  /** The current display layers for the furniture. */
   private _layers: FurnitureVisualizationLayer[] | undefined;
 
+  /** The X position of the furniture visualization. */
   private _x: number | undefined;
+  /** The Y position of the furniture visualization. */
   private _y: number | undefined;
+  /** The Z-index of the furniture visualization. */
   private _zIndex: number | undefined;
+  /** The alpha (opacity) of the furniture visualization. */
   private _alpha: number | undefined;
+  /** Whether the furniture visualization is highlighted. */
   private _highlight: boolean | undefined;
 
   public get x() {
@@ -86,6 +102,14 @@ export class FurnitureVisualizationView
     this._highlight = value;
   }
 
+  /**
+   * Creates a new FurnitureVisualizationView.
+   * @param _eventManager The event manager for handling input events.
+   * @param _clickHandler The click handler for click events.
+   * @param _overOutHandler The handler for pointer over/out events.
+   * @param _container The container to render furniture sprites into.
+   * @param _furniture The loaded furniture data and assets.
+   */
   constructor(
     private _eventManager: IEventManager,
     private _clickHandler: ClickHandler,
@@ -94,31 +118,51 @@ export class FurnitureVisualizationView
     private _furniture: LoadFurniResult
   ) {}
 
+  /**
+   * Gets the event group identifier for this visualization (always FURNITURE).
+   */
   getEventGroupIdentifier(): EventGroupIdentifier {
     return FURNITURE;
   }
 
+  /**
+   * Gets the display layers of the furniture. Throws if not yet set.
+   * @throws If updateDisplay has not been called yet.
+   */
   getLayers(): IFurnitureVisualizationLayer[] {
     if (this._layers == null)
       throw new Error(
         "Layers not set yet. Call `updateDisplay` before accessing the layers."
       );
-
     return this._layers;
   }
 
+  /**
+   * Gets the visualization data for this furniture.
+   */
   getVisualizationData(): IFurnitureVisualizationData {
     return this._furniture.visualizationData;
   }
 
+  /**
+   * Sets the animation to display for this furniture.
+   * @param animation The animation name or id.
+   */
   setDisplayAnimation(animation?: string): void {
     this._animation = animation;
   }
 
+  /**
+   * Sets the direction to display for this furniture.
+   * @param direction The direction index.
+   */
   setDisplayDirection(direction: number): void {
     this._direction = direction;
   }
 
+  /**
+   * Updates all display layers to match the current position, alpha, and highlight state.
+   */
   updateLayers() {
     this._layers?.forEach((layer) => {
       layer.x = this.x;
@@ -130,6 +174,11 @@ export class FurnitureVisualizationView
     });
   }
 
+  /**
+   * Updates the display layers for the current direction and animation.
+   * Destroys old layers and creates new ones as needed.
+   * @throws If direction is not set.
+   */
   updateDisplay(): void {
     if (this._direction == null) throw new Error("Direction was not set");
 
@@ -153,10 +202,19 @@ export class FurnitureVisualizationView
     this.updateLayers();
   }
 
+  /**
+   * Destroys all display layers and cleans up resources.
+   */
   destroy() {
     this._layers?.forEach((layer) => layer.destroy());
   }
 
+  /**
+   * Gets or computes the draw definition for a given direction and animation, with caching.
+   * @param direction The direction index.
+   * @param animation The animation name or id.
+   * @returns The draw definition for the given parameters.
+   */
   private _getDrawDefinition(direction: number, animation?: string) {
     animation = animation ?? "undefined";
 
@@ -172,26 +230,87 @@ export class FurnitureVisualizationView
   }
 }
 
+/**
+ * FurnitureVisualizationLayer represents a single visual layer of a furniture object.
+ * It manages the sprite(s) for a given layer, including frame animation, color, highlight, and event handling.
+ * Layers are created and managed by FurnitureVisualizationView and are responsible for rendering and updating their own sprites.
+ *
+ * @category Furniture
+ */
+/**
+ * FurnitureVisualizationLayer represents a single visual layer of a furniture object.
+ * It manages the sprite(s) for a given layer, including frame animation, color, highlight, and event handling.
+ * Layers are created and managed by FurnitureVisualizationView and are responsible for rendering and updating their own sprites.
+ *
+ * @category Furniture
+ */
+/**
+ * FurnitureVisualizationLayer represents a single visual layer of a furniture object.
+ * It manages the sprite(s) for a given layer, including frame animation, color, highlight, and event handling.
+ * Layers are created and managed by FurnitureVisualizationView and are responsible for rendering and updating their own sprites.
+ *
+ * @category Furniture
+ */
 class FurnitureVisualizationLayer
   implements IFurnitureVisualizationLayer, IBaseFurniture {
+  /**
+   * Number of times to repeat the current frame before advancing.
+   */
   public readonly frameRepeat: number;
+  /**
+   * The index of this layer within the furniture visualization.
+   */
   public readonly layerIndex: number;
+  /**
+   * The number of assets (frames) in this layer.
+   */
   public readonly assetCount: number;
 
+  /**
+   * Map of frame index to sprite instance.
+   */
   private _sprites = new Map<number, FurnitureSprite>();
-
+  /**
+   * The X position of the layer.
+   */
   private _x: number | undefined;
+  /**
+   * The Y position of the layer.
+   */
   private _y: number | undefined;
+  /**
+   * The Z-index of the layer.
+   */
   private _zIndex: number | undefined;
+  /**
+   * The alpha (opacity) of the layer.
+   */
   private _alpha: number | undefined;
+  /**
+   * Whether the layer is highlighted.
+   */
   private _highlight: boolean | undefined;
-
+  /**
+   * Whether the sprite position has changed and needs updating.
+   */
   private _spritePositionChanged = false;
+  /**
+   * Whether the sprites have changed and need to be recreated.
+   */
   private _spritesChanged = false;
+  /**
+   * The current frame index for animation.
+   */
   private _frameIndex = 0;
+  /**
+   * The color tint to apply to the layer, if any.
+   */
   private _color: number | undefined;
-
+  /**
+   * Set of sprites currently mounted in the container.
+   */
   private _mountedSprites = new Set<FurnitureSprite>();
+
 
   public get highlight() {
     if (this._highlight == null) throw new Error("highlight not set");

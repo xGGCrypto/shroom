@@ -8,7 +8,13 @@ import { IMoveable } from "../interfaces/IMoveable";
 import { AvatarAction } from "./enum/AvatarAction";
 import { IScreenPositioned } from "../interfaces/IScreenPositioned";
 import { HitEventHandler } from "../hitdetection/HitSprite";
+import { assignAvatarEventHandlers, AvatarEventHandlers } from "./AvatarEventHandlers";
+import { getCombinedActions, getPlaceholderLookOptions } from "./avatarUtils";
 
+/**
+ * Represents an avatar in the room, handling movement, animation, actions, and event handlers.
+ * Provides API for controlling avatar state and appearance.
+ */
 export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
   private _avatarSprites: BaseAvatar;
 
@@ -40,12 +46,7 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
   private _loaded = false;
   private _effect: string | undefined;
 
-  private _onClick: HitEventHandler | undefined = undefined;
-  private _onDoubleClick: HitEventHandler | undefined = undefined;
-  private _onPointerDown: HitEventHandler | undefined = undefined;
-  private _onPointerUp: HitEventHandler | undefined = undefined;
-  private _onPointerOver: HitEventHandler | undefined = undefined;
-  private _onPointerOut: HitEventHandler | undefined = undefined;
+  private _eventHandlers: AvatarEventHandlers = {};
   private _onStopWalkingCallback: (() => void) | undefined = undefined;
 
   constructor({
@@ -104,72 +105,14 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
   /**
    * Set this with a callback if you want to capture clicks on the Avatar.
    */
-  public get onClick() {
-    return this._onClick;
-  }
-
-  public set onClick(value) {
-    this._onClick = value;
-    this._updateEventHandlers();
-  }
-
   /**
-   * Set this with a callback if you want to capture double clicks on the Avatar.
+   * Event handlers for avatar interaction (click, pointer, etc).
    */
-  public get onDoubleClick() {
-    return this._onDoubleClick;
+  public get eventHandlers(): AvatarEventHandlers {
+    return this._eventHandlers;
   }
-
-  public set onDoubleClick(value) {
-    this._onDoubleClick = value;
-    this._updateEventHandlers();
-  }
-
-  /**
-   * Set this with a callback if you want to capture pointer down on the Avatar.
-   */
-  get onPointerDown() {
-    return this._onPointerDown;
-  }
-
-  set onPointerDown(value) {
-    this._onPointerDown = value;
-    this._updateEventHandlers();
-  }
-
-  /**
-   * Set this with a callback if you want to capture pointer up on the Avatar.
-   */
-  get onPointerUp() {
-    return this._onPointerUp;
-  }
-
-  set onPointerUp(value) {
-    this._onPointerUp = value;
-    this._updateEventHandlers();
-  }
-
-  /**
-   * Set this with a callback if you want to capture pointer over on the Avatar.
-   */
-  public get onPointerOver() {
-    return this._onPointerOver;
-  }
-
-  public set onPointerOver(value) {
-    this._onPointerOver = value;
-    this._updateEventHandlers();
-  }
-
-  /**
-   * Set this with a callback if you want to capture pointer out on the Avatar.
-   */
-  public get onPointerOut() {
-    return this._onPointerOut;
-  }
-
-  public set onPointerOut(value) {
-    this._onPointerOut = value;
+  public set eventHandlers(handlers: AvatarEventHandlers) {
+    this._eventHandlers = handlers;
     this._updateEventHandlers();
   }
 
@@ -488,34 +431,18 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
     this._moveAnimation?.destroy();
   }
 
+  /**
+   * Assigns event handlers to all avatar sprite instances.
+   */
   private _updateEventHandlers() {
     if (this._placeholderSprites != null) {
-      this._placeholderSprites.onClick = this._onClick;
-      this._placeholderSprites.onDoubleClick = this._onDoubleClick;
-      this._placeholderSprites.onPointerDown = this._onPointerDown;
-      this._placeholderSprites.onPointerUp = this._onPointerUp;
-      this._placeholderSprites.onPointerOut = this._onPointerOut;
-      this._placeholderSprites.onPointerOver = this._onPointerOver;
+      assignAvatarEventHandlers(this._placeholderSprites, this._eventHandlers);
     }
-
-    this._loadingAvatarSprites.onClick = this._onClick;
-    this._loadingAvatarSprites.onDoubleClick = this._onDoubleClick;
-    this._loadingAvatarSprites.onPointerDown = this._onPointerDown;
-    this._loadingAvatarSprites.onPointerUp = this._onPointerUp;
-    this._loadingAvatarSprites.onPointerOut = this._onPointerOut;
-    this._loadingAvatarSprites.onPointerOver = this._onPointerOver;
+    assignAvatarEventHandlers(this._loadingAvatarSprites, this._eventHandlers);
   }
 
   private _getPlaceholderLookOptions(): LookOptions {
-    return {
-      actions: new Set(),
-      direction: this.direction,
-      headDirection: this.direction,
-      look: "hd-99999-99999",
-      effect: undefined,
-      initial: false,
-      item: undefined,
-    };
+    return getPlaceholderLookOptions(this.direction);
   }
 
   private _getCurrentLookOptions(): LookOptions {
@@ -525,22 +452,8 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
   }
 
   private _getLookOptions(): LookOptions {
-    const combinedActions = new Set(this.actions);
-
-    if (this._walking) {
-      combinedActions.add(AvatarAction.Move);
-    }
-
-    if (this.waving) {
-      combinedActions.add(AvatarAction.Wave);
-    }
-
-    if (combinedActions.has(AvatarAction.Lay) && this._walking) {
-      combinedActions.delete(AvatarAction.Lay);
-    }
-
     return {
-      actions: combinedActions,
+      actions: getCombinedActions(this.actions, this.waving, this._walking),
       direction: this.direction,
       headDirection: this.headDirection,
       look: this._look,
@@ -651,11 +564,8 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
   }
 
   private _getZIndexAtPosition(roomX: number, roomY: number, roomZ: number) {
-    let zOffset = 1;
-    if (this._getCurrentLookOptions().actions.has(AvatarAction.Lay)) {
-      zOffset += 2000;
-    }
-
+    // getAvatarZIndex returns only the offset, so add getZOrder here
+    let zOffset = getCombinedActions(this._getCurrentLookOptions().actions, this.waving, this._walking).has(AvatarAction.Lay) ? 2001 : 1;
     return getZOrder(roomX, roomY, roomZ) + zOffset;
   }
 

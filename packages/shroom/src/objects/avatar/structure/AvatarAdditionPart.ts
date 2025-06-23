@@ -16,6 +16,10 @@ import { IAvatarDrawablePart } from "./interface/IAvatarDrawablePart";
 import { getEffectSprite } from "../util/getEffectSprite";
 import { AvatarAsset, AvatarDrawPart } from "../types";
 
+/**
+ * Handles the addition of avatar effect parts (bodypart or fx) to an avatar, including direction, offsets, and asset lookup.
+ * Used for rendering additional effect layers on avatars.
+ */
 export class AvatarAdditionPart implements IAvatarDrawablePart {
   private _direction: number | undefined;
   private _directionOffset = 0;
@@ -30,12 +34,19 @@ export class AvatarAdditionPart implements IAvatarDrawablePart {
     private _partSetsData: IAvatarPartSetsData
   ) {}
 
+  /**
+   * Returns the avatar direction, applying any direction offset.
+   * @param offset Additional offset to apply to the direction.
+   */
   getDirection(offset = 0) {
     if (this._direction == null) return;
 
     return getAvatarDirection(this._direction + this._directionOffset + offset);
   }
 
+  /**
+   * Returns the draw definition for this effect part, or undefined if no assets are available.
+   */
   getDrawDefinition(): AvatarDrawPart | undefined {
     const assets: AvatarAsset[] = [];
 
@@ -68,6 +79,11 @@ export class AvatarAdditionPart implements IAvatarDrawablePart {
     };
   }
 
+  /**
+   * Sets the current effect frame, updating custom frames for either bodypart or fx mode.
+   * @param effect The effect data.
+   * @param frame The frame index.
+   */
   setEffectFrame(effect: IAvatarEffectData, frame: number): void {
     const bodyPart =
       this._addition.base != null
@@ -83,18 +99,38 @@ export class AvatarAdditionPart implements IAvatarDrawablePart {
     }
   }
 
+  /**
+   * Sets the direction for this effect part.
+   * @param direction The direction index.
+   */
   setDirection(direction: number): void {
     this._direction = direction;
   }
 
+  /**
+   * Sets the direction offset for this effect part.
+   * @param offset The direction offset.
+   */
   setDirectionOffset(offset: number): void {
     this._directionOffset = offset;
   }
 
+  /**
+   * Sets custom avatar offsets for a given frame.
+   * @param avatarFrame The FX part offsets.
+   * @param frame The frame index.
+   */
   setAvatarOffsets(avatarFrame: AvatarEffectFrameFXPart, frame: number) {
     this._offsets.set(frame, avatarFrame);
   }
 
+  /**
+   * Looks up the asset for the given direction, frame, and custom frame data.
+   * @param direction The direction index.
+   * @param frame The frame index.
+   * @param frameIndex The index of the custom frame.
+   * @param customFrame The custom frame data.
+   */
   private _getAsset(
     direction: number,
     frame: number,
@@ -149,6 +185,10 @@ export class AvatarAdditionPart implements IAvatarDrawablePart {
     }
   }
 
+  /**
+   * Sets the mode for this part ("fx" or "bodypart"). Throws if mode is changed after being set.
+   * @param mode The mode to set.
+   */
   private _setMode(mode: "fx" | "bodypart") {
     if (this._mode != null && this._mode !== mode) {
       throw new Error("Can't change mode once it is set.");
@@ -157,6 +197,12 @@ export class AvatarAdditionPart implements IAvatarDrawablePart {
     this._mode = mode;
   }
 
+  /**
+   * Handles the addition of a body part effect frame.
+   * @param effect The effect data.
+   * @param frame The frame index.
+   * @param bodyPart The body part frame data.
+   */
   private _handleBodyPart(
     effect: IAvatarEffectData,
     frame: number,
@@ -176,6 +222,12 @@ export class AvatarAdditionPart implements IAvatarDrawablePart {
     });
   }
 
+  /**
+   * Handles the addition of an FX part effect frame.
+   * @param effect The effect data.
+   * @param frame The frame index.
+   * @param fx The FX part frame data.
+   */
   private _handleFxPart(
     effect: IAvatarEffectData,
     frame: number,

@@ -135,14 +135,27 @@ export class AvatarDrawDefinition implements IAvatarEffectPart {
   }
 
   setDirection(direction: number): void {
+    /**
+     * Sets the avatar's facing direction.
+     * @param direction The direction index.
+     */
     this._direction = direction;
   }
 
   setDirectionOffset(offset: number): void {
+    /**
+     * Sets the direction offset for the avatar.
+     * @param offset The direction offset.
+     */
     this._directionOffset = offset;
   }
 
   setEffectFrame(effect: IAvatarEffectData, frame: number): void {
+    /**
+     * Sets the effect frame for the avatar and all effect parts.
+     * @param effect The effect data.
+     * @param frame The frame index.
+     */
     const avatarFrameData = effect.getFrameEffectPart("avatar", frame);
     if (avatarFrameData == null) return;
 
@@ -154,10 +167,17 @@ export class AvatarDrawDefinition implements IAvatarEffectPart {
   }
 
   setEffectFrameDefaultIfNotSet(): void {
+    /**
+     * No-op for AvatarDrawDefinition; included for interface compatibility.
+     */
     // Do nothing
   }
 
   public getDrawDefinition(): AvatarDrawPart[] {
+    /**
+     * Gets the draw definitions for all avatar parts and effect parts, sorted by z-index.
+     * @returns An array of AvatarDrawPart objects for rendering.
+     */
     if (this._drawParts != null) return this._drawParts;
 
     const drawOrderId = getDrawOrderForActions(this._activeActions, {

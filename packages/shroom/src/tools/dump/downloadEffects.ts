@@ -8,6 +8,13 @@ import {
 import { downloadMultipleFiles } from "./downloadMultipleFiles";
 import { Logger } from "./Logger";
 
+/**
+ * Downloads all avatar effect SWFs listed in an effect map.
+ * Defensive: Skips if effect map download fails, logs errors.
+ *
+ * @param params Download parameters (downloadPath, gordonUrl, effectMapDownload).
+ * @param logger Logger instance for progress and errors.
+ */
 export async function downloadEffects(
   {
     downloadPath,

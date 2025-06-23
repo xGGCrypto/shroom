@@ -11,6 +11,10 @@ import { getFloorMatrix, getLeftMatrix, getRightMatrix } from "../matrixes";
 import { IRoomPart } from "./IRoomPart";
 import { RoomPartData } from "./RoomPartData";
 
+/**
+ * Represents a stair corner part in the room model visualization.
+ * Handles rendering and updating of stair corner graphics for different corner types.
+ */
 export class StairCorner extends ShroomContainer implements IRoomPart {
   private _container: ShroomContainer | undefined;
   private _texture: ShroomTexture | undefined;
@@ -20,12 +24,20 @@ export class StairCorner extends ShroomContainer implements IRoomPart {
   private _tileRightColor = 0;
   private _tileTopColor = 0;
 
+  /**
+   * Creates a new StairCorner.
+   * @param _props The type of the stair corner: 'front', 'left', or 'right'.
+   */
   constructor(private _props: { type: "front" | "left" | "right" }) {
     super();
 
     this.sortableChildren = true;
   }
 
+  /**
+   * Updates the stair corner with new room part data.
+   * @param data The new room part data.
+   */
   update(data: RoomPartData): void {
     this._tileHeight = data.tileHeight;
     this._tileLeftColor = data.tileLeftColor;
@@ -36,6 +48,9 @@ export class StairCorner extends ShroomContainer implements IRoomPart {
     this.updateSprites();
   }
 
+  /**
+   * Updates the sprites for the stair corner based on the current type and state.
+   */
   updateSprites() {
     this.removeChildren();
 
@@ -52,15 +67,26 @@ export class StairCorner extends ShroomContainer implements IRoomPart {
     }
   }
 
+  /**
+   * Destroys any container or resources used by the stair corner.
+   */
   destroySprites() {
     this._container?.destroy();
   }
 
+  /**
+   * Destroys the stair corner and cleans up resources.
+   */
   destroy() {
     super.destroy();
     this.destroySprites();
   }
 
+  /**
+   * Creates the display objects for the 'front' stair corner at a given index.
+   * @param index The stair step index (0 = closest to viewer).
+   * @returns An array of display objects for this stair step.
+   */
   private _createStairBoxFront(index: number): ShroomDisplayObject[] {
     const baseXLeft = +stairBase * index;
     const baseYLeft = -stairBase * index * 1.5;
@@ -128,6 +154,11 @@ export class StairCorner extends ShroomContainer implements IRoomPart {
     return [borderLeft, borderRight, tileLeft, tileRight];
   }
 
+  /**
+   * Creates the display objects for the 'left' stair corner at a given index.
+   * @param index The stair step index (0 = closest to viewer).
+   * @returns An array of display objects for this stair step.
+   */
   private _createStairBoxLeft(index: number) {
     const baseX = -stairBase * index;
     const baseY = -stairBase * index * 1.5;
@@ -196,6 +227,11 @@ export class StairCorner extends ShroomContainer implements IRoomPart {
     }
   }
 
+  /**
+   * Creates the display objects for the 'right' stair corner at a given index.
+   * @param index The stair step index (0 = closest to viewer).
+   * @returns An array of display objects for this stair step.
+   */
   private _createStairBoxRight(index: number) {
     const baseX = +stairBase * index;
     const baseY = -stairBase * index * 1.5;

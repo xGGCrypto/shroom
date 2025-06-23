@@ -14,6 +14,10 @@ import {
 import { IEventManager } from "./interfaces/IEventManager";
 import { ShroomInteractionEvent } from "../../pixi-proxy";
 
+/**
+ * Manages event nodes, hit testing, and event propagation for interactive objects.
+ * Handles pointer/click events, hit testing, and event bubbling/propagation.
+ */
 export class EventManager {
   private _nodes = new Map<IEventTarget, EventManagerNode>();
   private _bush = new RBush<EventManagerNode>();
@@ -23,12 +27,21 @@ export class EventManager {
     | ((event: ShroomInteractionEvent) => void)
     | undefined = undefined;
 
+  /**
+   * Sets the callback for background click events.
+   */
   public set onBackgroundClick(
     value: ((event: ShroomInteractionEvent) => void) | undefined
   ) {
     this._onBackgroundClick = value;
   }
 
+  /**
+   * Handles a click event at the given coordinates.
+   * @param event - The interaction event.
+   * @param x - The x coordinate.
+   * @param y - The y coordinate.
+   */
   click(event: ShroomInteractionEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
     new Propagation(event, elements.activeNodes, (target, event) =>
@@ -36,6 +49,12 @@ export class EventManager {
     );
   }
 
+  /**
+   * Handles a pointer down event at the given coordinates.
+   * @param event - The interaction event.
+   * @param x - The x coordinate.
+   * @param y - The y coordinate.
+   */
   pointerDown(event: ShroomInteractionEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
 
@@ -46,6 +65,12 @@ export class EventManager {
     );
   }
 
+  /**
+   * Handles a pointer up event at the given coordinates.
+   * @param event - The interaction event.
+   * @param x - The x coordinate.
+   * @param y - The y coordinate.
+   */
   pointerUp(event: ShroomInteractionEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
 
@@ -74,6 +99,12 @@ export class EventManager {
     });
   }
 
+  /**
+   * Handles pointer move events, updating over/out state and triggering events as needed.
+   * @param event - The interaction event.
+   * @param x - The x coordinate.
+   * @param y - The y coordinate.
+   */
   move(event: ShroomInteractionEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
     const current = new Set(
@@ -136,6 +167,11 @@ export class EventManager {
     );
   }
 
+  /**
+   * Registers a new event target and returns its node.
+   * @param target - The event target to register.
+   * @returns The created EventManagerNode.
+   */
   register(target: IEventTarget): IEventManagerNode {
     if (this._nodes.has(target)) throw new Error("Target already registered");
 
@@ -145,6 +181,10 @@ export class EventManager {
     return node;
   }
 
+  /**
+   * Removes an event target from the event manager.
+   * @param target - The event target to remove.
+   */
   remove(target: IEventTarget) {
     const current = this._nodes.get(target);
     if (current == null) throw new Error("Target isn't in the event manager");
@@ -152,6 +192,12 @@ export class EventManager {
     current.destroy();
   }
 
+  /**
+   * Performs a hit test at the given coordinates, returning active nodes and groups.
+   * @param x - The x coordinate.
+   * @param y - The y coordinate.
+   * @returns An object with activeNodes and activeGroups.
+   */
   private _performHitTest(x: number, y: number) {
     const qualifyingElements = this._bush.search({
       minX: x,
