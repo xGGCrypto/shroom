@@ -1,21 +1,6 @@
 import ByteBuffer from "bytebuffer";
 import { IAssetBundle } from "./IAssetBundle";
-
-type CacheEntry<T> = {
-  key: string;
-  value: T;
-};
-
-function withTimeout<T>(promise: Promise<T>, ms = 30000, errorMsg = 'Request timed out'): Promise<T> {
-  let timeout: NodeJS.Timeout;
-  const timeoutPromise = new Promise<T>((_, reject) => {
-    timeout = setTimeout(() => reject(new Error(errorMsg)), ms);
-  });
-  return Promise.race([
-    promise.finally(() => clearTimeout(timeout)),
-    timeoutPromise,
-  ]);
-}
+import { withTimeout } from "./common";
 
 export class ShroomAssetBundle implements IAssetBundle {
   public static readonly VERSION = 1;
@@ -66,7 +51,11 @@ export class ShroomAssetBundle implements IAssetBundle {
         console.error(`[ShroomAssetBundle] Error fetching url '${url}':`, err);
         throw err;
       });
-    const buffer = await withTimeout(fetchPromise, timeoutMs, `Fetching asset bundle '${url}' timed out`);
+    const buffer = await withTimeout(
+      fetchPromise,
+      timeoutMs,
+      `Fetching asset bundle '${url}' timed out`
+    );
     return ShroomAssetBundle.fromBuffer(buffer);
   }
 
@@ -122,7 +111,9 @@ export class ShroomAssetBundle implements IAssetBundle {
 
     const buffer = this._files.get(name);
     if (buffer == null) {
-      const err = new Error(`[ShroomAssetBundle] Couldn't find blob '${name}'.`);
+      const err = new Error(
+        `[ShroomAssetBundle] Couldn't find blob '${name}'.`
+      );
       console.error(err);
       throw err;
     }
@@ -131,7 +122,10 @@ export class ShroomAssetBundle implements IAssetBundle {
     try {
       blob = new Blob([buffer]);
     } catch (err) {
-      console.error(`[ShroomAssetBundle] Error creating Blob for '${name}':`, err);
+      console.error(
+        `[ShroomAssetBundle] Error creating Blob for '${name}':`,
+        err
+      );
       throw err;
     }
     this._blobs.set(name, blob);
@@ -145,7 +139,9 @@ export class ShroomAssetBundle implements IAssetBundle {
 
     const buffer = this._files.get(name);
     if (buffer == null) {
-      const err = new Error(`[ShroomAssetBundle] Couldn't find string '${name}'.`);
+      const err = new Error(
+        `[ShroomAssetBundle] Couldn't find string '${name}'.`
+      );
       console.error(err);
       throw err;
     }
@@ -155,8 +151,13 @@ export class ShroomAssetBundle implements IAssetBundle {
       const encoder = new TextDecoder();
       string = encoder.decode(buffer);
     } catch (err) {
-      console.error(`[ShroomAssetBundle] Error decoding string for '${name}':`, err);
-      throw new Error(`[ShroomAssetBundle] Failed to decode string for '${name}': ${err}`);
+      console.error(
+        `[ShroomAssetBundle] Error decoding string for '${name}':`,
+        err
+      );
+      throw new Error(
+        `[ShroomAssetBundle] Failed to decode string for '${name}': ${err}`
+      );
     }
     this._strings.set(name, string);
     this._evictIfNeeded(name);

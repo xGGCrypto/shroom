@@ -1,10 +1,12 @@
 import path from "path";
 import { promises as fs } from "fs";
 import { createSpritesheet } from "./createSpritesheet";
-import { FurnitureVisualizationData } from "../../objects/furniture/data/FurnitureVisualizationData";
-import { FurnitureIndexData } from "../../objects/furniture/data/FurnitureIndexData";
-import { FurnitureAssetsData } from "../../objects/furniture/data/FurnitureAssetsData";
-import { ShroomAssetBundle } from "../../assets/ShroomAssetBundle";
+import {
+  ShroomAssetBundle,
+  FurnitureAssetsData,
+  FurnitureIndexData,
+  FurnitureVisualizationData,
+} from "@xggcrypto/shroom";
 
 export async function dumpFurniture(
   baseName: string,
@@ -44,8 +46,11 @@ export async function dumpFurniture(
   const encoder = new TextEncoder();
 
   const furnitureFile = new ShroomAssetBundle();
-  furnitureFile.addFile("index.json", encoder.encode(jsonString));
+  furnitureFile.addFile("index.json", Buffer.from(encoder.encode(jsonString)));
   furnitureFile.addFile("spritesheet.png", image);
 
-  await fs.writeFile(`${dumpLocation}.shroom`, furnitureFile.toBuffer());
+  await fs.writeFile(
+    `${dumpLocation}.shroom`,
+    new Uint8Array(furnitureFile.toBuffer())
+  );
 }

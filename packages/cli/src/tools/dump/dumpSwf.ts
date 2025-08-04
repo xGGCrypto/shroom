@@ -98,7 +98,7 @@ async function extractXml(
         const savePath = path.join(folderName, fileName);
 
         const data = buffer.subarray(6);
-        await fs.writeFile(savePath, data, "binary");
+        await fs.writeFile(savePath, new Uint8Array(data), "binary");
 
         xmlPaths.push({ path: savePath, buffer: data });
       }

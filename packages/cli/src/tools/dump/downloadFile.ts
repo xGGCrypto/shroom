@@ -46,7 +46,7 @@ export async function downloadFile({
     try {
       await fs.mkdir(path.dirname(savePath), { recursive: true });
       const buffer = await response.buffer();
-      await fs.writeFile(savePath, buffer);
+      await fs.writeFile(savePath, new Uint8Array(buffer));
 
       return {
         type: "SUCCESS",

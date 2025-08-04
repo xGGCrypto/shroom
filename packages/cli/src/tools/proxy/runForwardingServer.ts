@@ -14,29 +14,29 @@ export function runForwardingServer({
   prependLengthPrefix = false,
   targetHost,
   keyPath,
-  certPath
+  certPath,
 }: {
   wsPort: number;
   targetPort: number;
   debug?: boolean;
   targetHost?: string;
   prependLengthPrefix?: boolean;
-  keyPath?: string,
-  certPath?: string,
+  keyPath?: string;
+  certPath?: string;
 }) {
   let webSocketOptions: WebSocket.ServerOptions;
   if (keyPath && certPath) {
     webSocketOptions = {
       server: createServer({
         key: readFileSync(keyPath),
-        cert: readFileSync(certPath)
-      })
+        cert: readFileSync(certPath),
+      }),
     };
 
     webSocketOptions.server?.listen(wsPort);
   } else {
     webSocketOptions = {
-      port: wsPort
+      port: wsPort,
     };
   }
 
@@ -45,7 +45,9 @@ export function runForwardingServer({
   const targetHostStr =
     targetHost == null ? `:${targetPort}` : `${targetHost}:${targetPort}`;
   console.log(
-    `${webSocketOptions.server ? 'Secure' : ''} WebSocket Server started on port ${wsPort}. Forwarding traffic to ${targetHostStr}.`
+    `${
+      webSocketOptions.server ? "Secure" : ""
+    } WebSocket Server started on port ${wsPort}. Forwarding traffic to ${targetHostStr}.`
   );
 
   let idCounter = 0;
@@ -91,7 +93,8 @@ export function runForwardingServer({
       data.append(buffer);
 
       const sendBuffer = data.flip().toBuffer();
-      connection.write(sendBuffer);
+      // connection.write(sendBuffer);
+      connection.write(new Uint8Array(sendBuffer));
 
       if (debug) console.log(`[${id}] Client => Server:`, sendBuffer);
     });

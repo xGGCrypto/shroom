@@ -1,4 +1,4 @@
-import { FigureMapData } from "../../objects/avatar/data/FigureMapData";
+import { FigureMapData } from "@xggcrypto/shroom";
 import * as path from "path";
 // import Bluebird from "bluebird";
 // import * as readline from "readline";

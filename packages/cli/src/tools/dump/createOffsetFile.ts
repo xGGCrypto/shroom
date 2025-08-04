@@ -1,7 +1,7 @@
 import path from "path";
-import { IFigureMapData } from "../../objects/avatar/data/interfaces/IFigureMapData";
 import { promises as fs } from "fs";
-import { AvatarManifestData } from "../../objects/avatar/data/AvatarManifestData";
+import { AvatarManifestData } from "@xggcrypto/shroom";
+import type { IFigureMapData } from "@xggcrypto/shroom";
 import { ProgressBar } from "./ProgressBar";
 import { Logger } from "./Logger";
 

@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import * as path from "path";
 
-import { ShroomAssetBundle } from "../../assets/ShroomAssetBundle";
+import { ShroomAssetBundle } from "@xggcrypto/shroom";
 
 export async function dumpFigure(
   baseName: string,
@@ -32,5 +32,5 @@ export async function dumpFigure(
     file.addFile(baseName, buffer);
   });
 
-  await fs.writeFile(`${dumpLocation}.shroom`, file.toBuffer());
+  await fs.writeFile(`${dumpLocation}.shroom`, new Uint8Array(file.toBuffer()));
 }

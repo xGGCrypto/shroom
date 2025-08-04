@@ -1,6 +1,6 @@
 import path from "path";
 import { string } from "yargs";
-import { FurnitureData } from "../../objects/furniture/FurnitureData";
+import { FurnitureData } from "@xggcrypto/shroom";
 import {
   downloadFile,
   DownloadFileResult,
