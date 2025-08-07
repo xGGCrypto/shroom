@@ -1,14 +1,12 @@
 import { ShroomContainer, ShroomBlendModes } from "../../pixi-proxy";
 import { LookOptions } from "./util/createLookServer";
-import {
-  AvatarLoaderResult,
-  IAvatarLoader,
-} from "../../interfaces/IAvatarLoader";
+import { AvatarLoaderResult } from "../../interfaces/IAvatarLoader";
 import { ClickHandler } from "../hitdetection/ClickHandler";
 import { HitSprite } from "../hitdetection/HitSprite";
 import { isSetEqual } from "../../util/isSetEqual";
-import { IAnimationTicker } from "../../interfaces/IAnimationTicker";
 import { Shroom } from "../Shroom";
+import type { BaseAvatarOptions, BaseAvatarDependencies } from "./types/";
+import { bodyPartTypes, headPartTypes } from "./structure/AvatarPartTypes";
 import { AvatarFigurePartType } from "./enum/AvatarFigurePartType";
 import {
   AvatarAsset,
@@ -16,7 +14,6 @@ import {
   DefaultAvatarDrawPart,
 } from "./types";
 import { AvatarDrawDefinition } from "./structure/AvatarDrawDefinition";
-import { IEventManager } from "../events/interfaces/IEventManager";
 import { NOOP_EVENT_MANAGER } from "../events/EventManager";
 import {
   AVATAR,
@@ -24,40 +21,6 @@ import {
   IEventGroup,
 } from "../events/interfaces/IEventGroup";
 import { EventOverOutHandler } from "../events/EventOverOutHandler";
-
-const bodyPartTypes: Set<AvatarFigurePartType> = new Set<AvatarFigurePartType>([
-  AvatarFigurePartType.Head,
-  AvatarFigurePartType.Body,
-  AvatarFigurePartType.LeftHand,
-  AvatarFigurePartType.RightHand,
-]);
-const headPartTypes: Set<AvatarFigurePartType> = new Set([
-  AvatarFigurePartType.Head,
-  AvatarFigurePartType.Face,
-  AvatarFigurePartType.Eyes,
-  AvatarFigurePartType.EyeAccessory,
-  AvatarFigurePartType.Hair,
-  AvatarFigurePartType.HairBig,
-  AvatarFigurePartType.FaceAccessory,
-  AvatarFigurePartType.HeadAccessory,
-  AvatarFigurePartType.HeadAccessoryExtra,
-]);
-
-export interface BaseAvatarOptions {
-  look: LookOptions;
-  position: { x: number; y: number };
-  zIndex: number;
-  skipBodyParts?: boolean;
-  skipCaching?: boolean;
-  headOnly?: boolean;
-  onLoad?: () => void;
-}
-
-export interface BaseAvatarDependencies {
-  eventManager: IEventManager;
-  animationTicker: IAnimationTicker;
-  avatarLoader: IAvatarLoader;
-}
 
 /**
  * BaseAvatar handles rendering and event management for avatar sprites.

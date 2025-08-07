@@ -6,6 +6,11 @@ import { IAvatarPartSetsData } from "../data/interfaces/IAvatarPartSetsData";
 import { IFigureData } from "../data/interfaces/IFigureData";
 import { IFigureMapData } from "../data/interfaces/IFigureMapData";
 
+import { IAnimationTicker } from "../../../interfaces/IAnimationTicker";
+import { IAvatarLoader } from "../../../interfaces/IAvatarLoader";
+import { IEventManager } from "../../events/interfaces/IEventManager";
+/** */
+
 export type AvatarAsset = {
   fileId: string;
   x: number;
@@ -46,4 +51,20 @@ export interface AvatarExternalDependencies {
   partSetsData: IAvatarPartSetsData;
   geometry: IAvatarGeometryData;
   actionsData: IAvatarActionsData;
+}
+
+export interface BaseAvatarOptions {
+  look: any; // Use LookOptions if available
+  position: { x: number; y: number };
+  zIndex: number;
+  skipBodyParts?: boolean;
+  skipCaching?: boolean;
+  headOnly?: boolean;
+  onLoad?: () => void;
+}
+
+export interface BaseAvatarDependencies {
+  eventManager: IEventManager;
+  animationTicker: IAnimationTicker;
+  avatarLoader: IAvatarLoader;
 }

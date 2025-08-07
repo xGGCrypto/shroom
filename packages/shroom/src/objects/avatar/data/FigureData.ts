@@ -1,4 +1,3 @@
-
 import { notNullOrUndefined } from "../../../util/notNullOrUndefined";
 import { AvatarData } from "./AvatarData";
 import { FigureDataPart, IFigureData } from "./interfaces/IFigureData";
@@ -67,7 +66,10 @@ export class FigureData extends AvatarData implements IFigureData {
     // Use xmlUtils for attribute extraction and error handling
     // Import at top: import { getRequiredAttribute, getOptionalAttribute } from "./xmlUtils";
     // (Assume import is present)
-    const { getRequiredAttribute, getOptionalAttribute } = require("./xmlUtils");
+    const {
+      getRequiredAttribute,
+      getOptionalAttribute,
+    } = require("./xmlUtils");
 
     setTypes.forEach((element) => {
       const setType = getRequiredAttribute(element, "type");
@@ -89,7 +91,10 @@ export class FigureData extends AvatarData implements IFigureData {
         set
           .querySelectorAll(`hiddenlayers layer`)
           .forEach((hiddenLayerElement) => {
-            const partType = getOptionalAttribute(hiddenLayerElement, "parttype");
+            const partType = getOptionalAttribute(
+              hiddenLayerElement,
+              "parttype"
+            );
             if (partType != null) {
               hiddenLayers.push(partType);
             }
@@ -122,5 +127,23 @@ export class FigureData extends AvatarData implements IFigureData {
         this._parts.set(_getPartsKey(setType, setId), partArr);
       });
     });
+  }
+
+  /**
+   * Returns all clothing/looks part sets for all set types.
+   * Each entry contains setType, setId, and the parts array.
+   */
+  getAllPartSets() {
+    const allSets: Array<{
+      setType: string;
+      setId: string;
+      parts: FigureDataPart[];
+    }> = [];
+    for (const key of this._parts.keys()) {
+      const [setType, setId] = key.split("_");
+      const parts = this._parts.get(key) ?? [];
+      allSets.push({ setType, setId, parts });
+    }
+    return allSets;
   }
 }
