@@ -24,6 +24,7 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": 0,
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/member-ordering": [2],
+    "@typescript-eslint/no-deprecated": 2,
     "@typescript-eslint/naming-convention": [
       2,
       {

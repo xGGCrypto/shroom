@@ -263,7 +263,7 @@ export class Landscape extends RoomObject implements IRoomPart {
               width,
               this._leftTexture.height
             );
-            graphics.tilePosition = new ShroomPoint(offsetRow, 0);
+            graphics.tilePosition.set(offsetRow, 0);
             graphics.texture = this._leftTexture;
             graphics.x = 0;
             graphics.y = -this._leftTexture.height;
@@ -295,7 +295,7 @@ export class Landscape extends RoomObject implements IRoomPart {
             graphics.texture = this._rightTexture;
             graphics.x = 0;
             graphics.y = -this._rightTexture.height;
-            graphics.tilePosition = new ShroomPoint(offsetCol, 0);
+            graphics.tilePosition.set(offsetCol, 0);
             wall.addChild(graphics);
           } catch (err) {
             console.warn('Landscape: Failed to create right wall tiling sprite', err);

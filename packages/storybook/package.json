@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "storybook dev -p 6006 --no-open",
     "dump": "shroom dump --url https://www.habbo.com/gamedata/external_variables/326b0a1abf9e2571d541ac05e6eb3173b83bddea --location ./public/resources",
     "build-storybook": "storybook build"
   },
@@ -23,13 +23,14 @@
     "@storybook/addon-webpack5-compiler-babel": "^3.0.3",
     "@storybook/react": "^8.2.9",
     "@storybook/react-webpack5": "^8.2.9",
+    "@types/react": "^18.2.0",
     "babel-loader": "^8.2.2",
     "storybook": "^8.2.9",
     "typescript": "^5.3.3"
   },
   "dependencies": {
     "@xggcrypto/shroom": "file:../shroom",
-    "pixi.js": "^5.3.3",
+    "pixi.js": "6.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

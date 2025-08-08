@@ -148,7 +148,8 @@ export class TileCursor
    * @param y The Y coordinate.
    */
   hits(x: number, y: number): boolean {
-    const pos = this.getGlobalPosition();
+    const pos = this.getGlobalPosition?.();
+    if (!pos) return false;
     const diffX = x - pos.x;
     const diffY = y - pos.y;
     if (!points || !points.p1 || !points.p2 || !points.p3 || !points.p4) return false;
@@ -190,8 +191,9 @@ export class TileCursor
   /**
    * Gets the current rectangle for the cursor in global coordinates.
    */
-  private _getCurrentRectangle(): Rectangle {
-    const position = this.getGlobalPosition();
+  private _getCurrentRectangle(): Rectangle | undefined {
+    const position = this.getGlobalPosition?.() ?? null;
+    if (!position) return undefined;
     return {
       x: position.x,
       y: position.y,

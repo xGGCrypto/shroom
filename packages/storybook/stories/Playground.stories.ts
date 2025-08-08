@@ -3,7 +3,7 @@ import { ShroomComponent, roomModels } from "./common";
 
 const meta: Meta<typeof ShroomComponent> = {
   title: "Playground / General",
-  component: ShroomComponent,
+  component: ShroomComponent as any,
   argTypes: {
     wallColor: { control: "color" },
     floorColor: { control: "color" },

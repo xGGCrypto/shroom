@@ -8,7 +8,10 @@ import { IMoveable } from "../interfaces/IMoveable";
 import { AvatarAction } from "./enum/AvatarAction";
 import { IScreenPositioned } from "../interfaces/IScreenPositioned";
 import { HitEventHandler } from "../hitdetection/HitSprite";
-import { assignAvatarEventHandlers, AvatarEventHandlers } from "./AvatarEventHandlers";
+import {
+  assignAvatarEventHandlers,
+  AvatarEventHandlers,
+} from "./AvatarEventHandlers";
 import { getCombinedActions, getPlaceholderLookOptions } from "./avatarUtils";
 
 /**
@@ -269,7 +272,7 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
    * for placing UI relative to the user.
    */
   get screenPosition() {
-    const worldTransform = this._avatarSprites.getGlobalPosition();
+    const worldTransform = this._avatarSprites.getGlobalPosition?.() ?? null;
     if (worldTransform == null) return;
 
     return {
@@ -565,7 +568,13 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
 
   private _getZIndexAtPosition(roomX: number, roomY: number, roomZ: number) {
     // getAvatarZIndex returns only the offset, so add getZOrder here
-    let zOffset = getCombinedActions(this._getCurrentLookOptions().actions, this.waving, this._walking).has(AvatarAction.Lay) ? 2001 : 1;
+    let zOffset = getCombinedActions(
+      this._getCurrentLookOptions().actions,
+      this.waving,
+      this._walking
+    ).has(AvatarAction.Lay)
+      ? 2001
+      : 1;
     return getZOrder(roomX, roomY, roomZ) + zOffset;
   }
 

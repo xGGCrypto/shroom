@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": ["node_modules"],
+  "references": [
+    { "path": "./packages/shroom" },
+    { "path": "./packages/storybook/.storybook" },
+    { "path": "./packages/e2e" },
+    { "path": "./packages/example" }
+
+    // Add more if needed
+  ]
+}

@@ -5,7 +5,7 @@ import {
   Avatar,
   AvatarAction,
   BaseFurniture,
-  BasicFurnitureVisualization,
+  StaticFurnitureVisualization,
   FloorFurniture,
   FurnitureBottleVisualization,
   FurnitureGuildCustomizedVisualization,
@@ -19,7 +19,7 @@ import {
 } from "@xggcrypto/shroom";
 import { createShroom, RoomCreator } from "../common";
 import { action } from "@storybook/addon-actions";
-import furniJson from "../assets/furni.json";
+import { furniJson } from "../assets/furni";
 
 export default {
   title: "Furniture / General",
@@ -57,7 +57,7 @@ export function Default(args: any) {
       room.addRoomObject(furniture);
     }
 
-    const test1 = new FloorFurniture({
+    const gold_dragon_lamp = new FloorFurniture({
       roomX: 3,
       roomY: 3,
       roomZ: 0,
@@ -73,15 +73,17 @@ export function Default(args: any) {
       direction: 2,
     });
 
-    test1.onClick = () => {
+    gold_dragon_lamp.onClick = () => {
       console.log("Clicked");
     };
-    test1.onDoubleClick = () => {
+    gold_dragon_lamp.onDoubleClick = () => {
       console.log("Double Clicked");
     };
+    
+    gold_dragon_lamp.extradata.then(action("[Lamp] Extra Data"));
 
     room.onTileClick = (position) => console.log(position);
-    room.addRoomObject(test1);
+    room.addRoomObject(gold_dragon_lamp);
     room.addRoomObject(test2);
 
     const dice = new FloorFurniture({
@@ -92,9 +94,11 @@ export function Default(args: any) {
       direction: 0,
       animation: "0",
     });
+    
 
-    dice.extradata.then(action("Extra Data"));
-    dice.validDirections.then(action(`Dice valid directions`));
+    dice.extradata.then(action("[Dice] Extra Data"));
+    dice.validDirections.then(action(`[Dice] Dice valid directions`));
+    dice.visualization = new AnimatedFurnitureVisualization();
 
     room.addRoomObject(dice);
 
@@ -1051,7 +1055,7 @@ export function LoadTest(args: any) {
             obj.visualization = new AnimatedFurnitureVisualization();
             break;
           case "furniture_static":
-            obj.visualization = new BasicFurnitureVisualization();
+            obj.visualization = new StaticFurnitureVisualization();
             break;
         }
       });

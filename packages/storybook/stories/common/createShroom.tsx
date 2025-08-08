@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Shroom } from "@xggcrypto/shroom";
-import React from "react";
+import React, { useRef, useEffect } from "react";
 
 type CleanupFn = () => void;
 type CallbackOptions = {
@@ -13,11 +13,11 @@ type CallbackOptions = {
 export function createShroom(
   cb: (options: CallbackOptions) => CleanupFn | void
 ) {
-  const App = () => {
-    const containerRef = React.useRef<HTMLDivElement>(null);
-    const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  function App(): JSX.Element {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    React.useEffect(() => {
+    useEffect(() => {
       const element = canvasRef.current;
       const container = containerRef.current;
       if (element == null) return;
@@ -53,7 +53,7 @@ export function createShroom(
         <canvas ref={canvasRef} />
       </div>
     );
-  };
+  }
 
-  return <App />;
+  return React.createElement(App);
 }

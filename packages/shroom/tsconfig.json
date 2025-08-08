@@ -17,7 +17,8 @@
     "baseUrl": ".", // important!
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "composite": true
   },
   "include": ["./src"]
 }

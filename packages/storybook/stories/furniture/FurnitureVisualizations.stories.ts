@@ -1,4 +1,4 @@
-import { BasicFurnitureVisualization, FurnitureGuildCustomizedVisualization} from "@xggcrypto/shroom";
+import { StaticFurnitureVisualization, FurnitureGuildCustomizedVisualization} from "@xggcrypto/shroom";
 import { renderFurnitureExample } from "./renderFurnitureExample";
 
 export default {
@@ -10,7 +10,7 @@ export function StaticVisualization() {
     "rare_dragonlamp*0",
     { directions: [2, 4], spacing: 2, animations: ["1"] },
     (furniture) => {
-      furniture.visualization = new BasicFurnitureVisualization();
+      furniture.visualization = new StaticFurnitureVisualization();
     }
   );
 }

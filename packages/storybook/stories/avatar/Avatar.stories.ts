@@ -53,11 +53,11 @@ export function Default() {
         room.addRoomObject(avatar);
         avatars.push(avatar);
 
-        avatar.onPointerOver = () => {
+        avatar.eventHandlers.onPointerOver = () => {
           console.log("OVER");
         };
 
-        avatar.onPointerOut = () => {
+        avatar.eventHandlers.onPointerOut = () => {
           console.log("OUT");
         };
       }
@@ -234,8 +234,8 @@ export function EventHandling() {
       roomZ: 0,
     });
 
-    avatar.onClick = action("Click");
-    avatar.onDoubleClick = action("Double Click");
+    avatar.eventHandlers.onClick = action("Click");
+    avatar.eventHandlers.onDoubleClick = action("Double Click");
 
     setTimeout(() => {
       avatar.walk(1, 2, 0, { direction: 4 });
@@ -291,8 +291,8 @@ export function headRotation() {
     //   headDirection: 0
     // });
 
-    avatar.onClick = action("Click");
-    avatar.onDoubleClick = action("Double Click");
+    avatar.eventHandlers.onClick = action("Click");
+    avatar.eventHandlers.onDoubleClick = action("Double Click");
 
     setInterval(() => {
       if (avatar.headDirection !== undefined) {
@@ -497,7 +497,7 @@ export function AvatarDance() {
 
         room.addRoomObject(avatar2);
         avatars.push(avatar2);
-        avatar2.onClick = () => {
+        avatar2.eventHandlers.onClick = () => {
           toggle();
         };
       }

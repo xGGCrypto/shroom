@@ -16,6 +16,7 @@ import {
   FurniInfoBehavior,
   MultiStateBehavior,
 } from "./behaviors";
+import { Application } from "pixi.js";
 
 export class DummyRoom {
   private room: Room;
@@ -41,7 +42,7 @@ export class DummyRoom {
     }
   }, 500);
 
-  constructor(application: PIXI.Application) {
+  constructor(application: Application) {
     const tilemap = parseTileMapString(`
         xxxxxxxxxxx
         x1111111111
@@ -180,7 +181,7 @@ export class DummyRoom {
       roomZ: 1,
     });
 
-    this.ownAvatar.onClick = (event) => {
+    this.ownAvatar.eventHandlers.onClick = (event) => {
       event.stopPropagation();
       this.ownAvatar.waving = true;
       setTimeout(() => {

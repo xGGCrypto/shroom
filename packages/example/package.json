@@ -27,7 +27,7 @@
     "@xggcrypto/shroom": "file:../shroom",
     "easystarjs": "^0.4.4",
     "events": "^3.2.0",
-    "pixi.js": "^5.3.3",
+    "pixi.js": "6.0.0",
     "stream": "0.0.2",
     "timers": "^0.1.1"
   },

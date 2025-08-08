@@ -112,7 +112,7 @@ export class RoomLandscapeMaskSprite extends ShroomSprite {
     container.x = -this._roomBounds.minX;
     this.x = this._roomBounds.minX;
 
-    this._renderer.render(container, texture);
+    this._renderer.render(container, { renderTexture: texture });
     this.texture = texture;
   }
 }

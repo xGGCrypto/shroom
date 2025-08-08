@@ -14,6 +14,7 @@
     "esModuleInterop": true,
     "outDir": "./dist",
     "declaration": true,
+    "composite": true
   },
   "include": ["./src"]
 }

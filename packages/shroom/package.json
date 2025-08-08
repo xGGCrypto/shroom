@@ -1,7 +1,7 @@
 {
   "name": "@xggcrypto/shroom",
   "version": "0.7.12",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "license": "LGPL-3.0-or-later",
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.22.0",
     "jest": "^26.6.1",
-    "pixi.js": "^5.3.12",
+    "pixi.js": "6.0.0",
     "prettier": "2.2.1",
     "process": "^0.11.10",
     "punycode": "^1.4.1",
@@ -65,7 +65,7 @@
     "xml2js": "^0.4.23"
   },
   "peerDependencies": {
-    "pixi.js": "^5.3.12"
+    "pixi.js": "6.0.0"
   },
   "scripts": {
     "start": "parcel public/index.html --no-cache",

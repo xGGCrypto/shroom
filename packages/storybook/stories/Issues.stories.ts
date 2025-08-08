@@ -207,13 +207,13 @@ export function IssueWithAvatarEventsNotHandled() {
       roomZ: 0,
     });
 
-    avatar.onClick = (event) => {
+    avatar.eventHandlers.onClick = (event) => {
       event.stopPropagation();
 
       action("Avatar Clicked")(event);
     };
 
-    avatar.onDoubleClick = (event) => {
+    avatar.eventHandlers.onDoubleClick = (event) => {
       event.stopPropagation();
 
       action("Avatar Double Clicked")(event);
@@ -231,8 +231,8 @@ export function IssueWithAvatarEventsNotHandled() {
       action("Furniture Clicked")(event);
     };
 
-    avatar.onPointerDown = action("Avatar Pointer Down");
-    avatar.onPointerUp = action("Avatar Pointer Up");
+    avatar.eventHandlers.onPointerDown = action("Avatar Pointer Down");
+    avatar.eventHandlers.onPointerUp = action("Avatar Pointer Up");
 
     furniture.onPointerDown = action("Furniture Pointer Down");
     furniture.onPointerUp = action("Furniture Pointer Up");

@@ -87,7 +87,7 @@ export class Stair extends ShroomContainer implements IRoomPart {
       tilePosition: ShroomPoint
     ) {
       const tile = new ShroomTilingSprite(texture ?? ShroomTexture.WHITE);
-      tile.tilePosition = tilePosition;
+      tile.tilePosition.set(tilePosition.x, tilePosition.y);
       tile.transform.setFromMatrix(matrix);
 
       tile.tint = tint;
@@ -135,7 +135,7 @@ export class Stair extends ShroomContainer implements IRoomPart {
 
     function createSprite(matrix: ShroomMatrix, tint: number) {
       const tile = new ShroomTilingSprite(texture ?? ShroomTexture.WHITE);
-      tile.tilePosition = new ShroomPoint(0, 0);
+      tile.tilePosition.set(0, 0);
       tile.transform.setFromMatrix(matrix);
 
       tile.tint = tint;

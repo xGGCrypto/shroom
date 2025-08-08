@@ -167,7 +167,8 @@ export class HitSprite extends ShroomSprite implements IEventTarget {
       this._hitTexture.texture.height
     );
     sprite.alpha = 0.1;
-    const pos = this.getGlobalPosition();
+    const pos = this.getGlobalPosition?.() ?? null;
+    if (!pos) return;
     sprite.x = pos.x;
     sprite.y = pos.y;
     return sprite;
@@ -250,8 +251,9 @@ export class HitSprite extends ShroomSprite implements IEventTarget {
   /**
    * Returns the bounding rectangle of the sprite for hit detection.
    */
-  getHitBox(): Rectangle {
-    const pos = this.getGlobalPosition();
+  getHitBox(): Rectangle | undefined {
+    const pos = this.getGlobalPosition?.() ?? null;
+    if (!pos) return undefined;
     if (this._mirrored) {
       return {
         x: pos.x - this.texture.width,
@@ -279,11 +281,13 @@ export class HitSprite extends ShroomSprite implements IEventTarget {
     if (this.ignore) return false;
     if (this.ignoreMouse) return false;
     const hitBox = this.getHitBox();
+    if (!hitBox) return false;
     const inBoundsX = hitBox.x <= x && x <= hitBox.x + hitBox.width;
     const inBoundsY = hitBox.y <= y && y <= hitBox.y + hitBox.height;
     if (inBoundsX && inBoundsY) {
       const hits = this._getHitmap();
-      const pos = this.getGlobalPosition();
+      const pos = this.getGlobalPosition?.() ?? null;
+      if (!pos) return false;
       return hits(x, y, {
         x: pos.x,
         y: pos.y,
