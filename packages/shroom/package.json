@@ -29,7 +29,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.22.0",
     "jest": "^26.6.1",
-    "pixi.js": "6.0.0",
+    "pixi.js": "^6.0.0",
     "prettier": "2.2.1",
     "process": "^0.11.10",
     "punycode": "^1.4.1",
@@ -55,6 +55,7 @@
     "node-fetch": "^2.6.1",
     "parcel": "^2.9.0",
     "pixi-stats": "^1.1.2",
+    "pixi.js": "^6.0.0",
     "quadtree-lib": "^1.0.9",
     "rbush": "^3.0.1",
     "react": "^16.14.0",
@@ -65,7 +66,7 @@
     "xml2js": "^0.4.23"
   },
   "peerDependencies": {
-    "pixi.js": "6.0.0"
+    "pixi.js": "^6.0.0"
   },
   "scripts": {
     "start": "parcel public/index.html --no-cache",
