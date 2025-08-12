@@ -87,6 +87,7 @@ export class TileCursor
   /**
    * No-op for pointer target changed (not used).
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   triggerPointerTargetChanged(event: IEventManagerEvent): void {}
 
   /**
@@ -108,15 +109,18 @@ export class TileCursor
   /**
    * No-op for pointer down event (not used).
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   triggerPointerDown(event: IEventManagerEvent): void {}
   /**
    * No-op for pointer up event (not used).
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   triggerPointerUp(event: IEventManagerEvent): void {}
 
   /**
    * Handles pointer over events and invokes the callback.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   triggerPointerOver(event: IEventManagerEvent): void {
     this._updateHover(true);
     if (typeof this.onOver === 'function') {
@@ -127,6 +131,7 @@ export class TileCursor
   /**
    * Handles pointer out events and invokes the callback.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   triggerPointerOut(event: IEventManagerEvent): void {
     this._updateHover(false);
     if (typeof this.onOut === 'function') {

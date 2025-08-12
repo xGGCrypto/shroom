@@ -1,4 +1,4 @@
-import { AvatarData } from "./AvatarData";
+// import { AvatarData } from "./AvatarData";
 import {
   AvatarAnimationFrame,
   IAvatarAnimationData,
@@ -91,31 +91,31 @@ export class AvatarAnimationData implements IAvatarAnimationData {
     return this._animationFramesCount.get(id) ?? 0;
   }
 
-  getAnimationOffset(
-    id: string,
-    geometryId: string,
-    frame: number,
-    direction: number
-  ) {
-    /*
-    const bodypart = this.querySelector(
-      `action[id="${id}"] offsets frame[id="${frame}"] directions direction[id="${direction}"] bodypart[id="${geometryId}"]`
-    );
+  // getAnimationOffset(
+  //   id: string,
+  //   geometryId: string,
+  //   frame: number,
+  //   direction: number
+  // ) {
+  //   /*
+  //   const bodypart = this.querySelector(
+  //     `action[id="${id}"] offsets frame[id="${frame}"] directions direction[id="${direction}"] bodypart[id="${geometryId}"]`
+  //   );
 
-    if (bodypart == null) return { x: 0, y: 0 };
+  //   if (bodypart == null) return { x: 0, y: 0 };
 
-    const dx = Number(bodypart.getAttribute("dx"));
-    const dy = Number(bodypart.getAttribute("dy"));
+  //   const dx = Number(bodypart.getAttribute("dx"));
+  //   const dy = Number(bodypart.getAttribute("dy"));
 
-    if (isNaN(dx) || isNaN(dy)) {
-      return { x: 0, y: 0 };
-    }
+  //   if (isNaN(dx) || isNaN(dy)) {
+  //     return { x: 0, y: 0 };
+  //   }
 
-    return {
-      x: dx,
-      y: dy,
-    };*/
-  }
+  //   return {
+  //     x: dx,
+  //     y: dy,
+  //   };*/
+  // }
 
   private _getAnimationOffsetFromElement(bodypart: Element) {
     if (bodypart == null) return { x: 0, y: 0 };

@@ -1,7 +1,10 @@
 import { IFurnitureVisualizationData } from "../data/interfaces/IFurnitureVisualizationData";
 import { FurnitureSprite } from "../FurnitureSprite";
 import { IFurnitureVisualizationLayer } from "../IFurnitureVisualizationView";
-import { FurniDrawDefinition, FurniDrawPart } from "../util/DrawDefinition";
+import {
+  FurniDrawDefinition,
+  //  FurniDrawPart
+} from "../util/DrawDefinition";
 import { FurnitureVisualization } from "./FurnitureVisualization";
 
 type InProgressAnimation = { id: number; frameCount: number };
@@ -32,7 +35,9 @@ export class AnimatedFurnitureVisualization extends FurnitureVisualization {
   /** Optional override for the animation id. */
   private _overrideAnimation: number | undefined;
   /** Optional modifier function for customizing layers. */
-  private _modifier?: (part: IFurnitureVisualizationLayer) => IFurnitureVisualizationLayer;
+  private _modifier?: (
+    part: IFurnitureVisualizationLayer
+  ) => IFurnitureVisualizationLayer;
   /** The current direction for rendering. */
   private _currentDirection: number | undefined;
   /** The target animation id as a string. */
@@ -227,6 +232,7 @@ export class AnimatedFurnitureVisualization extends FurnitureVisualization {
 
   private _update(skipLayerUpdate = false) {
     const frameCount = this._animationFrameCount ?? 1;
+    if (skipLayerUpdate) return;
 
     this.view.getLayers().forEach((part) => {
       if (this.modifier != null) {
@@ -297,8 +303,8 @@ export class AnimatedFurnitureVisualization extends FurnitureVisualization {
   }
 }
 
-const getAssetsCount = (part: FurniDrawPart) => {
-  if (part.assets == null) return 1;
+// const getAssetsCount = (part: FurniDrawPart) => {
+//   if (part.assets == null) return 1;
 
-  return part.assets.length;
-};
+//   return part.assets.length;
+// };

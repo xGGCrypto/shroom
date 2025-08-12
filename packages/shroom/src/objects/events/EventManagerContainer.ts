@@ -28,7 +28,7 @@ export class EventManagerContainer {
     _application.ticker.add(this._updateRectangle);
 
     const interactionManager: ShroomInteractionManager = this._application
-      .renderer.plugins.interaction;
+      .renderer.plugins.interaction as ShroomInteractionManager;
 
     interactionManager.addListener(
       "pointermove",

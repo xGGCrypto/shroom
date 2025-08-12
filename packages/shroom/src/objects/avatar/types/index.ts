@@ -9,6 +9,7 @@ import { IFigureMapData } from "../data/interfaces/IFigureMapData";
 import { IAnimationTicker } from "../../../interfaces/IAnimationTicker";
 import { IAvatarLoader } from "../../../interfaces/IAvatarLoader";
 import { IEventManager } from "../../events/interfaces/IEventManager";
+import { LookOptions } from "../util/createLookServer";
 /** */
 
 export type AvatarAsset = {
@@ -54,7 +55,7 @@ export interface AvatarExternalDependencies {
 }
 
 export interface BaseAvatarOptions {
-  look: any; // Use LookOptions if available
+  look: LookOptions; // Use LookOptions if available
   position: { x: number; y: number };
   zIndex: number;
   skipBodyParts?: boolean;

@@ -3,7 +3,7 @@ import {
   IFurnitureVisualizationLayer,
   IFurnitureVisualizationView,
 } from "../IFurnitureVisualizationView";
-import { FurniDrawPart } from "../util/DrawDefinition";
+// import { FurniDrawPart } from "../util/DrawDefinition";
 import { AnimatedFurnitureVisualization } from "./AnimatedFurnitureVisualization";
 import { FurnitureVisualization } from "./FurnitureVisualization";
 

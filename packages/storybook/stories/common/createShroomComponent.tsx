@@ -9,6 +9,7 @@ import {
   Shroom,
   AnimatedFurnitureVisualization,
   StaticFurnitureVisualization,
+  IFurniture,
 } from "@xggcrypto/shroom";
 import { createShroom } from "./createShroom";
 import { RoomCreator } from "./createRoom";
@@ -21,7 +22,37 @@ import {
 import { action } from "@storybook/addon-actions";
 import { roomModels } from "./roomModels";
 
-export function ShroomComponent(args: { [key: string]: any }) {
+type SavedTiles = "tile1" | "tile2";
+interface ShroomComponentOptions {
+  wallTile?: SavedTiles;
+  floorTile?: SavedTiles;
+  wallColor?: string;
+  tileColor?: string;
+  roomModel?: string[];
+  hideFloor?: boolean;
+  hideTileCursor?: boolean;
+  wallDepth?: number;
+  wallHeight?: number;
+  hideWalls?: boolean;
+  roomCamera?: boolean;
+  avatarEnabled?: boolean;
+  avatarLook?: string;
+  floorColor?: string;
+  floorFurni?: {
+    type: string;
+    roomX: number;
+    roomY: number;
+    roomZ: number;
+    direction: number;
+    animation?: string;
+    callback?: (furni: IFurniture) => void;
+  }[];
+
+  customResourcesEnabled?: boolean;
+  customResourcesLink?: string;
+}
+
+export function ShroomComponent(args: ShroomComponentOptions) {
   return createShroom(({ application, shroom }) => {
     action("args")(args);
     let resourcePath = args.customResourcesEnabled
@@ -157,7 +188,9 @@ export function ShroomComponent(args: { [key: string]: any }) {
 
     return () => {
       // On unmount, destroy room or room camera.
+      console.log("Destroying Room/RoomCamera");
       rm.destroy();
+      console.log("Room/RoomCamera Destroyed");
     };
   });
 }

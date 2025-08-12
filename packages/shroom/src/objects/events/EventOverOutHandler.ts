@@ -110,7 +110,7 @@ export class EventOverOutHandler {
       this._hover = true;
 
       if (!this._targetChanged) {
-        this.onOver && this.onOver(event);
+        if (this.onOver) this.onOver(event);
       }
 
       this._targetChanged = false;
@@ -119,7 +119,7 @@ export class EventOverOutHandler {
     if (this._overElements.size < 1 && this._hover) {
       this._hover = false;
       if (!this._targetChanged) {
-        this.onOut && this.onOut(event);
+        if (this.onOut) this.onOut(event);
       }
     }
   }

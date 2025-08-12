@@ -1,7 +1,7 @@
 import { ShroomSpritesheet, ShroomTexture } from "../../pixi-proxy";
 import { applyTextureProperties } from "../../util/applyTextureProperties";
 import { loadImageFromBlob } from "../../util/loadImageFromBlob";
-import { HitSprite } from "./HitSprite";
+// import { HitSprite } from "./HitSprite";
 
 /**
  * HitTexture wraps a PIXI texture and provides hitmap-based pixel-perfect hit detection.
@@ -74,6 +74,7 @@ export class HitTexture {
 
     await new Promise<{ width: number; height: number }>((resolve, reject) => {
       image.onload = () => resolve({ width: image.width, height: image.height });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       image.onerror = (value) => reject(new Error("Failed to load image for HitTexture."));
     });
 
@@ -116,6 +117,7 @@ export class HitTexture {
   private _getHitMap() {
     if (this._cachedHitmap == null) {
       this._cachedHitmap = generateHitMap(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
         (this._texture.baseTexture.resource as any).source
       );
     }

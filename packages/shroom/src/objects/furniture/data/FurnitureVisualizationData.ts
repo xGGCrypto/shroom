@@ -368,7 +368,7 @@ export class FurnitureVisualizationData
     arr: T[],
     getKey: (value: T) => string | null
   ): { [key: string]: T | undefined } {
-    const map: any = {};
+    const map: { [key: string]: T | undefined } = {};
     arr.forEach((value) => {
       const key = getKey(value);
       if (key != null) {

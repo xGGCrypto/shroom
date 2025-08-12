@@ -216,7 +216,9 @@ export class AvatarPart {
     let framesIndexed: (
       | AvatarAnimationFrame
       | undefined
-    )[] = frames.flatMap((frame) => new Array(frame.repeats).fill(frame));
+    )[] = frames.flatMap((frame): AvatarAnimationFrame[] =>
+      Array<AvatarAnimationFrame>(frame.repeats).fill(frame)
+    );
 
     if (framesIndexed.length === 0) {
       framesIndexed = [undefined];

@@ -16,11 +16,13 @@ export class HighlightFilter extends ShroomFilter {
   }
 
   public set opacity(value: number) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     this.uniforms.backgroundColor[3] = value;
   }
 
   public get opacity(): number {
-    return this.uniforms.backgroundColor[3];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    return this.uniforms.backgroundColor[3] as number;
   }
 }
 

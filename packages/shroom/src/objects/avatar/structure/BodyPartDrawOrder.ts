@@ -16,9 +16,9 @@ export class BodyPartDrawOrder {
         return drawOrdersRightHandActive[direction];
       case "lh-up":
         return drawOrdersLeftHandActive[direction];
+      default:
+        throw new Error(`Invalid draw order type ${drawOrderType as string}`);
     }
-
-    throw new Error(`Invalid draw order type ${drawOrderType}`);
   }
 }
 

@@ -1,5 +1,4 @@
-
-import { Avatar, FloorFurniture, FurnitureData, Room } from "../../";
+import { Avatar, FurnitureData, IFurniture, Room } from "../../";
 import { TileType } from "../../types/TileType";
 import type { RoomPosition } from "../../types/RoomPosition";
 import type { FurnitureInfo } from "../../interfaces/IFurnitureData";
@@ -25,11 +24,11 @@ export class Pathfinding {
   /** The detected door position, if any. */
   public door?: RoomPosition;
 
-  private readonly room: Room;
-  private readonly furnitureData: FurnitureData;
+  private readonly _room: Room;
+  private readonly _furnitureData: FurnitureData;
   /** 3D array of furniture objects on each tile. */
   /** 3D array of furniture objects on each tile. */
-  private furniGrid: FurniGrid = [];
+  private _furniGrid: FurniGrid = [];
 
   /**
    * Constructs a new Pathfinding instance for a room.
@@ -38,21 +37,23 @@ export class Pathfinding {
    * @param furnitureData The furniture data provider.
    */
   constructor(room: Room, tilemap: TileType[][], furnitureData: FurnitureData) {
-    this.room = room;
-    this.furnitureData = furnitureData;
+    this._room = room;
+    this._furnitureData = furnitureData;
 
     this.baseGrid = tilemap.map((row) =>
       row.map((type) => (type !== "x" ? Number(type) : -1))
     );
 
-    this.calculateFurnisFilledSpace();
-    this.locateDoor();
+    this.calculateFurnisFilledSpace().catch((e) => {
+      console.error(e);
+    });
+    this._locateDoor();
   }
 
   /**
    * Locates the door position in the base grid (first walkable tile on edge).
    */
-  private locateDoor(): void {
+  private _locateDoor(): void {
     this.baseGrid.forEach((row, rowIndex) => {
       row.forEach((colVal, colIndex) => {
         if (colVal >= 0 && (colIndex === 0 || rowIndex === 0))
@@ -70,31 +71,32 @@ export class Pathfinding {
    * @returns Promise that resolves when calculation is complete.
    */
   public calculateFurnisFilledSpace(): Promise<void> {
-    let grid: Grid2D = this.clone(this.baseGrid);
-    let furniGrid: FurniGrid = this.resetFurniGrid();
+    const grid: Grid2D = this._clone(this.baseGrid);
+    const furniGrid: FurniGrid = this._resetFurniGrid();
 
     const processRoomObject = async (roomObject: any) => {
       if (!roomObject) return;
       if (roomObject instanceof Avatar) return; // ignore avatars
-      if (roomObject.placementType === "wall") return; // ignore wall placements
+      const _furni = roomObject as IFurniture;
+      if (_furni.placementType === "wall") return; // ignore wall placements
       let info: FurnitureInfo | undefined;
       try {
-        info = await this.furnitureData.getInfoForFurniture(roomObject);
+        info = await this._furnitureData.getInfoForFurniture(_furni);
       } catch (err) {
-        console.warn('Pathfinding: Failed to get furniture info', err);
+        console.warn("Pathfinding: Failed to get furniture info", err);
         return;
       }
       if (info && !info.canstandon) {
-        this.calculateFilledSpace(roomObject, info, grid, furniGrid);
+        this._calculateFilledSpace(_furni, info, grid, furniGrid);
       }
     };
 
     // update navmesh at the end, so meanwhile the existing one can be used/its never empty
     return Promise.all(
-      Array.from(this.room.roomObjects.values()).map(processRoomObject)
+      Array.from(this._room.roomObjects.values()).map(processRoomObject)
     ).then(() => {
       this.grid = grid;
-      this.furniGrid = furniGrid;
+      this._furniGrid = furniGrid;
     });
   }
 
@@ -105,13 +107,13 @@ export class Pathfinding {
    * @param grid The grid to update.
    * @param furniGrid The furniture grid to update.
    */
-  private calculateFilledSpace(
-    roomObject: FloorFurniture,
+  private _calculateFilledSpace(
+    roomObject: IFurniture,
     info: FurnitureInfo,
     grid: Grid2D,
     furniGrid: FurniGrid
   ): void {
-    let dimensions = {
+    const dimensions = {
       x: 0,
       y: 0,
     };
@@ -132,7 +134,7 @@ export class Pathfinding {
       case 4: // down
         for (let y = 0; y < dimensions.y; y++) {
           for (let x = 0; x < dimensions.x; x++) {
-            this.addToGrid(
+            this._addToGrid(
               roomObject.roomX + x,
               roomObject.roomY + y,
               roomObject,
@@ -146,7 +148,7 @@ export class Pathfinding {
       default:
         for (let y = 0; y < dimensions.x; y++) {
           for (let x = 0; x < dimensions.y; x++) {
-            this.addToGrid(
+            this._addToGrid(
               roomObject.roomX + x,
               roomObject.roomY + y,
               roomObject,
@@ -163,7 +165,7 @@ export class Pathfinding {
   /**
    * Resets the furniture grid to an empty state matching the base grid.
    */
-  private resetFurniGrid(): FurniGrid {
+  private _resetFurniGrid(): FurniGrid {
     const furniGrid: FurniGrid = [];
     this.baseGrid.forEach((entries, y) => {
       furniGrid[y] = [];
@@ -177,16 +179,16 @@ export class Pathfinding {
   /**
    * Marks a tile as filled by a furniture object in both the grid and furniGrid.
    */
-  private addToGrid(
+  private _addToGrid(
     x: number,
     y: number,
-    roomObject: FloorFurniture,
+    roomObject: IFurniture,
     info: FurnitureInfo,
     grid: Grid2D,
     furniGrid: FurniGrid
   ): void {
-    if (grid[y] && typeof grid[y][x] !== 'undefined') {
-      grid[y][x] = this.determineNegativeMesh(info);
+    if (grid[y] && typeof grid[y][x] !== "undefined") {
+      grid[y][x] = this._determineNegativeMesh(info);
       furniGrid[y][x].push({ roomObject, info });
     }
   }
@@ -194,7 +196,7 @@ export class Pathfinding {
   /**
    * Returns a negative mesh value for a furniture info (used for grid marking).
    */
-  private determineNegativeMesh(info: FurnitureInfo): number {
+  private _determineNegativeMesh(info: FurnitureInfo): number {
     if (info.canlayon) return -2;
     if (info.cansiton) return -3;
     if (info.canstandon) return -4;
@@ -205,8 +207,12 @@ export class Pathfinding {
    * Returns all furniture objects on a given tile.
    */
   getFurnisOnTile(position: RoomPosition): FurniGridEntry[] {
-    if (!this.furniGrid[position.roomY] || !this.furniGrid[position.roomY][position.roomX]) return [];
-    return this.furniGrid[position.roomY][position.roomX];
+    if (
+      !this._furniGrid[position.roomY] ||
+      !this._furniGrid[position.roomY][position.roomX]
+    )
+      return [];
+    return this._furniGrid[position.roomY][position.roomX];
   }
 
   /**
@@ -224,13 +230,16 @@ export class Pathfinding {
       const easystar = new EasyStar.js();
 
       let grid = this.grid;
-      if (!grid[target.roomY] || typeof grid[target.roomY][target.roomX] === 'undefined') {
+      if (
+        !grid[target.roomY] ||
+        typeof grid[target.roomY][target.roomX] === "undefined"
+      ) {
         resolve([]);
         return;
       }
       // if the target position is a sofa or a bed, set it as navigable so a path can be traced
       if (grid[target.roomY][target.roomX] < -1) {
-        grid = this.clone(grid);
+        grid = this._clone(grid);
         grid[target.roomY][target.roomX] = 0;
       }
 
@@ -243,15 +252,13 @@ export class Pathfinding {
         origin.roomY,
         target.roomX,
         target.roomY,
-        (
-          result: Array<{ x: number; y: number }>
-        ) => {
+        (result: Array<{ x: number; y: number }>) => {
           let currentPosition = {
             x: origin.roomX,
             y: origin.roomY,
           };
 
-      const path: PathStep[] = [];
+          const path: PathStep[] = [];
 
           if (!result) {
             resolve(path);
@@ -260,12 +267,12 @@ export class Pathfinding {
           result.forEach((position, index) => {
             if (index === 0) return;
 
-            const direction = this.getAvatarDirectionFromDiff(
+            const direction = this._getAvatarDirectionFromDiff(
               position.x - currentPosition.x,
               position.y - currentPosition.y
             );
 
-            const tile = this.room.getTileAtPosition(position.x, position.y);
+            const tile = this._room.getTileAtPosition(position.x, position.y);
 
             if (tile != null) {
               const getHeight = () => {
@@ -299,7 +306,8 @@ export class Pathfinding {
   /**
    * Deep clones a grid (2D or 3D array).
    */
-  private clone<T>(grid: T): T {
+  private _clone<T>(grid: T): T {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return JSON.parse(JSON.stringify(grid));
   }
 
@@ -307,7 +315,7 @@ export class Pathfinding {
    * Gets the avatar direction constant from a tile difference.
    * @throws Error if the direction is invalid.
    */
-  private getAvatarDirectionFromDiff(diffX: number, diffY: number): number {
+  private _getAvatarDirectionFromDiff(diffX: number, diffY: number): number {
     const signX = Math.sign(diffX) as -1 | 0 | 1;
     const signY = Math.sign(diffY) as -1 | 0 | 1;
 

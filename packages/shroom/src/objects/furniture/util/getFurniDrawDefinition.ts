@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 import { FurniDrawDefinition, FurniDrawPart } from "./DrawDefinition";
 import {
   IFurnitureVisualizationData,

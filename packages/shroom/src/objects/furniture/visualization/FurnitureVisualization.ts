@@ -50,7 +50,7 @@ export abstract class FurnitureVisualization
    * @param animation Optional animation id
    */
   isAnimated(animation = "0"): boolean {
-    return false;
+    return animation !== "0";
   }
 
   /**

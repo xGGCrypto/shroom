@@ -35,16 +35,18 @@ export function createShroom(
         resourcePath,
         application: application,
         configuration: {
-          placeholder: PIXI.Texture.from("./images/placeholder.png"),
+          // placeholder: PIXI.Texture.from("./images/placeholder.png"),
         },
       });
 
       const cleanup = cb({ application, shroom, container });
 
       return () => {
+        console.log("Cleaning Up");
         cleanup && cleanup();
-
-        application.destroy();
+        console.log("Destroying Pixi Application.");
+        application.destroy(false, { children: true });
+        console.log("Pixi Application Destroyed");
       };
     }, []);
 

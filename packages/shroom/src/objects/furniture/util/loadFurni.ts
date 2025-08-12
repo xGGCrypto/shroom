@@ -1,17 +1,12 @@
 import { notNullOrUndefined } from "../../../util/notNullOrUndefined";
 import { HitTexture } from "../../hitdetection/HitTexture";
-import { IFurnitureAssetsData } from "../data/interfaces/IFurnitureAssetsData";
-import { IFurnitureIndexData } from "../data/interfaces/IFurnitureIndexData";
+// import { IFurnitureAssetsData } from "../data/interfaces/IFurnitureAssetsData";
+// import { IFurnitureIndexData } from "../data/interfaces/IFurnitureIndexData";
 import { IFurnitureVisualizationData } from "../data/interfaces/IFurnitureVisualizationData";
 import { FurnitureExtraData } from "../FurnitureExtraData";
 import { IFurnitureAssetBundle } from "../IFurnitureAssetBundle";
 import { FurniDrawDefinition } from "./DrawDefinition";
 import { getFurniDrawDefinition } from "./getFurniDrawDefinition";
-
-
-
-
-
 
 
 /**

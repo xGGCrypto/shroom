@@ -7,7 +7,7 @@ import { RoomPosition } from "../../types/RoomPosition";
 import { IMoveable } from "../interfaces/IMoveable";
 import { AvatarAction } from "./enum/AvatarAction";
 import { IScreenPositioned } from "../interfaces/IScreenPositioned";
-import { HitEventHandler } from "../hitdetection/HitSprite";
+// import { HitEventHandler } from "../hitdetection/HitSprite";
 import {
   assignAvatarEventHandlers,
   AvatarEventHandlers,
@@ -568,7 +568,7 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
 
   private _getZIndexAtPosition(roomX: number, roomY: number, roomZ: number) {
     // getAvatarZIndex returns only the offset, so add getZOrder here
-    let zOffset = getCombinedActions(
+    const zOffset = getCombinedActions(
       this._getCurrentLookOptions().actions,
       this.waving,
       this._walking

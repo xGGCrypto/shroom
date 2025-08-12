@@ -164,7 +164,7 @@ export class Room
     this.addChild(this._visualization);
 
     this._visualization.onTileClick.subscribe((value) => {
-      this.onTileClick && this.onTileClick(value.position, value.event);
+      if (this.onTileClick) this.onTileClick(value.position, value.event);
     });
   }
 
@@ -351,12 +351,10 @@ export class Room
 
     const currentVisualization = this.children[0] as RoomModelVisualization;
 
-    ["hideWalls", "wallDepth", "tileHeight", "wallHeight"].forEach(
-      (property) => {
-        // @ts-ignore
-        this._visualization[property] = currentVisualization[property];
-      }
-    );
+    this._visualization.hideWalls = currentVisualization.hideWalls;
+    this._visualization.wallDepth = currentVisualization.wallDepth;
+    this._visualization.tileHeight = currentVisualization.tileHeight;
+    this._visualization.wallHeight = currentVisualization.wallHeight;
 
     this.removeChildAt(0);
     this.addChild(this._visualization);
@@ -459,7 +457,7 @@ export class Room
     Promise.resolve(this.wallTexture).then((texture) => {
       this._currentWallTexture = texture;
       this._visualization.wallTexture = texture;
-    });
+    }).catch(e => console.log(e));
   }
 
   /**
@@ -469,7 +467,7 @@ export class Room
   private _loadFloorTextures() {
     Promise.resolve(this.floorTexture).then((texture) => {
       this._visualization.floorTexture = texture;
-    });
+    }).catch(e => console.log(e));
   }
 
   /**

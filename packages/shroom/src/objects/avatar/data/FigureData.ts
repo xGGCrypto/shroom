@@ -1,4 +1,4 @@
-import { notNullOrUndefined } from "../../../util/notNullOrUndefined";
+// import { notNullOrUndefined } from "../../../util/notNullOrUndefined";
 import { AvatarData } from "./AvatarData";
 import { FigureDataPart, IFigureData } from "./interfaces/IFigureData";
 import { getRequiredAttribute, getOptionalAttribute } from "./xmlUtils";
@@ -66,10 +66,10 @@ export class FigureData extends AvatarData implements IFigureData {
     // Use xmlUtils for attribute extraction and error handling
     // Import at top: import { getRequiredAttribute, getOptionalAttribute } from "./xmlUtils";
     // (Assume import is present)
-    const {
-      getRequiredAttribute,
-      getOptionalAttribute,
-    } = require("./xmlUtils");
+    // const {
+    //   getRequiredAttribute,
+    //   getOptionalAttribute,
+    // } = require("./xmlUtils");
 
     setTypes.forEach((element) => {
       const setType = getRequiredAttribute(element, "type");

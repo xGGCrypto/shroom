@@ -150,10 +150,10 @@ export class AvatarGeometryData implements IAvatarGeometryData {
   }
 }
 
-interface BodyPartFromElement {
-  id: string;
-  z: number;
-}
+// interface BodyPartFromElement {
+//   id: string;
+//   z: number;
+// }
 
 interface BodyPartItemFromElement {
   id: string;

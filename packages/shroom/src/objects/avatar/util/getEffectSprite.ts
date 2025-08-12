@@ -2,7 +2,6 @@ import { IAvatarOffsetsData } from "../data/interfaces/IAvatarOffsetsData";
 import { getBasicFlippedMetaData } from "./getFlippedMetaData";
 import { getSpriteId } from "../structure/AvatarEffectPart";
 
-
 /**
  * Retrieves the effect sprite metadata for a given member, direction, and frame.
  * Handles flipped and directionless sprites efficiently.
@@ -22,7 +21,11 @@ export function getEffectSprite(
   offsetsData: IAvatarOffsetsData,
   hasDirection: boolean,
   handleFlipped: boolean
-): { id: string; offsets: any; flip: boolean } {
+): {
+  id: string;
+  offsets: { offsetX: number; offsetY: number } | undefined;
+  flip: boolean;
+} {
   // Try the direct direction first
   let id = getSpriteId(member, direction, frame);
   let offsets = offsetsData.getOffsets(id);

@@ -42,6 +42,7 @@ export class FurnitureRoomVisualization implements IFurnitureRoomVisualization {
       update: () => {
         // Do nothing
       },
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       sprite: null as any,
     };
   }

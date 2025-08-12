@@ -13,7 +13,7 @@ import { IFurnitureEventHandlers } from "./util/IFurnitureEventHandlers";
 import { LoadFurniResult } from "./util/loadFurni";
 // import { HitTexture } from "../hitdetection/HitTexture"; // UNUSED
 import { MaskNode } from "../../interfaces/IRoomVisualization";
-import { HighlightFilter } from "./filter/HighlightFilter";
+// import { HighlightFilter } from "./filter/HighlightFilter";
 import {
   FurnitureFetch,
   IFurnitureLoader,
@@ -37,7 +37,7 @@ import { NOOP_EVENT_MANAGER } from "../events/EventManager";
 import { FurnitureVisualizationView } from "./FurnitureVisualizationView";
 import { EventOverOutHandler } from "../events/EventOverOutHandler";
 
-const highlightFilter = new HighlightFilter(0x999999, 0xffffff);
+// const highlightFilter = new HighlightFilter(0x999999, 0xffffff);
 
 type MaskIdGetter = (direction: number) => string | undefined;
 
@@ -296,6 +296,7 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
               update: () => {
                 // Do nothing
               },
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               sprite: null as any,
             };
           },
@@ -625,7 +626,9 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
 
     this._destroyed = true;
     ShroomTicker.shared.remove(this._onTicker);
-    this._cancelTicker && this._cancelTicker();
+    if (this._cancelTicker) {
+      this._cancelTicker();
+    }
     this._cancelTicker = undefined;
 
     this._view?.destroy();
@@ -830,10 +833,10 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
         if (this._destroyed) return;
 
         this._loadFurniResult = result;
-        this._resolveLoadFurniResult && this._resolveLoadFurniResult(result);
+        if (this._resolveLoadFurniResult) this._resolveLoadFurniResult(result);
         this._updateFurniture();
 
-        this._onLoad && this._onLoad();
+        if (this._onLoad) this._onLoad();
       })
       .catch((err) => {
         // Improved error handling: log error and show fallback

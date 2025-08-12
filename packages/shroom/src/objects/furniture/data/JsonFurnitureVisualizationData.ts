@@ -96,7 +96,7 @@ export class JsonFurnitureVisualizationData
     Object.values(
       this._getVisualization(size).animations[animationId.toString()] ?? {}
     ).forEach((layers) => {
-      Object.values(layers ?? {}).forEach((layer) => {
+      Object.values(layers ?? {}).forEach((layer: FurnitureAnimationLayer | undefined) => {
         const frameCount = layer?.frames.length ?? 0;
         const value = frameCount;
         if (value > count) {
@@ -118,7 +118,7 @@ export class JsonFurnitureVisualizationData
     Object.values(
       this._getVisualization(size).animations[animationId.toString()] ?? {}
     ).forEach((layers) => {
-      Object.values(layers ?? {}).forEach((layer) => {
+      Object.values(layers ?? {}).forEach((layer: FurnitureAnimationLayer | undefined) => {
         const frameCount = layer?.frames.length ?? 0;
         const multiplier = layer?.frameRepeat ?? 1;
         const value = frameCount * multiplier;
@@ -180,7 +180,7 @@ export class JsonFurnitureVisualizationData
     const animations = Object.entries(this._getVisualization(size).animations);
 
     const animationTransitionTo = animations.find(
-      ([id, animation]) => animation?.transitionTo === transitionTo
+      ([, animation]) => animation?.transitionTo === transitionTo
     );
 
     if (animationTransitionTo != null) {

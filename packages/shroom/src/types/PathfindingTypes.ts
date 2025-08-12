@@ -4,7 +4,7 @@
  */
 import type { RoomPosition } from "./RoomPosition";
 import type { FurnitureInfo } from "../interfaces/IFurnitureData";
-import type { FloorFurniture } from "../objects/furniture/FloorFurniture";
+import type { IFurniture } from "../";
 
 /**
  * Represents a single step in a pathfinding result.
@@ -18,7 +18,7 @@ export interface PathStep extends RoomPosition {
  * Represents a single entry in the furniture grid for a tile.
  */
 export interface FurniGridEntry {
-  roomObject: FloorFurniture;
+  roomObject: IFurniture;
   info: FurnitureInfo;
 }
 

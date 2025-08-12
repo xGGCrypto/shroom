@@ -254,6 +254,7 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
   /**
    * Updates the position of the avatar container.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private _updatePosition(definition: AvatarDrawDefinition) {
     if (this._container == null) return;
 
@@ -453,8 +454,9 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
           this._destroyAssets();
 
           this._updateSprites();
-          this._onLoad && this._onLoad();
-        });
+          if (this._onLoad) this._onLoad();
+        })
+        .catch((e) => console.error(e as Error));
     }
   }
 

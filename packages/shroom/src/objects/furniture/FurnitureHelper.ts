@@ -26,7 +26,9 @@ export class FurnitureHelper {
           type: { type: furniId, kind: "type" },
           onLoad: () => {
             try {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
               const image = shroom.dependencies.application.renderer.plugins.extract.image(container);
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               image.onload = () => {
                 if (!resolved) {
                   resolved = true;
@@ -35,6 +37,7 @@ export class FurnitureHelper {
                 }
               };
               // Fallback: resolve if image is already loaded
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               if (image.complete && !resolved) {
                 resolved = true;
                 resolve(image);
@@ -44,7 +47,7 @@ export class FurnitureHelper {
               if (!resolved) {
                 resolved = true;
                 container.destroy();
-                reject(err);
+                reject(err as Error);
               }
             }
           },
@@ -53,6 +56,7 @@ export class FurnitureHelper {
         if (!resolved) {
           resolved = true;
           container.destroy();
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
           reject(err);
         }
       }
@@ -76,6 +80,7 @@ export class FurnitureHelper {
     } catch (err) {
       // fallback: use a placeholder or empty string if preview fails
       image = "";
+      console.error(err as Error);
     }
 
     // Await validDirections for possible future use (not used here, but could be for UI)

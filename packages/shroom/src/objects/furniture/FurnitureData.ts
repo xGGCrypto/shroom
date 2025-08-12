@@ -113,27 +113,37 @@ export class FurnitureData implements IFurnitureData {
    */
   private async _prepareData() {
     const furniDataString = await this._getFurniData();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const parsed = await parseStringPromise(furniDataString);
     const typeToInfo: FurnitureMap = {};
     const floorIdToType: IdToTypeMap = {};
     const wallIdToType: IdToTypeMap = {};
     const register = (data: any[], furnitureType: "floor" | "wall") => {
       data.forEach((element) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const type = element.$.classname;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const id = element.$.id;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         typeToInfo[type] = formatFurnitureData(element);
         if (furnitureType === "floor") {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (floorIdToType[id] != null)
             throw new Error(`Floor furniture with id ${id} already exists`);
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
           floorIdToType[id] = type;
         } else if (furnitureType === "wall") {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (wallIdToType[id] != null)
             throw new Error(`Wall furniture with id ${id} already exists`);
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           wallIdToType[id] = type;
         }
       });
     };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     register(parsed.furnidata.roomitemtypes[0].furnitype, "wall");
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     register(parsed.furnidata.wallitemtypes[0].furnitype, "floor");
     return { typeToInfo, floorIdToType, wallIdToType };
   }

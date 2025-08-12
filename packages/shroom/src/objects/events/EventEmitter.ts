@@ -92,6 +92,7 @@ type EventCallback<K extends keyof TMap, TMap extends BaseTypeMap<unknown>> = (
   event: TMap[K]
 ) => void;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 window.addEventListener;
 
 

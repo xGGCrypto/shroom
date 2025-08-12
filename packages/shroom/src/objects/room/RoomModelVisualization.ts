@@ -559,6 +559,7 @@ export class RoomModelVisualization
     this._createLeftWall(x, y, z, { hideBorder: false, cutawayHeight: 90 });
   }
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private shouldShowBorders(
     x: number,
     y: number
@@ -585,7 +586,6 @@ export class RoomModelVisualization
         ["stairs", "stairCorner", "door", "hidden"].includes(
           bottomTile?.type as string
         ) ||
-        // @ts-ignore
         ((bottomTile?.type as string) == "tile" &&
           bottomTile?.z != currentTile.z),
       showRightBorder:
@@ -593,7 +593,6 @@ export class RoomModelVisualization
         ["stairs", "stairCorner", "door", "hidden"].includes(
           rightTile?.type as string
         ) ||
-        // @ts-ignore
         ((rightTile?.type as string) == "tile" &&
           rightTile?.z != currentTile.z),
     };

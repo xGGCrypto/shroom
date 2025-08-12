@@ -74,6 +74,7 @@ export class ShroomAssetBundle implements IAssetBundle {
       };
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const version = byteBuffer.readByte();
     const fileCount = byteBuffer.readUint16();
     const files: { fileName: string; buffer: ArrayBuffer | Buffer }[] = [];
@@ -156,7 +157,7 @@ export class ShroomAssetBundle implements IAssetBundle {
         err
       );
       throw new Error(
-        `[ShroomAssetBundle] Failed to decode string for '${name}': ${err}`
+        `[ShroomAssetBundle] Failed to decode string for '${name}': ${err as Error}`
       );
     }
     this._strings.set(name, string);

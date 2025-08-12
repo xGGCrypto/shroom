@@ -87,7 +87,7 @@ export class JsonFurnitureAssetBundle implements IFurnitureAssetBundle {
     // Load and parse the main JSON index file
     let json: FurnitureJson;
     try {
-      json = JSON.parse(await this._assetBundle.getString("index.json"));
+      json = JSON.parse(await this._assetBundle.getString("index.json")) as FurnitureJson;
     } catch (e) {
       throw new Error("Failed to load or parse index.json for furniture asset bundle: " + (e instanceof Error ? e.message : String(e)));
     }
@@ -105,11 +105,8 @@ export class JsonFurnitureAssetBundle implements IFurnitureAssetBundle {
     const spritesheet = new ShroomSpritesheet(baseTexture, json.spritesheet);
 
     // Parse the spritesheet (async)
-    await new Promise<void>((resolve) => {
-      spritesheet.parse(() => {
-        resolve();
-      });
-    });
+    // https://github.com/pixijs/pixijs/pull/8396
+    await spritesheet.parse(); // Remove Deprecated Callback
 
     return {
       assets: new JsonFurnitureAssetsData(json.assets),

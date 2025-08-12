@@ -1,6 +1,6 @@
 import { AvatarFigurePartType } from "../enum/AvatarFigurePartType";
 import { IAvatarAnimationData } from "../data/interfaces/IAvatarAnimationData";
-import { IAvatarEffectData } from "../data/interfaces/IAvatarEffectData";
+// import { IAvatarEffectData } from "../data/interfaces/IAvatarEffectData";
 import { Bodypart } from "../data/interfaces/IAvatarGeometryData";
 import { IAvatarOffsetsData } from "../data/interfaces/IAvatarOffsetsData";
 import { IAvatarPartSetsData } from "../data/interfaces/IAvatarPartSetsData";
@@ -52,16 +52,14 @@ export class AvatarPartList {
     }
 
     basePartSet.forEach((partType) => {
-      const partsForType = this._partsByType.get(
-        partType as AvatarFigurePartType
-      );
+      const partsForType = this._partsByType.get(partType);
 
       if (partsForType == null || partsForType.length === 0) {
         this._registerPart(
           new AvatarPart(
             {
               id: "1",
-              type: partType as AvatarFigurePartType,
+              type: partType,
               colorable: false,
               index: 0,
             },

@@ -66,7 +66,7 @@ export class ClickHandler {
    */
   handleClick(event: IEventManagerEvent) {
     if (this._doubleClickInfo == null) {
-      this.onClick && this.onClick(event);
+      if (this.onClick) this.onClick(event);
       if (this.onDoubleClick != null) {
         this._startDoubleClick(event);
       }
@@ -81,7 +81,7 @@ export class ClickHandler {
    * @param event The event object.
    */
   handlePointerDown(event: IEventManagerEvent) {
-    this.onPointerDown && this.onPointerDown(event);
+    if (this.onPointerDown) this.onPointerDown(event);
   }
 
   /**
@@ -89,16 +89,18 @@ export class ClickHandler {
    * @param event The event object.
    */
   handlePointerUp(event: IEventManagerEvent) {
-    this.onPointerUp && this.onPointerUp(event);
+    if (this.onPointerUp) this.onPointerUp(event);
   }
 
   /**
    * Internal: Performs a double click event and resets the double click state.
    * @param event The event object.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private _performDoubleClick(event: IEventManagerEvent) {
     if (this._doubleClickInfo == null) return;
-    this.onDoubleClick && this.onDoubleClick(this._doubleClickInfo.initialEvent);
+    if (this.onDoubleClick)
+      this.onDoubleClick(this._doubleClickInfo.initialEvent);
     setTimeout(() => {
       this._resetDoubleClick();
     });

@@ -63,7 +63,7 @@ export class RoomCamera extends ShroomContainer {
     this._room.application.ticker.add(() => {
       const now = performance.now();
       if (last == null) last = now;
-      const delta = now - last;
+      // const delta = now - last;
       last = now;
       TWEEN.update(now);
     });
@@ -140,8 +140,14 @@ export class RoomCamera extends ShroomContainer {
   };
 
   private _handlePointerMove = (event: PointerEvent) => {
+    if (this._destroyed) {
+      console.warn("RoomCamera: Camera has already been destroyed.");
+      this.destroy();
+      return;
+    }
+    
     // Defensive: Ensure application and view are available
-    if (!this._room || !this._room.application || !this._room.application.view) {
+    if (!this._room?.application?.view) {
       console.warn("RoomCamera: Application or view not available.");
       return;
     }

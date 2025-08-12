@@ -1,5 +1,5 @@
 import { AvatarAction } from "../enum/AvatarAction";
-import { AvatarFigurePartType } from "../enum/AvatarFigurePartType";
+// import { AvatarFigurePartType } from "../enum/AvatarFigurePartType";
 import { IAvatarActionsData } from "../data/interfaces/IAvatarActionsData";
 import {
   AvatarEffectFrameBodypart,
@@ -137,8 +137,8 @@ export class AvatarAdditionPart implements IAvatarDrawablePart {
     frameIndex: number,
     customFrame: AdditionCustomFramePart
   ) {
-    const partType = this._addition.id as AvatarFigurePartType;
-    const partInfo = this._partSetsData.getPartInfo(partType);
+    // const partType = this._addition.id as AvatarFigurePartType;
+    // const partInfo = this._partSetsData.getPartInfo(partType);
 
     const base = customFrame.base ?? this._addition.base;
     const member =

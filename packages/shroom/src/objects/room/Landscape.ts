@@ -5,7 +5,7 @@ import {
   ShroomGraphics,
   ShroomTilingSprite,
   ShroomMatrix,
-  ShroomPoint,
+  // ShroomPoint,
 } from "../../pixi-proxy";
 import { PartNode } from "../../interfaces/IRoomVisualization";
 import { ParsedTileType } from "../../util/parseTileMap";
@@ -105,7 +105,7 @@ export class Landscape extends RoomObject implements IRoomPart {
     Promise.resolve(this._leftTexturePromise).then((value) => {
       this._leftTexture = value;
       this._updateLandscapeImages();
-    });
+    }).catch((e)=>{ console.error(e); });
   }
 
   /**
@@ -123,7 +123,7 @@ export class Landscape extends RoomObject implements IRoomPart {
     Promise.resolve(this._rightTexturePromise).then((value) => {
       this._rightTexture = value;
       this._updateLandscapeImages();
-    });
+    }).catch((e)=>{ console.error(e); });
   }
 
   /**
@@ -236,7 +236,7 @@ export class Landscape extends RoomObject implements IRoomPart {
           colored.tint = parseInt(this.color.slice(1), 16);
         } catch (err) {
           colored.tint = 0xffffff;
-          console.warn('Landscape: Invalid color format', this.color);
+          console.warn('Landscape: Invalid color format', this.color, err);
         }
       } else {
         colored.tint = 0xffffff;
