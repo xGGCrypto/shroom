@@ -1,4 +1,5 @@
 import {
+  ShroomColor,
   ShroomContainer,
   ShroomMatrix,
   ShroomTexture,
@@ -68,7 +69,7 @@ export class WallOuterCorner extends ShroomContainer implements IRoomPart {
       this._borderWidth
     );
     border.transform.setFromMatrix(new ShroomMatrix(1, 0.5, 1, -0.5));
-    border.tint = this._wallTopColor;
+    border.tint = new ShroomColor(this._wallTopColor).toNumber();
     border.x = -this._borderWidth;
     border.y =
       -this._wallHeight +
@@ -90,7 +91,7 @@ export class WallOuterCorner extends ShroomContainer implements IRoomPart {
     }
     const top = this._createTopSprite();
     if (top && typeof this.addChild === 'function') {
-      this.addChild(top);
+      this.addChild(top as any);
     }
   }
 }

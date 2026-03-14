@@ -747,7 +747,7 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
       }
 
       this._unknownSprite.zIndex = this.zIndex;
-      this.dependencies.visualization.container.addChild(this._unknownSprite);
+      this.dependencies.visualization.container.addChild(this._unknownSprite as any);
       this._updatePosition();
     }
   }
@@ -903,5 +903,5 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
 
 export interface IFurnitureRoomVisualization {
   container: ShroomContainer;
-  addMask(maskId: string, element: ShroomDisplayObject): MaskNode;
+  addMask(maskId: string, element: ShroomSprite): MaskNode;
 }

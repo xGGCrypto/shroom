@@ -190,7 +190,7 @@ export class AnimatedFurnitureVisualization extends FurnitureVisualization {
       this._frame = progress;
     }
 
-    this._update(true);
+    this._update(false);
   }
 
   isAnimated() {

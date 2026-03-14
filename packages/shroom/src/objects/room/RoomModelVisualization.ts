@@ -159,21 +159,21 @@ export class RoomModelVisualization
     this._landscapeLayer.name = "LANDSCAPE";
     this._primaryLayer.name = "PRIMARY";
 
-    this.addChild(this._behindWallLayer);
-    this.addChild(this._wallLayer);
-    this.addChild(this._wallHitAreaLayer);
-    this.addChild(this._tileLayer);
-    this.addChild(this._landscapeLayer);
-    this.addChild(this._primaryLayer);
+    this.addChild(this._behindWallLayer as any);
+    this.addChild(this._wallLayer as any);
+    this.addChild(this._wallHitAreaLayer as any);
+    this.addChild(this._tileLayer as any);
+    this.addChild(this._landscapeLayer as any);
+    this.addChild(this._primaryLayer as any);
 
-    this.addChild(this._masksLayer);
+    this.addChild(this._masksLayer as any);
 
     this._positionalContainer.x = -this.roomBounds.minX;
     this._positionalContainer.y = -this.roomBounds.minY;
     this._primaryLayer.sortableChildren = true;
     this._tileLayer.sortableChildren = true;
 
-    this.addChild(this._positionalContainer);
+    this.addChild(this._positionalContainer as any);
 
     new EventManagerContainer(this._application, this._eventManager);
 
@@ -444,10 +444,20 @@ export class RoomModelVisualization
     };
   }
 
+  /**
+   * Enables or disables bitmap caching for the room layers.
+   * NOTE: This is currently disabled because Pixi.js v7's `cacheAsBitmap`
+   * triggers a runtime error "Unable to convert color [object Object]"
+   * during the internal RenderTexture clear operation.
+   *
+   * @param cache Whether to enable caching.
+   * @private
+   */
   private _setCache(cache: boolean) {
-    [this._tileLayer, this._wallLayer].forEach(
+    // TODO: Re-enable once the Pixi v7 color normalization issue is resolved.
+    /*[this._tileLayer, this._wallLayer].forEach(
       (container) => (container.cacheAsBitmap = cache)
-    );
+    );*/
   }
 
   private _getLargestWallHeight() {
@@ -531,7 +541,7 @@ export class RoomModelVisualization
     stair.y = position.y;
 
     this._tiles.push(stair);
-    this._tileLayer.addChild(stair);
+    this._tileLayer.addChild(stair as any);
 
     this._createTileCursor(x, y, z);
     this._createTileCursor(x, y, z + 1);
@@ -548,7 +558,7 @@ export class RoomModelVisualization
     stair.y = position.y;
 
     this._tiles.push(stair);
-    this._tileLayer.addChild(stair);
+    this._tileLayer.addChild(stair as any);
 
     this._createTileCursor(x, y, z);
     this._createTileCursor(x, y, z + 1);
@@ -624,7 +634,7 @@ export class RoomModelVisualization
     tile.x = position.x;
     tile.y = position.y;
 
-    (container ?? this._tileLayer).addChild(tile);
+    (container ?? this._tileLayer).addChild(tile as any);
     this._tiles.push(tile);
 
     this._createTileCursor(x, y, z, container);
@@ -660,7 +670,7 @@ export class RoomModelVisualization
     cursor.zIndex = getZOrder(x, y, z) - 1000;
 
     this._tileCursors.push(cursor);
-    (container ?? this._primaryLayer).addChild(cursor);
+    (container ?? this._primaryLayer).addChild(cursor as any);
   }
 
   private _handleTick = () => {
@@ -708,7 +718,7 @@ export class RoomModelVisualization
     wall.y = y;
     wall.roomZ = roomZ;
 
-    this._wallLayer.addChild(wall);
+    this._wallLayer.addChild(wall as any);
     this._walls.push(wall);
   }
 
@@ -750,7 +760,7 @@ export class RoomModelVisualization
     wall.y = y;
     wall.roomZ = roomZ;
 
-    this._wallLayer.addChild(wall);
+    this._wallLayer.addChild(wall as any);
     this._walls.push(wall);
   }
 
@@ -762,7 +772,7 @@ export class RoomModelVisualization
     wall.y = y;
     wall.roomZ = roomZ;
 
-    this._wallLayer.addChild(wall);
+    this._wallLayer.addChild(wall as any);
     this._walls.push(wall);
   }
 

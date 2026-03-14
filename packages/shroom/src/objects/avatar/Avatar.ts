@@ -604,15 +604,15 @@ export class Avatar extends RoomObject implements IMoveable, IScreenPositioned {
 
     const item = this.tilemap.getTileAtPosition(roomXrounded, roomYrounded);
     if (item?.type === "door") {
-      this.roomVisualization.container.removeChild(this._avatarSprites);
-      this.roomVisualization.behindWallContainer.addChild(this._avatarSprites);
+      this.roomVisualization.container.removeChild(this._avatarSprites as any);
+      this.roomVisualization.behindWallContainer.addChild(this._avatarSprites as any);
     }
 
     if (item == null || item.type !== "door") {
       this.roomVisualization.behindWallContainer.removeChild(
-        this._avatarSprites
+        this._avatarSprites as any
       );
-      this.roomVisualization.container.addChild(this._avatarSprites);
+      this.roomVisualization.container.addChild(this._avatarSprites as any);
     }
   }
 }

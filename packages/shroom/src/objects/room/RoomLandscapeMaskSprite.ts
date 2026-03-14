@@ -103,7 +103,7 @@ export class RoomLandscapeMaskSprite extends ShroomSprite {
       // of the furniture are usually completely black. `pixi.js` requires white
       // images to mask an image.
       sprite.filters = [negativeFilter];
-      container.addChild(sprite);
+      container.addChild(sprite as any);
     });
 
     container.y = -this._roomBounds.minY;

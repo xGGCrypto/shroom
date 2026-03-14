@@ -1,9 +1,10 @@
 import {
+  ShroomColor,
   ShroomContainer,
-  ShroomGraphics,
   ShroomMatrix,
   ShroomPoint,
   ShroomTexture,
+  ShroomTilingSprite,
 } from "../../../pixi-proxy";
 
 import { getFloorMatrix, getLeftMatrix, getRightMatrix } from "../matrixes";
@@ -114,70 +115,55 @@ export class Tile extends ShroomContainer implements IRoomPart {
    * Defensive: checks for required data before rendering.
    */
   private _updateSprites() {
-    if (this._tileHeight == null || this._color == null) {
-      // Defensive: do not render if required properties are missing
+    if (this._tileHeight == null) {
       return;
     }
     this.removeChildren();
-    const tileMatrix = getFloorMatrix(0, 0);
 
-    const top = new ShroomGraphics()
-      .beginTextureFill({
-        texture: this._texture ?? ShroomTexture.WHITE,
-        color: this._roomPartData?.tileTopColor ?? 0,
-        matrix: new ShroomMatrix(1, 0.5, 1, -0.5, 0, 0),
-      })
-      .moveTo(0, 0)
-      .lineTo(32, -16)
-      .lineTo(64, 0)
-      .lineTo(32, 16)
-      .lineTo(0, 0)
-      .endFill();
+    const createSprite = (
+      matrix: ShroomMatrix,
+      tint: number,
+      width: number,
+      height: number
+    ) => {
+      const sprite = new ShroomTilingSprite(
+        this._texture ?? ShroomTexture.WHITE,
+        width,
+        height
+      );
+      sprite.tilePosition.set(this._tilePositions.x, this._tilePositions.y);
+      sprite.transform.setFromMatrix(matrix);
+      sprite.tint = new ShroomColor(tint).toNumber();
+      return sprite;
+    };
 
-    top.position.set(tileMatrix.tx, tileMatrix.ty);
-    this.addChild(top);
+    // Top face
+    const top = createSprite(
+      getFloorMatrix(0, 0),
+      this._roomPartData?.tileTopColor ?? 0xffffff,
+      32,
+      32
+    );
+    this.addChild(top as any);
 
     if (this._showBorders.showLeftBorder) {
-      const borderLeftMatrix = getLeftMatrix(0, 0, {
-        width: 32,
-        height: this.tileHeight,
-      });
-
-      const left: ShroomGraphics = new ShroomGraphics()
-        .beginTextureFill({
-          texture: this._texture ?? ShroomTexture.WHITE,
-          color: this._roomPartData?.tileLeftColor ?? 0,
-          matrix: borderLeftMatrix,
-        })
-        .moveTo(0, 0)
-        .lineTo(0, this.tileHeight)
-        .lineTo(32, 16 + this.tileHeight)
-        .lineTo(32, 16)
-        .endFill();
-      left.position.set(0, 16);
-      this.addChild(left);
+      const left = createSprite(
+        getLeftMatrix(0, 0, { width: 32, height: this.tileHeight }),
+        this._roomPartData?.tileLeftColor ?? 0xcccccc,
+        32,
+        this.tileHeight
+      );
+      this.addChild(left as any);
     }
 
     if (this._showBorders.showRightBorder) {
-      const borderRightMatrix = getRightMatrix(0, 0, {
-        width: 32,
-        height: this.tileHeight,
-      });
-      const right: ShroomGraphics = new ShroomGraphics()
-        .beginTextureFill({
-          texture: this._texture ?? ShroomTexture.WHITE,
-          color: this._roomPartData?.tileRightColor ?? 0,
-          matrix: borderRightMatrix,
-        })
-        .moveTo(32, 16)
-        .lineTo(32, 16 + this.tileHeight)
-        .lineTo(64, this.tileHeight)
-        .lineTo(64, 0)
-        .lineTo(32, 16)
-        .endFill();
-
-      right.position.set(0, 16);
-      this.addChild(right);
+      const right = createSprite(
+        getRightMatrix(0, 0, { width: 32, height: this.tileHeight }),
+        this._roomPartData?.tileRightColor ?? 0x999999,
+        32,
+        this.tileHeight
+      );
+      this.addChild(right as any);
     }
   }
 }

@@ -11,7 +11,8 @@ import {
 import { IEventTarget } from "./interfaces/IEventTarget";
 
 const interactionEvent: ShroomInteractionEvent = {
-  data: {},
+  nativeEvent: {} as any,
+  getLocalPosition: (target: any) => ({ x: 0, y: 0 }),
 } as any;
 
 test("handles click when mounted", () => {

@@ -161,7 +161,7 @@ export class Room
       room: this,
     };
 
-    this.addChild(this._visualization);
+    this.addChild(this._visualization as any);
 
     this._visualization.onTileClick.subscribe((value) => {
       if (this.onTileClick) this.onTileClick(value.position, value.event);
@@ -356,8 +356,8 @@ export class Room
     this._visualization.tileHeight = currentVisualization.tileHeight;
     this._visualization.wallHeight = currentVisualization.wallHeight;
 
-    this.removeChildAt(0);
-    this.addChild(this._visualization);
+    this.removeChild(currentVisualization as any);
+    this.addChild(this._visualization as any);
 
     // refresh visualization data
     this.floorColor = this.floorColor;

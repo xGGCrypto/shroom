@@ -1,4 +1,5 @@
 import {
+  ShroomColor,
   ShroomContainer,
   ShroomTexture,
   ShroomSprite,
@@ -233,16 +234,16 @@ export class Landscape extends RoomObject implements IRoomPart {
 
       if (this.color != null) {
         try {
-          colored.tint = parseInt(this.color.slice(1), 16);
+          colored.tint = new ShroomColor(parseInt(this.color.slice(1), 16)).toNumber();
         } catch (err) {
-          colored.tint = 0xffffff;
+          colored.tint = new ShroomColor(0xffffff).toNumber();
           console.warn('Landscape: Invalid color format', this.color, err);
         }
       } else {
         colored.tint = 0xffffff;
       }
       colored.y = -this._wallHeightWithZ;
-      wall.addChild(colored);
+      wall.addChild(colored as any);
 
       if (meta.type === "rowWall") {
         const maskLevel = this.landscapeContainer.getMaskLevel(meta.level, 0);
@@ -267,7 +268,7 @@ export class Landscape extends RoomObject implements IRoomPart {
             graphics.texture = this._leftTexture;
             graphics.x = 0;
             graphics.y = -this._leftTexture.height;
-            wall.addChild(graphics);
+            wall.addChild(graphics as any);
           } catch (err) {
             console.warn('Landscape: Failed to create left wall tiling sprite', err);
           }
@@ -296,18 +297,18 @@ export class Landscape extends RoomObject implements IRoomPart {
             graphics.x = 0;
             graphics.y = -this._rightTexture.height;
             graphics.tilePosition.set(offsetCol, 0);
-            wall.addChild(graphics);
+            wall.addChild(graphics as any);
           } catch (err) {
             console.warn('Landscape: Failed to create right wall tiling sprite', err);
           }
         }
         offsetCol += width;
       }
-      container.addChild(wall);
+      container.addChild(wall as any);
     });
 
     this._container = container;
-    this.roomVisualization.landscapeContainer.addChild(container);
+    this.roomVisualization.landscapeContainer.addChild(container as any);
   }
 }
 

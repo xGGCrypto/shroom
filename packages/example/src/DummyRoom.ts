@@ -194,7 +194,7 @@ export class DummyRoom {
     this.room.x = application.screen.width / 2 - this.room.roomWidth / 2;
     this.room.y = application.screen.height / 2 - this.room.roomHeight / 2;
 
-    application.stage.addChild(RoomCamera.forScreen(this.room));
+    application.stage.addChild(RoomCamera.forScreen(this.room) as any);
   }
 
   private handleRoomTick() {}

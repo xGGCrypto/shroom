@@ -271,7 +271,7 @@ class Propagation {
   private _createEvent(): IEventManagerEvent {
     return {
       interactionEvent: this.event,
-      mouseEvent: this.event.data.originalEvent,
+      mouseEvent: this.event.nativeEvent as any,
       stopPropagation: () => {
         this._stopped = true;
       },

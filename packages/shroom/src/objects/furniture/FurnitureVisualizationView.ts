@@ -1,4 +1,4 @@
-import { ShroomBlendModes, ShroomContainer } from "../../pixi-proxy";
+import { ShroomBlendModes, ShroomColor, ShroomContainer } from "../../pixi-proxy";
 import { EventOverOutHandler } from "../events/EventOverOutHandler";
 
 import {
@@ -417,7 +417,7 @@ class FurnitureVisualizationLayer
       this._addSprite(newFrame);
 
       if (this._color != null) {
-        newFrame.tint = this._color;
+        newFrame.tint = new ShroomColor(this._color).toNumber();
       }
     }
   }
@@ -449,13 +449,13 @@ class FurnitureVisualizationLayer
     if (this._mountedSprites.has(sprite)) return;
 
     this._mountedSprites.add(sprite);
-    this._container.addChild(sprite);
+    this._container.addChild(sprite as any);
     this._overOutHandler.register(sprite.events);
   }
 
   private _destroySprites() {
     this._sprites.forEach((sprite) => {
-      this._container.removeChild(sprite);
+      this._container.removeChild(sprite as any);
       this._overOutHandler.remove(sprite.events);
       sprite.destroy();
     });
@@ -570,7 +570,9 @@ class FurnitureVisualizationLayer
     }
 
     if (tint != null) {
-      sprite.tint = parseInt(tint, 16);
+      sprite.tint = new ShroomColor(
+        tint.startsWith("#") ? tint : `#${tint}`
+      ).toNumber();
     }
 
     const alpha = this._getAlpha({
@@ -602,11 +604,11 @@ class FurnitureVisualizationLayer
     }
 
     if (mask) {
-      sprite.tint = 0xffffff;
+      sprite.tint = new ShroomColor(0xffffff).toNumber();
     }
 
     if (this._color != null) {
-      sprite.tint = this._color;
+      sprite.tint = new ShroomColor(this._color).toNumber();
     }
 
     this._setSpriteVisible(sprite, false);

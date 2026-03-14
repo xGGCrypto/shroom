@@ -47,13 +47,13 @@ export class RoomCamera extends ShroomContainer {
       throw new Error('RoomCamera: _parentBounds() must return a valid ShroomRectangle');
     }
     this._parentContainer.hitArea = bounds;
-    this._parentContainer.interactive = true;
+    this._parentContainer.eventMode = "static";
 
     this._container = new ShroomContainer();
-    this._container.addChild(this._room);
-    this._parentContainer.addChild(this._container);
+    this._container.addChild(this._room as any);
+    this._parentContainer.addChild(this._container as any);
 
-    this.addChild(this._parentContainer);
+    this.addChild(this._parentContainer as any);
 
     // Activation of the camera is only triggered by a down event on the parent container.
 
@@ -73,7 +73,7 @@ export class RoomCamera extends ShroomContainer {
    */
   private _attachListeners() {
     if (this._listenersAttached) return;
-    this._parentContainer.addListener("pointerdown", this._handlePointerDown);
+    this._parentContainer.on("pointerdown", this._handlePointerDown);
     this._target.addEventListener("pointermove", this._handlePointerMove as any);
     this._target.addEventListener("pointerup", this._handlePointerUp as any);
     // No window unload listener; cleanup must be explicit via destroy().
@@ -85,7 +85,7 @@ export class RoomCamera extends ShroomContainer {
    */
   private _detachListeners() {
     if (!this._listenersAttached) return;
-    this._parentContainer.removeListener("pointerdown", this._handlePointerDown);
+    this._parentContainer.off("pointerdown", this._handlePointerDown);
     this._target.removeEventListener("pointermove", this._handlePointerMove as any);
     this._target.removeEventListener("pointerup", this._handlePointerUp as any);
     // No window unload listener to remove.
@@ -131,11 +131,11 @@ export class RoomCamera extends ShroomContainer {
   };
 
   private _handlePointerDown = (event: ShroomInteractionEvent) => {
-    const position = event.data.getLocalPosition(this.parent);
+    const position = event.getLocalPosition(this.parent as any);
     if (this._state.type === "WAITING") {
-      this._enterWaitingForDistance(position, event.data.pointerId);
+      this._enterWaitingForDistance(position, event.pointerId);
     } else if (this._state.type === "ANIMATE_ZERO") {
-      this._changingDragWhileAnimating(position, event.data.pointerId);
+      this._changingDragWhileAnimating(position, event.pointerId);
     }
   };
 
@@ -147,11 +147,11 @@ export class RoomCamera extends ShroomContainer {
     }
     
     // Defensive: Ensure application and view are available
-    if (!this._room?.application?.view) {
-      console.warn("RoomCamera: Application or view not available.");
+    if (!this._room?.application?.renderer?.view) {
+      console.warn("RoomCamera: Application, renderer or view not available.");
       return;
     }
-    const box = this._room.application.view.getBoundingClientRect();
+    const box = (this._room.application.renderer.view as any).getBoundingClientRect();
     const position = new ShroomPoint(
       event.clientX - box.x - this.parent.worldTransform.tx,
       event.clientY - box.y - this.parent.worldTransform.tx

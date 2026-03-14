@@ -23,25 +23,27 @@ export class FurnitureHelper {
         BaseFurniture.fromShroom(shroom, container, {
           animation: furniOptions?.animation ?? "0",
           direction: furniOptions?.direction ?? 2,
-          type: { type: furniId, kind: "type" },
-          onLoad: () => {
+          type: { type: furniId, kind: "type" } as any,
+          onLoad: async () => {
             try {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-              const image = shroom.dependencies.application.renderer.plugins.extract.image(container);
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              image.onload = () => {
-                if (!resolved) {
+              const image: any = await shroom.dependencies.application.renderer.extract.image(container as any);
+              if (image) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                image.onload = () => {
+                  if (!resolved) {
+                    resolved = true;
+                    resolve(image as HTMLImageElement);
+                    container.destroy();
+                  }
+                };
+                // Fallback: resolve if image is already loaded
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                if (image.complete && !resolved) {
                   resolved = true;
-                  resolve(image);
+                  resolve(image as HTMLImageElement);
                   container.destroy();
                 }
-              };
-              // Fallback: resolve if image is already loaded
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              if (image.complete && !resolved) {
-                resolved = true;
-                resolve(image);
-                container.destroy();
               }
             } catch (err) {
               if (!resolved) {

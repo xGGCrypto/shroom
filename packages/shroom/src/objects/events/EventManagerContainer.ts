@@ -27,37 +27,35 @@ export class EventManagerContainer {
 
     _application.ticker.add(this._updateRectangle);
 
-    const interactionManager: ShroomInteractionManager = this._application
-      .renderer.plugins.interaction as ShroomInteractionManager;
+    const stage = this._application.stage;
+    stage.eventMode = "static";
+    stage.hitArea = this._application.screen;
 
-    interactionManager.addListener(
+    stage.on(
       "pointermove",
       (event: ShroomInteractionEvent) => {
-        const position = event.data.getLocalPosition(this._application.stage);
+        const position = event.getLocalPosition(this._application.stage as any);
 
         this._eventManager.move(event, position.x, position.y);
-      },
-      true
+      }
     );
 
-    interactionManager.addListener(
+    stage.on(
       "pointerup",
       (event: ShroomInteractionEvent) => {
-        const position = event.data.getLocalPosition(this._application.stage);
+        const position = event.getLocalPosition(this._application.stage as any);
 
         this._eventManager.pointerUp(event, position.x, position.y);
-      },
-      true
+      }
     );
 
-    interactionManager.addListener(
+    stage.on(
       "pointerdown",
       (event: ShroomInteractionEvent) => {
-        const position = event.data.getLocalPosition(this._application.stage);
+        const position = event.getLocalPosition(this._application.stage as any);
 
         this._eventManager.pointerDown(event, position.x, position.y);
-      },
-      true
+      }
     );
   }
 

@@ -1,4 +1,4 @@
-import { ShroomContainer, ShroomGraphics } from "../../../pixi-proxy";
+import { ShroomColor, ShroomContainer, ShroomGraphics } from "../../../pixi-proxy";
 import { BehaviorSubject, Observable } from "rxjs";
 import { RoomPosition } from "../../../types/RoomPosition";
 import { isPointInside } from "../../../util/isPointInside";
@@ -51,7 +51,7 @@ export class TileCursor
     this._graphics = this._createGraphics();
     this._updateGraphics();
 
-    this.addChild(this._graphics);
+    this.addChild(this._graphics as any);
 
     this._eventManager.register(this);
   }
@@ -269,7 +269,7 @@ function drawBorder(
   alpha = 1,
   offsetY: number
 ) {
-  graphics.beginFill(color, alpha);
+  graphics.beginFill(new ShroomColor(color).toNumber(), alpha);
   graphics.moveTo(points.p1.x, points.p1.y + offsetY);
   graphics.lineTo(points.p2.x, points.p2.y + offsetY);
   graphics.lineTo(points.p3.x, points.p3.y + offsetY);

@@ -6,13 +6,13 @@ export {
   Spritesheet as ShroomSpritesheet,
   Container as ShroomContainer,
   BLEND_MODES as ShroomBlendModes,
-  InteractionEvent as ShroomInteractionEvent,
-  InteractionManager as ShroomInteractionManager,
+  FederatedPointerEvent as ShroomInteractionEvent,
+  EventSystem as ShroomInteractionManager,
+  Color as ShroomColor,
   TilingSprite as ShroomTilingSprite,
   Ticker as ShroomTicker,
   DisplayObject as ShroomDisplayObject,
   Filter as ShroomFilter,
-  utils as ShroomUtils,
   Graphics as ShroomGraphics,
   Matrix as ShroomMatrix,
   Point as ShroomPoint,
@@ -23,5 +23,5 @@ export {
   SCALE_MODES as ShroomScaleModes,
 } from "pixi.js";
 
-import { filters } from "pixi.js";
-export class ShroomColorMatrixFilter extends filters.ColorMatrixFilter {}
+import { ColorMatrixFilter } from "@pixi/filter-color-matrix";
+export class ShroomColorMatrixFilter extends ColorMatrixFilter {}

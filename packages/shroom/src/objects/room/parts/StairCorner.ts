@@ -1,4 +1,5 @@
 import {
+  ShroomColor,
   ShroomContainer,
   ShroomTexture,
   ShroomDisplayObject,
@@ -58,11 +59,11 @@ export class StairCorner extends ShroomContainer implements IRoomPart {
 
     for (let i = 0; i < 4; i++) {
       if (type === "front") {
-        this.addChild(...this._createStairBoxFront(3 - i));
+        this.addChild(...(this._createStairBoxFront(3 - i) as any[]));
       } else if (type === "left") {
-        this.addChild(...this._createStairBoxLeft(3 - i));
+        this.addChild(...(this._createStairBoxLeft(3 - i) as any[]));
       } else if (type === "right") {
-        this.addChild(...this._createStairBoxRight(3 - i));
+        this.addChild(...(this._createStairBoxRight(3 - i) as any[]));
       }
     }
   }
@@ -87,7 +88,7 @@ export class StairCorner extends ShroomContainer implements IRoomPart {
    * @param index The stair step index (0 = closest to viewer).
    * @returns An array of display objects for this stair step.
    */
-  private _createStairBoxFront(index: number): ShroomDisplayObject[] {
+  private _createStairBoxFront(index: number): any[] {
     const baseXLeft = +stairBase * index;
     const baseYLeft = -stairBase * index * 1.5;
 
@@ -105,7 +106,7 @@ export class StairCorner extends ShroomContainer implements IRoomPart {
       tile.tilePosition.set(tilePosition.x, tilePosition.y);
       tile.transform.setFromMatrix(matrix);
 
-      tile.tint = tint;
+      tile.tint = new ShroomColor(tint).toNumber();
 
       return tile;
     }
@@ -173,7 +174,7 @@ export class StairCorner extends ShroomContainer implements IRoomPart {
       tile.tilePosition.set(tilePosition.x, tilePosition.y);
       tile.transform.setFromMatrix(matrix);
 
-      tile.tint = tint;
+      tile.tint = new ShroomColor(tint).toNumber();
 
       return tile;
     }
@@ -246,7 +247,7 @@ export class StairCorner extends ShroomContainer implements IRoomPart {
       tile.tilePosition.set(tilePosition.x, tilePosition.y);
       tile.transform.setFromMatrix(matrix);
 
-      tile.tint = tint;
+      tile.tint = new ShroomColor(tint).toNumber();
 
       return tile;
     }

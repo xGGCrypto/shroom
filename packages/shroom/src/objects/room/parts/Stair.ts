@@ -1,4 +1,5 @@
 import {
+  ShroomColor,
   ShroomContainer,
   ShroomMatrix,
   ShroomPoint,
@@ -64,9 +65,11 @@ export class Stair extends ShroomContainer implements IRoomPart {
 
     for (let i = 0; i < 4; i++) {
       if (direction === 0) {
-        this.addChild(...this._createStairBoxDirection0(3 - i));
+        const children = this._createStairBoxDirection0(3 - i);
+        this.addChild(...(children as any[]));
       } else if (direction === 2) {
-        this.addChild(...this._createStairBoxDirection2(3 - i));
+        const children = this._createStairBoxDirection2(3 - i);
+        this.addChild(...(children as any[]));
       }
     }
   }
@@ -90,7 +93,7 @@ export class Stair extends ShroomContainer implements IRoomPart {
       tile.tilePosition.set(tilePosition.x, tilePosition.y);
       tile.transform.setFromMatrix(matrix);
 
-      tile.tint = tint;
+      tile.tint = new ShroomColor(tint).toNumber();
 
       return tile;
     }
@@ -138,7 +141,7 @@ export class Stair extends ShroomContainer implements IRoomPart {
       tile.tilePosition.set(0, 0);
       tile.transform.setFromMatrix(matrix);
 
-      tile.tint = tint;
+      tile.tint = new ShroomColor(tint).toNumber();
 
       return tile;
     }

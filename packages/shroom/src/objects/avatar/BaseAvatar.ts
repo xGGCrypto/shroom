@@ -1,4 +1,4 @@
-import { ShroomContainer, ShroomBlendModes } from "../../pixi-proxy";
+import { ShroomContainer, ShroomBlendModes, ShroomColor } from "../../pixi-proxy";
 import { LookOptions } from "./util/createLookServer";
 import { AvatarLoaderResult } from "../../interfaces/IAvatarLoader";
 import { ClickHandler } from "../hitdetection/ClickHandler";
@@ -332,7 +332,7 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
         sprite.zIndex = this.spritesZIndex + part.z;
 
         this._sprites.set(asset.fileId, sprite);
-        this._container?.addChild(sprite);
+        this._container?.addChild(sprite as any);
       } else if (part.kind === "EFFECT_DRAW_PART") {
         const frame = currentFrame % part.assets.length;
         const asset = part.assets[frame];
@@ -367,11 +367,11 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
         sprite.zIndex = this.spritesZIndex + part.z;
 
         this._sprites.set(asset.fileId, sprite);
-        this._container?.addChild(sprite);
+        this._container?.addChild(sprite as any);
       }
     });
 
-    this.addChild(this._container);
+    this.addChild(this._container as any);
   }
 
   /**
@@ -416,9 +416,9 @@ export class BaseAvatar extends ShroomContainer implements IEventGroup {
       part.color != null &&
       part.mode === "colored"
     ) {
-      sprite.tint = parseInt(part.color.slice(1), 16);
+      sprite.tint = new ShroomColor(parseInt(part.color.slice(1), 16)).toNumber();
     } else {
-      sprite.tint = 0xffffff;
+      sprite.tint = new ShroomColor(0xffffff).toNumber();
     }
 
     return sprite;

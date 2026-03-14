@@ -1,4 +1,5 @@
 import {
+  ShroomColor,
   ShroomContainer,
   ShroomDisplayObject,
   ShroomGraphics,
@@ -126,9 +127,9 @@ export class WallLeft extends ShroomContainer implements IRoomPart {
     const border = this._createBorderSprite();
     const top = this._createTopSprite();
 
-    if (primary) this.addChild(primary);
-    if (!this._hideBorder && border) this.addChild(border);
-    if (top) this.addChild(top);
+    if (primary) this.addChild(primary as any);
+    if (!this._hideBorder && border) this.addChild(border as any);
+    if (top) this.addChild(top as any);
 
     // Defensive: only create hit area if callbacks and container are present
     if (this.props.onMouseMove && this.props.onMouseOut && this.props.hitAreaContainer) {
@@ -139,25 +140,27 @@ export class WallLeft extends ShroomContainer implements IRoomPart {
       graphics.endFill();
 
       const handleMoveEvent = (event: ShroomInteractionEvent) => {
-        if (event.target === graphics) {
-          const position = event.data.getLocalPosition(graphics);
+        if ((event.target as any) === graphics) {
+          const position = event.getLocalPosition(graphics as any);
           this.props.onMouseMove({ offsetX: position.x, offsetY: position.y });
         }
       };
 
-      graphics.addListener("mousemove", handleMoveEvent);
-      graphics.addListener("mouseover", handleMoveEvent);
-      graphics.addListener("mouseout", () => {
+      graphics.on("mousemove", handleMoveEvent);
+      graphics.on("mouseover", handleMoveEvent);
+      graphics.on("mouseout", () => {
         this.props.onMouseOut();
       });
 
-      graphics.interactive = true;
+      graphics.eventMode = "static";
 
-      this._hitAreaElement = graphics;
-      this._hitAreaElement.x = this.x;
-      this._hitAreaElement.y = this.y;
-      this._hitAreaElement.scale = this.scale;
-      this.props.hitAreaContainer.addChild(this._hitAreaElement);
+      this._hitAreaElement = graphics as any;
+      if (this._hitAreaElement) {
+        this._hitAreaElement.x = this.x;
+        this._hitAreaElement.y = this.y;
+        this._hitAreaElement.scale = this.scale;
+        this.props.hitAreaContainer.addChild(this._hitAreaElement as any);
+      }
     }
   }
 
@@ -206,7 +209,7 @@ export class WallLeft extends ShroomContainer implements IRoomPart {
     sprite.transform.setFromMatrix(new ShroomMatrix(-1, 0.5, 0, 1));
     sprite.x = this._getOffsetX() + this._borderWidth + this._wallWidth;
     sprite.y = this.wallY;
-    sprite.tint = this._wallLeftColor;
+    sprite.tint = new ShroomColor(this._wallLeftColor).toNumber();
 
     return sprite;
   }
@@ -224,7 +227,7 @@ export class WallLeft extends ShroomContainer implements IRoomPart {
     border.y = this.wallY + this._wallWidth / 2;
     border.x = this._getOffsetX() + this._borderWidth;
 
-    border.tint = this._wallRightColor;
+    border.tint = new ShroomColor(this._wallRightColor).toNumber();
 
     return border;
   }
@@ -242,7 +245,7 @@ export class WallLeft extends ShroomContainer implements IRoomPart {
     border.x = this._getOffsetX() + 0;
     border.y = this.wallY + this._wallWidth / 2 - this._borderWidth / 2;
 
-    border.tint = this._wallTopColor;
+    border.tint = new ShroomColor(this._wallTopColor).toNumber();
 
     return border;
   }
