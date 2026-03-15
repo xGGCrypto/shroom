@@ -1,6 +1,6 @@
 {
   "name": "@xggcrypto/shroom",
-  "version": "0.7.12",
+  "version": "0.8.0",
   "main": "dist/src/index.js",
   "license": "LGPL-3.0-or-later",
   "repository": {
@@ -45,7 +45,6 @@
     "typescript-eslint": "^8.39.1"
   },
   "dependencies": {
-    "@pixi/filter-color-matrix": "^7.4.2",
     "@tweenjs/tween.js": "^16.6.0",
     "bin-pack": "^1.0.2",
     "bytebuffer": "^5.0.1",
@@ -56,7 +55,7 @@
     "jszip": "^3.5.0",
     "node-fetch": "^2.6.1",
     "parcel": "^2.9.0",
-    "pixi.js": "^7.4.2",
+    "pixi.js": "^8.17.0",
     "quadtree-lib": "^1.0.9",
     "rbush": "^3.0.1",
     "react": "^16.14.0",
@@ -65,9 +64,6 @@
     "timers": "^0.1.1",
     "timers-browserify": "^2.0.11",
     "xml2js": "^0.4.23"
-  },
-  "peerDependencies": {
-    "pixi.js": "^7.4.2"
   },
   "scripts": {
     "start": "parcel public/index.html --no-cache",
